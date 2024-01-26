@@ -1,0 +1,59 @@
+---
+import {
+	Astronav,
+	MenuItems,
+	MenuIcon,
+	CloseIcon,
+	OpenIcon,
+} from "astro-navbar";
+---
+
+<header class="lg:flex items-center p-6 lg:p-6 gap-5 font-sans text-lg text-white bg-black-shade">
+	<Astronav>
+		<div class="flex w-full justify-between items-center">
+			<a>< Visua1hue /></a>
+			<div class="flex lg:hidden">
+				<MenuIcon class="w-8 h-8">
+					<OpenIcon>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							width="24"
+							height="24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<line x1="5" y1="8" x2="20" y2="8"></line>
+							<line x1="5" y1="16" x2="20" y2="16"></line>
+						</svg>
+					</OpenIcon>
+					<CloseIcon>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							width="24"
+							height="24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<line x1="18" y1="6" x2="6" y2="18"></line>
+							<line x1="6" y1="6" x2="18" y2="18"></line>
+						</svg>
+					</CloseIcon>
+				</MenuIcon>
+			</div>
+		</div>
+		<MenuItems class="hidden lg:flex">
+			<ul class="flex flex-col lg:flex-row lg:gap-6">
+				<li>About</li>
+				<li>Contact</li>
+			</ul>
+		</MenuItems>
+	</Astronav>
+</header>
