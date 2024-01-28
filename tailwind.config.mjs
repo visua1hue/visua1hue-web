@@ -5,6 +5,7 @@ export default {
 		extend: {
 			fontFamily: {
 				'sans': ['Inter', 'sans-serif'],
+				'JetBrainsMono':  ['JetBrains Mono', 'sans-serif'],
 			},
 			colors: {
 				'black-shade': '#09090a',

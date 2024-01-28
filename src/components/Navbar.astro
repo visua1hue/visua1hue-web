@@ -11,10 +11,14 @@ import {
 <header class="lg:flex items-center p-6 lg:p-6 gap-5 font-sans text-lg text-white bg-black-shade">
 	<Astronav>
 		<div class="flex w-full justify-between items-center">
-			<a>< Visua1hue /></a>
-			<div class="flex lg:hidden">
-				<MenuIcon class="w-8 h-8">
-					<OpenIcon>
+			<a href="/" id="navLogo" class="text-2xl font-JetBrainsMono">
+				<span class="text-neutral-500	text-lg align-middle">&lt;</span>
+				<span class="text-white font-semibold align-middle">Visua1hue</span>
+				<span class="text-neutral-500	text-lg align-middle">/&gt;</span>
+			</a>
+				<div class="flex lg:hidden">
+				<MenuIcon class="w-8 h-8" onClick=toggleNavLogoVisibility()>
+					<OpenIcon  >
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 24 24"
@@ -49,11 +53,15 @@ import {
 				</MenuIcon>
 			</div>
 		</div>
-		<MenuItems class="hidden lg:flex">
-			<ul class="flex flex-col lg:flex-row lg:gap-6">
-				<li>About</li>
-				<li>Contact</li>
+		<MenuItems class="hidden lg:flex justify-end">
+			<ul class="flex flex-col ml-8 text-2xl lg:flex-row lg:gap-6 lg:text-xl">
+					<li>About</li>
+					<li>Contact</li>
 			</ul>
-		</MenuItems>
+	</MenuItems>
+	
 	</Astronav>
 </header>
+
+<script>
+</script>
