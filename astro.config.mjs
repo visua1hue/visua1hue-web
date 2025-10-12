@@ -19,13 +19,6 @@ export default defineConfig({
     }),
   ],
 
-  // Image Optimization
-  image: {
-    service: {
-      entrypoint: 'astro/assets/services/compact',
-    }
-  },
-
   // Prefetch Performance Tuning
   prefetch: {
     defaultStrategy: 'hover',
