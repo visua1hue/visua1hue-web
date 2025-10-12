@@ -2,14 +2,11 @@
   "name": "visua1hue-web",
   "main": "./.wrangler/tmp/index.js",
   "compatibility_date": "2025-10-12",
+  "compatibility_flags": ["nodejs_compat"],
   "routes": [
     {
       "pattern": "visua1hue.dev/*",
       "zone_name": "visua1hue.dev"
     }
-  ],
-  "build": {
-    "command": "npm run build",
-    "cwd": "./"
-  }
+  ]
 }
