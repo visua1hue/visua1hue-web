@@ -24,8 +24,11 @@ html {
 html,
 body {
   overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: none;
   touch-action: manipulation;
   padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom, 0);
   background-color: var(--color-bg-body);
   color: var(--color-text-default);
 }
