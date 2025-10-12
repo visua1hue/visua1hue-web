@@ -1,6 +1,5 @@
 {
   "name": "visua1hue-web",
-  "type": "javascript",
   "main": "./.wrangler/tmp/index.js",
   "compatibility_date": "2025-10-12",
   "env": {
