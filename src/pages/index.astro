@@ -73,3 +73,25 @@ import Layout from "@layouts/Layout.astro";
     }
   }
 </style>
+
+<script>
+  import { animate } from "motion";
+
+  document.fonts.ready.then(() => {
+    animate(
+      ".header",
+      {
+        opacity: [0, 1],
+        filter: ["blur(20px) hue-rotate(90deg)", "blur(0px) hue-rotate(0deg)"],
+        scale: [1.1, 1],
+      },
+      { duration: 1.3, ease: [0.19, 1, 0.22, 1] }
+    );
+
+    animate(
+      ".subheader",
+      { opacity: [0, 1], y: [-20, 0] },
+      { duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }
+    );
+  });
+</script>
