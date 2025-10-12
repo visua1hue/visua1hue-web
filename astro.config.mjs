@@ -22,7 +22,7 @@ export default defineConfig({
   // Image Optimization
   image: {
     service: {
-      entrypoint: 'astro/assets/services/sharp',
+      entrypoint: 'astro/assets/services/compact',
     }
   },
 
