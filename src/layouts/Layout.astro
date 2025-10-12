@@ -1,0 +1,38 @@
+---
+import { ClientRouter } from "astro:transitions";
+import "@styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Bits, bytes, and visual harmony." } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/x-icon" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL.href} />
+
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+
+    <ClientRouter />
+  </head>
+  <body>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>
