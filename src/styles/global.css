@@ -26,6 +26,8 @@ body {
   overflow-x: hidden;
   touch-action: manipulation;
   padding-top: env(safe-area-inset-top);
+  background-color: var(--color-bg-body);
+  color: var(--color-text-default);
 }
 
 img {
