@@ -2,6 +2,74 @@
 import Layout from "@layouts/Layout.astro";
 ---
 
-<Layout title="Personal website built for speed and motion.">
-  <h1>ネ</h1>
+<Layout title="Consultant and Developer – Building Reliable Solutions">
+  <div class="grid">
+    <div class="container">
+      <h1 class="header">VISUA1HUE</h1>
+      <p class="subheader">
+        Built to perform. Designed to scale. <br />Focused on what matters most.
+      </p>
+    </div>
+  </div>
 </Layout>
+
+<style>
+  .grid {
+    display: grid;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    min-height: 100vh;
+    align-items: center;
+    justify-items: center;
+    background-color: var(--color-bg-body);
+  }
+
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+    }
+  }
+
+  @media (min-width: 769px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-lg);
+      padding: var(--spacing-xl);
+    }
+  }
+
+  .container {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .header {
+    font-size: 5rem;
+    text-align: center;
+    line-height: 1;
+    margin: 0;
+    color: var(--color-text-brand);
+  }
+
+  .subheader {
+    font-size: var(--font-size-xl);
+    text-align: center;
+    margin-top: var(--spacing-md);
+    width: 100%;
+    color: var(--color-text-default);
+  }
+
+  @media (max-width: 768px) {
+    .header {
+      font-size: 2.5rem;
+    }
+
+    .subheader {
+      font-size: var(--font-size-base);
+    }
+  }
+</style>
