@@ -10,7 +10,9 @@ export default defineConfig({
 
   // Build & Output Configuration
   output: 'server',
-  adapter: cloudflare(),
+  adapter: cloudflare({
+     imageService: 'compile'
+  }),
 
   // Integrations
   integrations: [
