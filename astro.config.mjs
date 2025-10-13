@@ -11,7 +11,11 @@ export default defineConfig({
   // Build & Output Configuration
   output: 'server',
   adapter: cloudflare({
-     imageService: 'compile'
+    imageService: 'compile',
+    platformProxy: {
+      enabled: true,
+      persist: true
+    }
   }),
 
   // Integrations
@@ -32,6 +36,7 @@ export default defineConfig({
       external: ['node:buffer']
     },
     build: {
+      minify: true,
       rollupOptions: {
         output: {
           manualChunks: {
