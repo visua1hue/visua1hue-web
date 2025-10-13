@@ -1,15 +1,13 @@
 {
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
-    "baseUrl": ".",
     "paths": {
-      "@components/*": ["src/components/*"],
-      "@layouts/*": ["src/layouts/*"],
-      "@styles/*": ["src/styles/*"],
-      "@assets/*": ["src/assets/*"],
-      "@content/*": ["src/content/*"],
-      "@scripts/*": ["src/scripts/*"]
+      "@components/*": ["./src/components/*"],
+      "@layouts/*": ["./src/layouts/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@content/*": ["./src/content/*"],
+      "@scripts/*": ["./src/scripts/*"]
     },
     "jsx": "preserve",
     "jsxImportSource": "astro"
