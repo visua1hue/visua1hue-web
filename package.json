@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "wrangler dev ./dist",
+    "preview": "wrangler dev",
     "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
