@@ -1,15 +1,15 @@
 :root {
   /* LAYER 1: COLOR PALETTE - PRIMARY */
-  --color-primary-100: hsl(210, 11%, 4%);
-  --color-primary-500: hsl(180, 7%, 97%);
-  --color-primary-700: hsl(218, 21%, 85%);
+  --color-primary-100: oklch(0.1449 0.0031 247.37);
+  --color-primary-500: oklch(0.978 0.0011 197.14);
+  --color-primary-700: oklch(0.8764 0.0154 261.5);
+  --color-neutral-0: oklch(0.978 0.0011 197.14);
 
-  --color-neutral-0: hsl(180, 7%, 97%);
-  --color-neutral-100: hsl(218, 21%, 85%);
-  --color-neutral-300: hsl(210, 8%, 25%);
-  --color-neutral-500: hsl(210, 10%, 15%);
-  --color-neutral-700: hsl(210, 11%, 8%);
-  --color-neutral-900: hsl(210, 11%, 4%);
+  --color-neutral-100: oklch(0.8764 0.0154 261.5);
+  --color-neutral-300: oklch(0.3677 0.0111 248.13);
+  --color-neutral-500: oklch(0.2674 0.009 248.17);
+  --color-neutral-700: oklch(0.1916 0.0058 248.13);
+  --color-neutral-900: oklch(0.1449 0.0031 247.37);
 
   /* LAYER 2: COLOR PALETTE - SEMANTIC TOKENS */
   --color-bg-body: var(--color-primary-100);
@@ -20,7 +20,6 @@
   --color-interactive-hover: var(--color-primary-700);
   --color-border-default: ;
 
-  /* TYPOGRAPHY */
   --font-primary: "Inter", sans-serif;
 
   --font-size-sm: 0.875rem; /* 14px */
@@ -35,7 +34,6 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  /* SPACING & LAYOUT */
   --spacing-xs: 0.25rem; /* 4px */
   --spacing-sm: 0.5rem; /* 8px */
   --spacing-md: 1rem; /* 16px */
@@ -46,7 +44,6 @@
   --container-width: 1240px;
   --container-padding: var(--spacing-lg);
 
-  /* BORDERS, SHADOWS & TRANSITIONS */
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
   --border-radius-lg: 16px;
