@@ -9,7 +9,7 @@
     "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
-    "astro": "^5.15.3",
+    "astro": "^5.15.8",
     "astro-icon": "^1.1.5",
     "motion": "^12.23.24"
   },
