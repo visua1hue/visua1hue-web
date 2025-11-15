@@ -1,0 +1,46 @@
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 0.001ms !important;
+    --motion-duration-base: 0.001ms !important;
+    --motion-duration-slow: 0.001ms !important;
+  }
+
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Transitions */
+.motion-transition-base {
+  transition-property: opacity, transform, box-shadow;
+  transition-duration: var(--motion-duration-base);
+  transition-timing-function: var(--motion-ease-standard);
+}
+
+.motion-transition-fast {
+  transition-duration: var(--motion-duration-fast);
+}
+
+.motion-transition-slow {
+  transition-duration: var(--motion-duration-slow);
+}
+
+/* Hover */
+.motion-hover-scale:hover {
+  transform: scale(var(--motion-scale-hover));
+}
+
+/* Entry */
+.motion-fade-in-up {
+  opacity: 0;
+  transform: translateY(var(--motion-translate-md));
+  will-change: transform, opacity;
+}
+
+.motion-fade-in-up--entered {
+  opacity: 1;
+  transform: translateY(0);
+}
