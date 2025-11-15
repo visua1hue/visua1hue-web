@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, fontProviders } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import icon from 'astro-icon';
 
@@ -17,6 +17,20 @@ export default defineConfig({
       persist: true
     }
   }),
+
+  // Experimental Features
+  experimental: {
+    fonts: [
+      {
+        provider: fontProviders.fontsource(),
+        name: 'Inter',
+        cssVariable: '--font-inter',
+        weights: ['400', '500', '600', '700'],
+        styles: ['normal'],
+        display: 'swap',
+      },
+    ],
+  },
 
   // Integrations
   integrations: [
