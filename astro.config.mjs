@@ -27,6 +27,7 @@ export default defineConfig({
         cssVariable: '--font-inter',
         weights: ['400', '500', '600', '700'],
         styles: ['normal'],
+        subsets: ['latin'],
         display: 'swap',
       },
     ],
