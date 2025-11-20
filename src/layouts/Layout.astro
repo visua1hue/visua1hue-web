@@ -46,5 +46,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <main>
       <slot />
     </main>
+    <script>
+      import { initAnimations } from "../scripts/animation/motion";
+
+      // Run on initial load
+      initAnimations();
+
+      // Run on subsequent navigations (Astro View Transitions)
+      document.addEventListener("astro:page-load", () => {
+        initAnimations();
+      });
+    </script>
   </body>
 </html>

@@ -20,23 +20,6 @@
   --color-interactive-hover: var(--color-primary-700);
   --color-border-default: var(--color-primary-500);
 
-  /* LAYER 3: MOTION TOKENS */
-  --motion-duration-fast: 120ms;
-  --motion-duration-base: 180ms;
-  --motion-duration-slow: 260ms;
-
-  --motion-ease-standard: cubic-bezier(0.2, 0, 0, 1);
-  --motion-ease-emphasized: cubic-bezier(0.2, 0, 0, 1.2);
-  --motion-ease-in: cubic-bezier(0.4, 0, 1, 1);
-  --motion-ease-out: cubic-bezier(0, 0, 0.2, 1);
-
-  --motion-translate-xs: 2px;
-  --motion-translate-sm: 4px;
-  --motion-translate-md: 8px;
-
-  --motion-scale-hover: 1.02;
-
-
   --font-primary: var(--font-inter);
 
   --font-size-sm: 0.875rem; /* 14px */
@@ -74,5 +57,6 @@
   --border-width: 1px;
 
   --shadow-sm: 0 1px 2px oklch(from var(--color-neutral-900) l c h / 0.05);
-  --shadow-md: 0 4px 6px -1px oklch(from var(--color-neutral-900) l c h / 0.1),0 2px 4px -2px oklch(from var(--color-neutral-900) l c h / 0.1);
+  --shadow-md: 0 4px 6px -1px oklch(from var(--color-neutral-900) l c h / 0.1),
+    0 2px 4px -2px oklch(from var(--color-neutral-900) l c h / 0.1);
 }
