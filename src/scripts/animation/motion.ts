@@ -60,23 +60,41 @@ function isPreset(key: string | undefined): key is PresetName {
 
 // INITIALIZATION
 export function initAnimations() {
-  // 1. WAIT FOR FCP (Prevent NO_FCP)
-  if (typeof window !== 'undefined' && 'PerformancePaintTiming' in window) {
-    const observer = new PerformanceObserver((list) => {
-      const entries = list.getEntries();
-      if (entries.length > 0) {
-        triggerLoadAnimations();
-        observer.disconnect();
-      }
-    });
-    observer.observe({ entryTypes: ['paint'] });
-  } else if (typeof window !== 'undefined') {
-    // Fallback for browsers without Paint Timing API
-    requestAnimationFrame(() => triggerLoadAnimations());
-  }
+  if (typeof window === 'undefined') return;
 
-  // 2. SETUP SCROLL ANIMATIONS
-  initScrollFallback();
+  const startLoadAnimations = () => {
+    const paintEntries = performance.getEntriesByType('paint');
+    const fcpEntry = paintEntries.find(e => e.name === 'first-contentful-paint');
+
+    if (fcpEntry) {
+      // FCP already happened, trigger immediately
+      triggerLoadAnimations();
+    } else if ('PerformancePaintTiming' in window) {
+      // FCP hasn't happened yet, observe it
+      const observer = new PerformanceObserver((list) => {
+        const entries = list.getEntries();
+        if (entries.some(e => e.name === 'first-contentful-paint')) {
+          triggerLoadAnimations();
+          observer.disconnect();
+        }
+      });
+      observer.observe({ entryTypes: ['paint'] });
+    } else {
+      // Fallback
+      requestAnimationFrame(() => triggerLoadAnimations());
+    }
+  };
+
+  const start = () => {
+    startLoadAnimations();
+    initScrollFallback();
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
 }
 
 function triggerLoadAnimations() {
