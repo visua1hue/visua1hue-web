@@ -28,6 +28,7 @@
 */
 [data-motion] {
   will-change: transform, opacity, filter;
+  opacity: 0.01;
 }
 
 /* Scroll-driven animations: S-TIER (CSS-only) */
@@ -74,28 +75,53 @@
 }
 
 @keyframes motion-fade-in-up {
-  0% { opacity: 0; transform: translateY(var(--motion-dist-md)); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(var(--motion-dist-md));
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes motion-fade-in-down {
-  0% { opacity: 0; transform: translateY(calc(var(--motion-dist-md) * -1)); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(calc(var(--motion-dist-md) * -1));
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes motion-scale-in {
-  0% { opacity: 0; transform: scale(var(--motion-scale-sm)); }
-  100% { opacity: 1; transform: scale(1); }
+  0% {
+    opacity: 0;
+    transform: scale(var(--motion-scale-sm));
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes motion-blur-in {
-  0% { opacity: 0; filter: blur(10px); }
-  100% { opacity: 1; filter: blur(0); }
+  0% {
+    opacity: 0;
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
 }
 
 /* REDUCED MOTION */
 @media (prefers-reduced-motion: reduce) {
-  [data-motion], [data-motion-scroll] {
+  [data-motion],
+  [data-motion-scroll] {
     animation: none !important;
     transition: none !important;
     transform: none !important;

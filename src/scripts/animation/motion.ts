@@ -19,18 +19,18 @@ const parseDuration = (val: string) =>
 const PRESETS = {
   'blur-focus': (el: HTMLElement) => ({
     keyframes: {
-      opacity: [0, 1],
+      opacity: [0.01, 1],
       filter: [`blur(20px) hue-rotate(90deg)`, 'blur(0px) hue-rotate(0deg)'],
       transform: ['scale(1.1)', 'scale(1)']
     },
     options: {
       duration: parseDuration(getCSSVar(el, '--motion-dur-long')) || 0.6,
-      easing: [0.25, 0.1, 0.25, 1] as const // explicit tuple type
+      easing: [0.25, 0.1, 0.25, 1] as const
     }
   }),
   'fade-down': (el: HTMLElement) => ({
     keyframes: {
-      opacity: [0, 1],
+      opacity: [0.01, 1],
       transform: [`translateY(-30px)`, 'translateY(0)']
     },
     options: {
@@ -40,7 +40,7 @@ const PRESETS = {
   }),
   'fade-up': (el: HTMLElement) => ({
     keyframes: {
-      opacity: [0, 1],
+      opacity: [0.01, 1],
       transform: [`translateY(30px)`, 'translateY(0)']
     },
     options: {
@@ -62,26 +62,33 @@ function isPreset(key: string | undefined): key is PresetName {
 export function initAnimations() {
   if (typeof window === 'undefined') return;
 
-  const startLoadAnimations = () => {
+  const startLoadAnimations = async () => {
+    // Wait for Fonts (Prevents FOUT/Fallback font glitch)
+    if (document.fonts) {
+      await document.fonts.ready;
+    }
+
+    const trigger = () => triggerLoadAnimations();
+
     const paintEntries = performance.getEntriesByType('paint');
     const fcpEntry = paintEntries.find(e => e.name === 'first-contentful-paint');
 
     if (fcpEntry) {
       // FCP already happened, trigger immediately
-      triggerLoadAnimations();
+      trigger();
     } else if ('PerformancePaintTiming' in window) {
       // FCP hasn't happened yet, observe it
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         if (entries.some(e => e.name === 'first-contentful-paint')) {
-          triggerLoadAnimations();
+          trigger();
           observer.disconnect();
         }
       });
       observer.observe({ entryTypes: ['paint'] });
     } else {
       // Fallback
-      requestAnimationFrame(() => triggerLoadAnimations());
+      requestAnimationFrame(trigger);
     }
   };
 
