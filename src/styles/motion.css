@@ -11,19 +11,59 @@
   --motion-dist-sm: 10px;
   --motion-dist-md: 30px;
   --motion-dist-lg: 60px;
-
   --motion-scale-sm: 0.95;
   --motion-scale-lg: 1.05;
+  --motion-blur-amount: 20px;
+  --motion-hue-rotate: 90deg;
 
   --motion-range-default: entry 10% cover 30%;
   --motion-range-slow: entry 10% cover 50%;
   --motion-range-late: entry 40% cover 60%;
 }
 
+/*
+   DATA ATTRIBUTE CONFIGURATION
+   Default state: Visible (Fixes NO_FCP)
+   Will-change hints for compositor optimization
+*/
+[data-motion] {
+  will-change: transform, opacity, filter;
+}
+
+/* Scroll-driven animations: S-TIER (CSS-only) */
+@supports (animation-timeline: view()) {
+  [data-motion-scroll] {
+    animation-timeline: view();
+    animation-fill-mode: both;
+    animation-timing-function: linear;
+  }
+
+  [data-motion-scroll="fade-up"] {
+    animation-name: motion-fade-in-up;
+    animation-range: var(--motion-range-default);
+  }
+
+  [data-motion-scroll="fade-down"] {
+    animation-name: motion-fade-in-down;
+    animation-range: var(--motion-range-default);
+  }
+
+  [data-motion-scroll="scale"] {
+    animation-name: motion-scale-in;
+    animation-range: var(--motion-range-default);
+  }
+
+  [data-motion-scroll="blur"] {
+    animation-name: motion-blur-in;
+    animation-range: var(--motion-range-default);
+  }
+}
+
+/* KEYFRAMES (Shared by CSS & WAAPI) */
 @keyframes motion-blur-focus {
   0% {
     opacity: 0;
-    filter: blur(20px) hue-rotate(90deg);
+    filter: blur(var(--motion-blur-amount)) hue-rotate(var(--motion-hue-rotate));
     transform: scale(1.1);
   }
   100% {
@@ -34,106 +74,32 @@
 }
 
 @keyframes motion-fade-in-up {
-  0% {
-    opacity: 0;
-    transform: translateY(var(--motion-dist-md));
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  0% { opacity: 0; transform: translateY(var(--motion-dist-md)); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes motion-fade-in-down {
-  0% {
-    opacity: 0;
-    transform: translateY(calc(var(--motion-dist-md) * -1));
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  0% { opacity: 0; transform: translateY(calc(var(--motion-dist-md) * -1)); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes motion-scale-in {
-  0% {
-    opacity: 0;
-    transform: scale(var(--motion-scale-sm));
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+  0% { opacity: 0; transform: scale(var(--motion-scale-sm)); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 @keyframes motion-blur-in {
-  0% {
-    opacity: 0;
-    filter: blur(10px);
-  }
-  100% {
-    opacity: 1;
-    filter: blur(0);
-  }
+  0% { opacity: 0; filter: blur(10px); }
+  100% { opacity: 1; filter: blur(0); }
 }
 
-@supports (animation-timeline: view()) {
-  .motion-scroll {
-    animation-timeline: view();
-    animation-fill-mode: both;
-    animation-timing-function: linear;
-    animation-range: var(--motion-range-default);
-  }
-
-  .motion-preset-fade-up {
-    animation-name: motion-fade-in-up;
-  }
-  .motion-preset-fade-down {
-    animation-name: motion-fade-in-down;
-  }
-  .motion-preset-scale {
-    animation-name: motion-scale-in;
-  }
-  .motion-preset-blur {
-    animation-name: motion-blur-in;
-  }
-
-  .motion-range-slow {
-    animation-range: var(--motion-range-slow);
-  }
-  .motion-range-late {
-    animation-range: var(--motion-range-late);
-  }
-}
-
-@supports not (animation-timeline: view()) {
-  .motion-scroll {
-    opacity: 0;
-    will-change: transform, opacity;
-  }
-}
-
-.motion-load-header {
-  animation: motion-blur-focus 1.3s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-  will-change: transform, opacity, filter;
-}
-
-.motion-load-subheader {
-  opacity: 0;
-  animation: motion-fade-in-down 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  animation-delay: 0.3s;
-  will-change: transform, opacity;
-}
-
+/* REDUCED MOTION */
 @media (prefers-reduced-motion: reduce) {
-  .motion-scroll,
-  .motion-preset-fade-up,
-  .motion-preset-scale,
-  .motion-preset-blur {
+  [data-motion], [data-motion-scroll] {
     animation: none !important;
-    opacity: 1 !important;
+    transition: none !important;
     transform: none !important;
+    opacity: 1 !important;
     filter: none !important;
-    view-timeline: none !important;
   }
 }

@@ -1,73 +1,113 @@
+import { animate, inView, type AnimationOptions } from "motion";
+
 /**
- * MOTION ORCHESTRATOR
- * This script implements the "A-Tier" fallback for our Hybrid Animation System.
- *
- * ARCHITECTURE:
- * 1. S-TIER (Native CSS): Modern browsers use `animation-timeline: view()` defined
- *    in `motion.css`. This runs entirely on the Compositor Thread (0ms Main Thread cost).
- *
- * 2. A-TIER (Fallback): This script detects browsers without `view()` support
- *    (e.g., older Safari/Mobile) and uses Motion One to manually animate elements.
- *    It reads the CSS utility classes (.motion-preset-*) to determine the animation.
- *
- * USAGE:
- * Import `initAnimations` in your app entry point and call it once.
- * The script automatically exits if native support is detected.
+ * MOTION SYSTEM:
+ * 1. Load Animations: Triggered via WAAPI after FCP (Zero render blocking)
+ * 2. Scroll Animations:
+ *    - S-Tier: Native CSS `animation-timeline` (Compositor)
+ *    - A-Tier: WAAPI fallback (Compositor)
  */
 
-import { inView, animate } from "motion";
+// UTILITIES
+const getCSSVar = (el: Element, name: string) =>
+  getComputedStyle(el).getPropertyValue(name).trim();
 
-const supportsScrollTimeline = CSS.supports("animation-timeline: view()");
+const parseDuration = (val: string) =>
+  parseFloat(val) * (val.includes('ms') ? 0.001 : 1);
 
+// ANIMATION PRESETS
+const PRESETS = {
+  'blur-focus': (el: HTMLElement) => ({
+    keyframes: {
+      opacity: [0, 1],
+      filter: [`blur(20px) hue-rotate(90deg)`, 'blur(0px) hue-rotate(0deg)'],
+      transform: ['scale(1.1)', 'scale(1)']
+    },
+    options: {
+      duration: parseDuration(getCSSVar(el, '--motion-dur-long')) || 0.6,
+      easing: [0.25, 0.1, 0.25, 1] as const // explicit tuple type
+    }
+  }),
+  'fade-down': (el: HTMLElement) => ({
+    keyframes: {
+      opacity: [0, 1],
+      transform: [`translateY(-30px)`, 'translateY(0)']
+    },
+    options: {
+      duration: parseDuration(getCSSVar(el, '--motion-dur-base')) || 0.18,
+      easing: [0.25, 0.1, 0.25, 1] as const
+    }
+  }),
+  'fade-up': (el: HTMLElement) => ({
+    keyframes: {
+      opacity: [0, 1],
+      transform: [`translateY(30px)`, 'translateY(0)']
+    },
+    options: {
+      duration: parseDuration(getCSSVar(el, '--motion-dur-base')) || 0.18,
+      easing: [0.25, 0.1, 0.25, 1] as const
+    }
+  })
+};
+
+// Define valid preset keys
+type PresetName = keyof typeof PRESETS;
+
+// Helper type guard to check if a string is a valid preset
+function isPreset(key: string | undefined): key is PresetName {
+  return key !== undefined && key in PRESETS;
+}
+
+// INITIALIZATION
 export function initAnimations() {
-  // 1. If native support exists, exit immediately (S-Tier performance)
-  if (supportsScrollTimeline) return;
-
-  // 2. Fallback for legacy browsers (A-Tier)
-  // We explicitly type 'info' as 'any' to bypass the TS inference mismatch
-  inView(".motion-scroll", (info: any) => {
-    // Robust check: use .target if it's an Entry, or the object itself if it's an Element
-    const element = (info.target || info) as HTMLElement;
-
-    // Map CSS classes to animation definitions
-    const getAnimation = () => {
-      if (element.classList.contains("motion-preset-fade-up")) {
-        return {
-          keyframes: { opacity: [0, 1], transform: ["translateY(30px)", "translateY(0)"] },
-          options: { duration: 0.5, easing: [0.25, 0.1, 0.25, 1] }
-        };
+  // 1. WAIT FOR FCP (Prevent NO_FCP)
+  if (typeof window !== 'undefined' && 'PerformancePaintTiming' in window) {
+    const observer = new PerformanceObserver((list) => {
+      const entries = list.getEntries();
+      if (entries.length > 0) {
+        triggerLoadAnimations();
+        observer.disconnect();
       }
+    });
+    observer.observe({ entryTypes: ['paint'] });
+  } else if (typeof window !== 'undefined') {
+    // Fallback for browsers without Paint Timing API
+    requestAnimationFrame(() => triggerLoadAnimations());
+  }
 
-      if (element.classList.contains("motion-preset-fade-down")) {
-        return {
-          keyframes: { opacity: [0, 1], transform: ["translateY(-30px)", "translateY(0)"] },
-          options: { duration: 0.5, easing: [0.25, 0.1, 0.25, 1] }
-        };
-      }
+  // 2. SETUP SCROLL ANIMATIONS
+  initScrollFallback();
+}
 
-      if (element.classList.contains("motion-preset-scale")) {
-        return {
-          keyframes: { opacity: [0, 1], transform: ["scale(0.95)", "scale(1)"] },
-          options: { duration: 0.5, easing: [0.25, 0.1, 0.25, 1] }
-        };
-      }
+function triggerLoadAnimations() {
+  const elements = document.querySelectorAll<HTMLElement>('[data-motion]');
 
-      if (element.classList.contains("motion-preset-blur")) {
-        return {
-          keyframes: { opacity: [0, 1], filter: ["blur(10px)", "blur(0)"] },
-          options: { duration: 0.6, easing: "ease-out" }
-        };
-      }
+  elements.forEach(el => {
+    const type = el.dataset.motion;
+    const delay = parseFloat(el.dataset.motionDelay || '0');
 
-      // Default fallback
-      return {
-        keyframes: { opacity: [0, 1] },
-        options: { duration: 0.3 }
-      };
-    };
+    if (isPreset(type)) {
+      const { keyframes, options } = PRESETS[type](el);
+      // Use 'any' for options to bypass strict Motion One types if needed,
+      // or ensure options strictly match AnimationOptions
+      animate(el, keyframes, { ...options, delay } as AnimationOptions);
+    }
+  });
+}
 
-    const { keyframes, options } = getAnimation();
+function initScrollFallback() {
+  if (typeof window === 'undefined' || (CSS.supports && CSS.supports("animation-timeline: view()"))) return;
 
-    animate(element, keyframes, options);
+  const elements = document.querySelectorAll<HTMLElement>('[data-motion-scroll]');
+
+  elements.forEach(el => {
+    const type = el.dataset.motionScroll;
+
+    if (isPreset(type)) {
+      inView(el, () => {
+        const { keyframes, options } = PRESETS[type](el);
+        animate(el, keyframes, options as AnimationOptions);
+      });
+    }
   });
 }
