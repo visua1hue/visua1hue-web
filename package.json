@@ -5,16 +5,22 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "wrangler dev",
-    "deploy": "npm run build && wrangler deploy"
+    "preview": "wrangler dev --config dist/server/wrangler.json",
+    "deploy": "astro build && wrangler deploy --config dist/server/wrangler.json"
   },
   "dependencies": {
-    "astro": "^5.16.6",
+    "astro": "^6.4.4",
     "astro-icon": "^1.1.5",
     "motion": "^12.23.24"
   },
   "devDependencies": {
-    "@astrojs/cloudflare": "^12.6.12",
-    "wrangler": "^4.45.3"
+    "@astrojs/check": "^0.9.9",
+    "@astrojs/cloudflare": "^13.6.1",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.98.0"
+  },
+  "overrides": {
+    "undici": "^7.24.2",
+    "yauzl": "^3.2.1"
   }
 }

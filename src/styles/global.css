@@ -20,8 +20,6 @@ html {
 
 html,
 body {
-  overflow-x: hidden;
-  overflow-y: auto;
   overscroll-behavior: none;
   touch-action: manipulation;
   padding-top: env(safe-area-inset-top);

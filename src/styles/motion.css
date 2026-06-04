@@ -1,127 +1,19 @@
 :root {
-  --motion-dur-fast: 120ms;
   --motion-dur-base: 180ms;
-  --motion-dur-slow: 300ms;
-  --motion-dur-long: 600ms;
-
-  --motion-ease-linear: linear;
-  --motion-ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
-  --motion-ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-  --motion-dist-sm: 10px;
-  --motion-dist-md: 30px;
-  --motion-dist-lg: 60px;
-  --motion-scale-sm: 0.95;
-  --motion-scale-lg: 1.05;
-  --motion-blur-amount: 20px;
-  --motion-hue-rotate: 90deg;
-
-  --motion-range-default: entry 10% cover 30%;
-  --motion-range-slow: entry 10% cover 50%;
-  --motion-range-late: entry 40% cover 60%;
+  --motion-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/*
-   DATA ATTRIBUTE CONFIGURATION
-   Default state: Visible (Fixes NO_FCP)
-   Will-change hints for compositor optimization
-*/
 [data-motion] {
   will-change: transform, opacity, filter;
   opacity: 0.01;
 }
 
-/* Scroll-driven animations: S-TIER (CSS-only) */
-@supports (animation-timeline: view()) {
-  [data-motion-scroll] {
-    animation-timeline: view();
-    animation-fill-mode: both;
-    animation-timing-function: linear;
-  }
-
-  [data-motion-scroll="fade-up"] {
-    animation-name: motion-fade-in-up;
-    animation-range: var(--motion-range-default);
-  }
-
-  [data-motion-scroll="fade-down"] {
-    animation-name: motion-fade-in-down;
-    animation-range: var(--motion-range-default);
-  }
-
-  [data-motion-scroll="scale"] {
-    animation-name: motion-scale-in;
-    animation-range: var(--motion-range-default);
-  }
-
-  [data-motion-scroll="blur"] {
-    animation-name: motion-blur-in;
-    animation-range: var(--motion-range-default);
-  }
+[data-motion="outline-fill"] {
+  -webkit-text-stroke: 1.5px var(--color-text-highlight);
 }
 
-/* KEYFRAMES (Shared by CSS & WAAPI) */
-@keyframes motion-blur-focus {
-  0% {
-    opacity: 0;
-    filter: blur(var(--motion-blur-amount)) hue-rotate(var(--motion-hue-rotate));
-    transform: scale(1.1);
-  }
-  100% {
-    opacity: 1;
-    filter: blur(0px) hue-rotate(0deg);
-    transform: scale(1);
-  }
-}
-
-@keyframes motion-fade-in-up {
-  0% {
-    opacity: 0;
-    transform: translateY(var(--motion-dist-md));
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes motion-fade-in-down {
-  0% {
-    opacity: 0;
-    transform: translateY(calc(var(--motion-dist-md) * -1));
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes motion-scale-in {
-  0% {
-    opacity: 0;
-    transform: scale(var(--motion-scale-sm));
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes motion-blur-in {
-  0% {
-    opacity: 0;
-    filter: blur(10px);
-  }
-  100% {
-    opacity: 1;
-    filter: blur(0);
-  }
-}
-
-/* REDUCED MOTION */
 @media (prefers-reduced-motion: reduce) {
-  [data-motion],
-  [data-motion-scroll] {
+  [data-motion] {
     animation: none !important;
     transition: none !important;
     transform: none !important;

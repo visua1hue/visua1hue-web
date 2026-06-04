@@ -1,6 +1,5 @@
 {
   "name": "visua1hue-web",
-  "main": "./dist/_worker.js/index.js",
   "compatibility_date": "2025-10-12",
   "compatibility_flags": ["nodejs_compat"],
   "preview_urls": true,
@@ -12,7 +11,8 @@
   ],
   "assets": {
     "binding": "ASSETS",
-    "directory": "./dist"
+    "directory": "./dist/client",
+    "not_found_handling": "404-page"
   },
   "observability": {
     "enabled": true

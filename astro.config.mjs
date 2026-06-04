@@ -12,26 +12,22 @@ export default defineConfig({
   output: 'server',
   adapter: cloudflare({
     imageService: 'compile',
-    platformProxy: {
-      enabled: true,
-      persist: true
-    }
+    persistState: true,
+    configPath: 'wrangler.jsonc',
   }),
 
-  // Experimental Features
-  experimental: {
-    fonts: [
-      {
-        provider: fontProviders.fontsource(),
-        name: 'Inter',
-        cssVariable: '--font-inter',
-        weights: ['400', '500', '600', '700'],
-        styles: ['normal'],
-        subsets: ['latin'],
-        display: 'swap',
-      },
-    ],
-  },
+  // Fonts (stable in Astro 6)
+  fonts: [
+    {
+      provider: fontProviders.fontsource(),
+      name: 'Inter',
+      cssVariable: '--font-inter',
+      weights: ['400', '500', '700'],
+      styles: ['normal'],
+      subsets: ['latin'],
+      display: 'swap',
+    },
+  ],
 
   // Integrations
   integrations: [
@@ -47,18 +43,8 @@ export default defineConfig({
 
   // Vite Configuration
   vite: {
-    ssr: {
-      external: ['node:buffer']
-    },
     build: {
       minify: true,
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            motion: ['motion'],
-          },
-        },
-      },
     },
   },
 });

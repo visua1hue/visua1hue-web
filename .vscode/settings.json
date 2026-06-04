@@ -1,0 +1,11 @@
+{
+  "files.associations": {
+    "bun.lock": "jsonc"
+  },
+  "json.schemas": [
+    {
+      "fileMatch": ["/bun.lock"],
+      "schema": {}
+    }
+  ]
+}

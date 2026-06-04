@@ -1,12 +1,31 @@
 ---
+export const prerender = true;
 import Layout from "@layouts/Layout.astro";
+
+const brand = "VISUA1HUE";
+const letters = brand.split("");
 ---
 
 <Layout title="Consultant and Developer – Reliable by Design">
   <div class="grid">
     <div class="container">
-      <h1 class="header" data-motion="blur-focus">VISUA1HUE</h1>
-      <p class="subheader" data-motion="fade-down" data-motion-delay="0.3">
+      <h1 class="header" aria-label={brand}>
+        {letters.map((char, i) => (
+          <span
+            aria-hidden="true"
+            class="letter"
+            data-motion="outline-fill"
+            data-motion-delay={`${(i * 0.07).toFixed(2)}`}
+          >
+            {char}
+          </span>
+        ))}
+      </h1>
+      <p
+        class="subheader"
+        data-motion="fade-down"
+        data-motion-delay="0.8"
+      >
         Built to perform. Designed to scale. <br />Focused on what matters most.
       </p>
     </div>
@@ -55,13 +74,19 @@ import Layout from "@layouts/Layout.astro";
     color: var(--color-text-highlight);
   }
 
+  .letter {
+    display: inline-block;
+    transform-origin: 50% 100%;
+    will-change: transform, opacity, filter;
+  }
+
   .subheader {
     font-size: var(--font-size-xl);
     text-align: center;
     line-height: var(--line-height-base);
     margin-top: var(--spacing-md);
     width: 100%;
-    color: var(--color-text-default);
+    color: var(--color-text-muted);
   }
 
   @media (max-width: 768px) {

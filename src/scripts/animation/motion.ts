@@ -1,31 +1,26 @@
-import { animate, inView, type AnimationOptions } from "motion";
+import { animate, type AnimationOptions } from "motion";
 
 /**
  * MOTION SYSTEM:
  * 1. Load Animations: Triggered via WAAPI after FCP (Zero render blocking)
- * 2. Scroll Animations:
- *    - S-Tier: Native CSS `animation-timeline` (Compositor)
- *    - A-Tier: WAAPI fallback (Compositor)
  */
 
 // UTILITIES
 const getCSSVar = (el: Element, name: string) =>
   getComputedStyle(el).getPropertyValue(name).trim();
 
-const parseDuration = (val: string) =>
-  parseFloat(val) * (val.includes('ms') ? 0.001 : 1);
-
 // ANIMATION PRESETS
+const easing = (el: HTMLElement) =>
+  getCSSVar(el, '--motion-ease-emphasized') || 'cubic-bezier(0.16, 1, 0.3, 1)';
+
 const PRESETS = {
-  'blur-focus': (el: HTMLElement) => ({
+  'outline-fill': (el: HTMLElement) => ({
     keyframes: {
-      opacity: [0.01, 1],
-      filter: [`blur(20px) hue-rotate(90deg)`, 'blur(0px) hue-rotate(0deg)'],
-      transform: ['scale(1.1)', 'scale(1)']
+      opacity: [0, 1],
     },
     options: {
-      duration: parseDuration(getCSSVar(el, '--motion-dur-long')) || 0.6,
-      easing: [0.25, 0.1, 0.25, 1] as const
+      duration: 0.7,
+      easing: easing(el),
     }
   }),
   'fade-down': (el: HTMLElement) => ({
@@ -34,26 +29,14 @@ const PRESETS = {
       transform: [`translateY(-30px)`, 'translateY(0)']
     },
     options: {
-      duration: parseDuration(getCSSVar(el, '--motion-dur-base')) || 0.18,
-      easing: [0.25, 0.1, 0.25, 1] as const
+      duration: parseFloat(getCSSVar(el, '--motion-dur-base')) * 0.001 || 0.18,
+      easing: easing(el)
     }
   }),
-  'fade-up': (el: HTMLElement) => ({
-    keyframes: {
-      opacity: [0.01, 1],
-      transform: [`translateY(30px)`, 'translateY(0)']
-    },
-    options: {
-      duration: parseDuration(getCSSVar(el, '--motion-dur-base')) || 0.18,
-      easing: [0.25, 0.1, 0.25, 1] as const
-    }
-  })
 };
 
-// Define valid preset keys
 type PresetName = keyof typeof PRESETS;
 
-// Helper type guard to check if a string is a valid preset
 function isPreset(key: string | undefined): key is PresetName {
   return key !== undefined && key in PRESETS;
 }
@@ -63,7 +46,6 @@ export function initAnimations() {
   if (typeof window === 'undefined') return;
 
   const startLoadAnimations = async () => {
-    // Wait for Fonts (Prevents FOUT/Fallback font glitch)
     if (document.fonts) {
       await document.fonts.ready;
     }
@@ -74,10 +56,8 @@ export function initAnimations() {
     const fcpEntry = paintEntries.find(e => e.name === 'first-contentful-paint');
 
     if (fcpEntry) {
-      // FCP already happened, trigger immediately
       trigger();
     } else if ('PerformancePaintTiming' in window) {
-      // FCP hasn't happened yet, observe it
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         if (entries.some(e => e.name === 'first-contentful-paint')) {
@@ -87,20 +67,14 @@ export function initAnimations() {
       });
       observer.observe({ entryTypes: ['paint'] });
     } else {
-      // Fallback
       requestAnimationFrame(trigger);
     }
   };
 
-  const start = () => {
-    startLoadAnimations();
-    initScrollFallback();
-  };
-
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', start);
+    document.addEventListener('DOMContentLoaded', startLoadAnimations);
   } else {
-    start();
+    startLoadAnimations();
   }
 }
 
@@ -113,26 +87,9 @@ function triggerLoadAnimations() {
 
     if (isPreset(type)) {
       const { keyframes, options } = PRESETS[type](el);
-      // Use 'any' for options to bypass strict Motion One types if needed,
-      // or ensure options strictly match AnimationOptions
       animate(el, keyframes, { ...options, delay } as AnimationOptions);
-    }
-  });
-}
-
-function initScrollFallback() {
-  if (typeof window === 'undefined' || (CSS.supports && CSS.supports("animation-timeline: view()"))) return;
-
-  const elements = document.querySelectorAll<HTMLElement>('[data-motion-scroll]');
-
-  elements.forEach(el => {
-    const type = el.dataset.motionScroll;
-
-    if (isPreset(type)) {
-      inView(el, () => {
-        const { keyframes, options } = PRESETS[type](el);
-        animate(el, keyframes, options as AnimationOptions);
-      });
+    } else if (type) {
+      animate(el, { opacity: [0.01, 1] }, { duration: 0.5, delay } as AnimationOptions);
     }
   });
 }

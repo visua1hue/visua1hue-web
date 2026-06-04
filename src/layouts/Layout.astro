@@ -56,6 +56,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       document.addEventListener('astro:page-load', () => {
           initAnimations();
       });
+
+      // Dev-only metrics HUD (stripped from production)
+      if (import.meta.env.DEV) {
+        import("@scripts/dev/metrics").then((m) => m.initDevMetrics());
+      }
     </script>
   </body>
 </html>
