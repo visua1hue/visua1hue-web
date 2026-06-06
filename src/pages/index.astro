@@ -89,12 +89,12 @@ import Layout from "@layouts/Layout.astro";
   </section>
 
   <!-- ─── Lower (dark accent block) ────────────────────────  -->
-  <div class="lower" id="lower" aria-hidden="true">
+  <div class="lower" id="lower">
     <footer class="footer">
       <div class="footer-socials">
-        <a class="footer-social" href="https://twitter.com/visua1hue" target="_blank" rel="noopener">Twitter</a>
-        <a class="footer-social" href="https://bsky.app/profile/visua1hue.bsky.social" target="_blank" rel="noopener">Bluesky</a>
-        <a class="footer-social" href="https://linkedin.com/in/michaelhuebel/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="footer-social" href="https://twitter.com/visua1hue" target="_blank" rel="noopener noreferrer">Twitter</a>
+        <a class="footer-social" href="https://bsky.app/profile/visua1hue.bsky.social" target="_blank" rel="noopener noreferrer">Bluesky</a>
+        <a class="footer-social" href="https://linkedin.com/in/michaelhuebel/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       </div>
     </footer>
   </div>
@@ -154,8 +154,8 @@ import Layout from "@layouts/Layout.astro";
     transition: opacity 0.18s var(--motion-ease-emphasized);
   }
 
-  .menu-nav a:hover {
-    opacity: 0.35;
+  @media (hover: hover) and (pointer: fine) {
+    .menu-nav a:hover { opacity: 0.35; }
   }
 
   /* ─── Nav — button only ──────────────────────────────── */
@@ -391,8 +391,8 @@ import Layout from "@layouts/Layout.astro";
     transition: opacity 0.18s var(--motion-ease-emphasized);
   }
 
-  .footer-social:hover {
-    opacity: 0.55;
+  @media (hover: hover) and (pointer: fine) {
+    .footer-social:hover { opacity: 0.55; }
   }
 
   /* ─── Responsive: < 900px ────────────────────────────── */
@@ -457,13 +457,16 @@ import Layout from "@layouts/Layout.astro";
 
   function show(el: HTMLElement | null, delay: number) {
     if (!el) return;
-    setTimeout(() => el.classList.add('is-visible'), delay);
+    setTimeout(() => {
+      el.classList.add('is-visible');
+      el.addEventListener('transitionend', () => { el.style.willChange = 'auto'; }, { once: true });
+    }, delay);
   }
 
   function runEntrance() {
     if (lower) setTimeout(() => {
       lower.classList.add('is-visible');
-      lower.removeAttribute('aria-hidden');
+      lower.addEventListener('transitionend', () => { lower.style.willChange = 'auto'; }, { once: true });
     }, 250);
 
     const base = 1150;
@@ -479,7 +482,6 @@ import Layout from "@layouts/Layout.astro";
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.body.classList.remove('is-loading');
-    lower?.removeAttribute('aria-hidden');
   } else if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', runEntrance);
   } else {
@@ -499,11 +501,9 @@ import Layout from "@layouts/Layout.astro";
   function closeMenu() {
     menuPanel?.classList.remove('is-open');
     menuPanel?.setAttribute('aria-hidden', 'true');
+    menuToggle?.setAttribute('aria-expanded', 'false');
     menuToggle?.setAttribute('data-anim', 'close');
-    setTimeout(() => {
-      menuToggle?.setAttribute('aria-expanded', 'false');
-      menuToggle?.removeAttribute('data-anim');
-    }, 250);
+    setTimeout(() => menuToggle?.removeAttribute('data-anim'), 250);
   }
 
   menuToggle?.addEventListener('click', () => {
