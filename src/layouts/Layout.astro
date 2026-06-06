@@ -42,19 +42,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
     <ClientRouter />
   </head>
-  <body>
+  <body class="is-loading">
     <main>
       <slot />
     </main>
     <script>
       import { initAnimations } from "@scripts/animation/motion";
 
-      // Initialize on load
-      initAnimations();
-
-      // Re-initialize on View Transitions (Astro View Transitions)
+      // astro:page-load fires on initial load and every View Transition navigation
       document.addEventListener('astro:page-load', () => {
-          initAnimations();
+        initAnimations();
+        // Release scroll-lock on pages that don't run their own entrance animation
+        if (!document.querySelector('[data-entrance]')) {
+          document.body.classList.remove('is-loading');
+        }
       });
 
       // Dev-only metrics HUD (stripped from production)

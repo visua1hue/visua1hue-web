@@ -1,101 +1,532 @@
 ---
 export const prerender = true;
 import Layout from "@layouts/Layout.astro";
-
-const brand = "VISUA1HUE";
-const letters = brand.split("");
 ---
 
-<Layout title="Consultant and Developer – Reliable by Design">
-  <div class="grid">
-    <div class="container">
-      <h1 class="header" aria-label={brand}>
-        {letters.map((char, i) => (
-          <span
-            aria-hidden="true"
-            class="letter"
-            data-motion="outline-fill"
-            data-motion-delay={`${(i * 0.07).toFixed(2)}`}
-          >
-            {char}
-          </span>
-        ))}
-      </h1>
-      <p
-        class="subheader"
-        data-motion="fade-down"
-        data-motion-delay="0.8"
-      >
-        Built to perform. Designed to scale. <br />Focused on what matters most.
-      </p>
-    </div>
+<Layout title="VISUA1HUE — Consultant and Developer" description="Independent consultant and developer. Building reliable, performant software for teams that ship.">
+
+  <!-- ─── Menu panel ─────────────────────────────────────── -->
+  <div class="menu-panel" id="menu-panel" aria-hidden="true">
+    <nav class="menu-nav" aria-label="Site navigation">
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
   </div>
+
+  <!-- ─── Nav ──────────────────────────────────────────────  -->
+  <nav class="site-nav" aria-label="Primary navigation">
+    <button
+      class="btn-menu"
+      id="menu-toggle"
+      aria-expanded="false"
+      aria-controls="menu-panel"
+      aria-label="Toggle navigation menu"
+    ></button>
+  </nav>
+
+  <!-- ─── Hero ─────────────────────────────────────────────  -->
+  <section class="hero" data-entrance>
+    <div class="hero-top">
+      <div class="hero-logo-col wordmark">
+        <svg class="hero-logo-svg"
+             viewBox="310 749 1870 271"
+             fill="none"
+             xmlns="http://www.w3.org/2000/svg"
+             aria-label="VISUA1HUE"
+             role="img"
+             style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+          <!-- V -->
+          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
+            <path fill="currentColor" style="fill-rule:nonzero;" d="M538.1,606.924l44,0l90.667,-243.667l-44.333,0l-52.667,140.333c-4.667,12.333 -9.667,27.333 -15.667,48.667c-5.333,-19.667 -10,-34 -15.333,-48.667l-53.333,-140.333l-45.333,0l92,243.667Z"/>
+          </g>
+          <!-- I -->
+          <g transform="matrix(1,0,0,1,-99.275939,387.924668)">
+            <rect fill="currentColor" style="fill-rule:nonzero;" x="703.1" y="363.258" width="42.667" height="243.667"/>
+          </g>
+          <!-- S -->
+          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
+            <path fill="currentColor" style="fill-rule:nonzero;" d="M785.767,431.258c0,37.333 21.667,61 63,70l38.667,8.667c20,4.333 28.333,14 28.333,30.333c0,20.333 -18,32.667 -46.333,32.667c-27.333,0 -44,-12.333 -44.333,-33l-42.667,0c1,43.667 35,71.333 87,71.333c53.667,0 89,-29.333 89,-74.667c0,-36.333 -20.333,-57.667 -62,-66.667l-38.333,-8.333c-20.333,-4.667 -29.667,-14.333 -29.667,-31.667c0,-20.333 17,-33 43.333,-33c24,0 39,12.333 40,33.333l42.667,0c-1.333,-44 -32.667,-71.333 -82,-71.333c-51.333,0 -86.667,29.667 -86.667,72.333Z"/>
+          </g>
+          <!-- U -->
+          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
+            <path fill="currentColor" style="fill-rule:nonzero;" d="M995.433,517.924c0,57.333 37.333,93 96.333,93c59.333,0 96.667,-36 96.667,-93l0,-154.667l-42.667,0l0,152c0,34.667 -19.333,54.333 -54,54.333c-34.667,0 -53.667,-19.333 -53.667,-54.333l0,-152l-42.667,0l0,154.667Z"/>
+          </g>
+          <!-- A -->
+          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
+            <path fill="currentColor" style="fill-rule:nonzero;" d="M1251.767,606.924l19.667,-56.333l91,0l19.667,56.333l45,0l-88,-243.667l-43.667,0l-88,243.667l44.333,0Zm60,-171c2.333,-6.667 4.333,-14 5.333,-18.667c0.667,5 3,12.333 5,18.667l28,78.667l-66,0l27.667,-78.667Z"/>
+          </g>
+          <!-- 1 -->
+          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
+            <path fill="currentColor" style="fill-rule:nonzero;" d="M1495.433,401.591l0,205.333l41,0l0,-243.667l-94.333,0l0,38.333l53.333,0Z"/>
+          </g>
+          <!-- H -->
+          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
+            <path fill="currentColor" style="fill-rule:nonzero;" d="M1633.1,606.924l0,-103.333l108,0l0,103.333l42.667,0l0,-243.667l-42.667,0l0,100.667l-108,0l0,-100.667l-42.667,0l0,243.667l42.667,0Z"/>
+          </g>
+          <!-- U (second) -->
+          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
+            <path fill="currentColor" style="fill-rule:nonzero;" d="M1836.1,517.924c0,57.333 37.333,93 96.333,93c59.333,0 96.667,-36 96.667,-93l0,-154.667l-42.667,0l0,152c0,34.667 -19.333,54.333 -54,54.333c-34.667,0 -53.667,-19.333 -53.667,-54.333l0,-152l-42.667,0l0,154.667Z"/>
+          </g>
+          <!-- E -->
+          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
+            <path fill="currentColor" style="fill-rule:nonzero;" d="M2232.767,606.924l0,-39.333l-108.667,0l0,-64.667l97.333,0l0,-37.667l-97.333,0l0,-62.667l108.667,0l0,-39.333l-151.333,0l0,243.667l151.333,0Z"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="hero-bio">
+        <span class="hero-bio-role">Solution Engineer</span>
+        <span class="hero-bio-role">Architect</span>
+      </div>
+
+      <div class="hero-statement">
+        <span class="hero-statement-line">Built to perform.</span>
+        <span class="hero-statement-line">Designed to scale.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Lower (dark accent block) ────────────────────────  -->
+  <div class="lower" id="lower" aria-hidden="true">
+    <footer class="footer">
+      <div class="footer-socials">
+        <a class="footer-social" href="https://twitter.com/visua1hue" target="_blank" rel="noopener">Twitter</a>
+        <a class="footer-social" href="https://bsky.app/profile/visua1hue.bsky.social" target="_blank" rel="noopener">Bluesky</a>
+        <a class="footer-social" href="https://linkedin.com/in/michaelhuebel/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </footer>
+  </div>
+
 </Layout>
 
 <style>
-  .grid {
-    display: grid;
-    gap: var(--spacing-md);
-    padding: var(--spacing-lg);
-    min-height: 100vh;
-    align-items: center;
-    justify-items: center;
-    background-color: var(--color-bg-body);
+  /* ─── Body layout (flex column for .lower flex:1) ───────── */
+  :global(body) {
+    display: flex;
+    flex-direction: column;
+    min-block-size: 100dvh;
+    overflow-x: hidden;
   }
 
-  @media (max-width: 768px) {
-    .grid {
-      grid-template-columns: 1fr;
-      gap: var(--spacing-md);
-      padding: var(--spacing-md);
-    }
+  :global(body.is-loading) {
+    overflow: hidden;
   }
 
-  @media (min-width: 769px) {
-    .grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--spacing-lg);
-      padding: var(--spacing-xl);
-    }
+  /* ─── Menu panel ─────────────────────────────────────── */
+  .menu-panel {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
+    block-size: 36dvh;
+    background-color: var(--color-neutral-50);
+    z-index: 150;
+    transform: translateY(-100%);
+    transition: transform 0.6s var(--motion-ease-entrance);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 36px 48px;
   }
 
-  .container {
-    grid-column: 1 / -1;
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
+  .menu-panel.is-open {
+    transform: translateY(0);
   }
 
-  .header {
-    font-size: 5rem;
-    text-align: center;
-    line-height: 1;
-    margin: 0;
-    color: var(--color-text-highlight);
+  .menu-nav ul {
+    list-style: none;
   }
 
-  .letter {
+  .menu-nav li + li {
+    margin-block-start: 2px;
+  }
+
+  .menu-nav a {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 500;
+    color: var(--color-primary-100);
+    text-decoration: none;
+    line-height: 1.12;
     display: inline-block;
-    transform-origin: 50% 100%;
-    will-change: transform, opacity, filter;
+    letter-spacing: -0.03em;
+    transition: opacity 0.18s var(--motion-ease-emphasized);
   }
 
-  .subheader {
-    font-size: var(--font-size-xl);
-    text-align: center;
-    line-height: var(--line-height-base);
-    margin-top: var(--spacing-md);
+  .menu-nav a:hover {
+    opacity: 0.35;
+  }
+
+  /* ─── Nav — button only ──────────────────────────────── */
+  .site-nav {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    z-index: 200;
+    padding: 20px 32px;
+  }
+
+  .btn-menu {
+    --_size: 24px;
+    --_border: 3px;
+    position: relative;
+    inline-size: var(--_size);
+    block-size: var(--_size);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: block;
+  }
+
+  .btn-menu::before,
+  .btn-menu::after {
+    content: '';
+    position: absolute;
+    background: var(--color-primary-100);
+  }
+
+  /* Right vertical line — anchored to right/top edges natively */
+  .btn-menu::before {
+    top: 0;
+    right: 0;
+    inline-size: var(--_border);
+    block-size: 100%;
+  }
+
+  /* Bottom horizontal line — anchored to bottom/left edges natively */
+  .btn-menu::after {
+    bottom: 0;
+    left: 0;
+    inline-size: 100%;
+    block-size: var(--_border);
+  }
+
+  @keyframes line-right-to-left {
+    0%   { transform: translateX(0); animation-timing-function: ease-in; }
+    35%  { transform: translateX(0) scaleY(0); animation-timing-function: linear; }
+    65%  { transform: translateX(calc(-1 * (var(--_size) - var(--_border)))) scaleY(0); animation-timing-function: ease-out; }
+    100% { transform: translateX(calc(-1 * (var(--_size) - var(--_border)))); }
+  }
+
+  @keyframes line-bottom-to-top {
+    0%   { transform: translateY(0); animation-timing-function: ease-in; }
+    35%  { transform: translateY(0) scaleX(0); animation-timing-function: linear; }
+    65%  { transform: translateY(calc(-1 * (var(--_size) - var(--_border)))) scaleX(0); animation-timing-function: ease-out; }
+    100% { transform: translateY(calc(-1 * (var(--_size) - var(--_border)))); }
+  }
+
+  .btn-menu[aria-expanded="true"]::before {
+    animation: line-right-to-left 0.22s linear both;
+  }
+
+  .btn-menu[aria-expanded="true"]::after {
+    animation: line-bottom-to-top 0.22s linear both;
+  }
+
+  @keyframes line-left-to-right {
+    0%   { transform: translateX(calc(-1 * (var(--_size) - var(--_border)))); animation-timing-function: ease-in; }
+    35%  { transform: translateX(calc(-1 * (var(--_size) - var(--_border)))) scaleY(0); animation-timing-function: linear; }
+    65%  { transform: translateX(0) scaleY(0); animation-timing-function: ease-out; }
+    100% { transform: translateX(0); }
+  }
+
+  @keyframes line-top-to-bottom {
+    0%   { transform: translateY(calc(-1 * (var(--_size) - var(--_border)))); animation-timing-function: ease-in; }
+    35%  { transform: translateY(calc(-1 * (var(--_size) - var(--_border)))) scaleX(0); animation-timing-function: linear; }
+    65%  { transform: translateY(0) scaleX(0); animation-timing-function: ease-out; }
+    100% { transform: translateY(0); }
+  }
+
+  .btn-menu[data-anim="close"]::before {
+    animation: line-left-to-right 0.22s linear both;
+  }
+
+  .btn-menu[data-anim="close"]::after {
+    animation: line-top-to-bottom 0.22s linear both;
+  }
+
+  /* ─── Hero ───────────────────────────────────────────── */
+  .hero {
+    --header-height: 29.33333vw;
+    background-color: var(--color-greige-400);
+    display: grid;
+    grid-template-rows: minmax(var(--header-height), auto);
+  }
+
+  @media (min-width: 1024px) {
+    .hero { --header-height: 13.19444vw; }
+  }
+
+  .hero-top {
+    display: grid;
+    grid-template-columns: 58fr 42fr;
+    grid-template-rows: auto auto;
+    row-gap: clamp(16px, 2.5vw, 36px);
+  }
+
+  .hero-logo-col {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    align-items: flex-start;
+    padding: 28px 28px 0;
+  }
+
+  /* ─── Logo SVG ───────────────────────────────────────── */
+  .hero-logo-svg {
     width: 100%;
-    color: var(--color-text-muted);
+    height: auto;
+    color: var(--color-primary-100);
+    opacity: 0;
+    transform: translateY(16px);
+    will-change: opacity, transform;
+    transition:
+      opacity 0.85s var(--motion-ease-entrance),
+      transform 0.85s var(--motion-ease-entrance);
   }
 
-  @media (max-width: 768px) {
-    .header {
-      font-size: 3rem;
+  .hero-logo-svg.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── Bio ────────────────────────────────────────────── */
+  .hero-bio {
+    grid-column: 2;
+    grid-row: 1;
+    padding: 0 28px;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    opacity: 0;
+    transform: translateY(10px);
+    will-change: opacity, transform;
+    transition:
+      opacity 0.65s var(--motion-ease-entrance),
+      transform 0.65s var(--motion-ease-entrance);
+  }
+
+  .hero-bio.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .hero-bio-role {
+    display: block;
+    font-size: clamp(1.125rem, 1.5vw, 1.375rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--color-primary-100);
+    opacity: 0.4;
+  }
+
+  /* ─── Statement ──────────────────────────────────────── */
+  .hero-statement {
+    grid-column: 2;
+    grid-row: 2;
+    padding: 0 28px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .hero-statement-line {
+    display: block;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 500;
+    line-height: 1.06;
+    color: var(--color-primary-100);
+    letter-spacing: -0.03em;
+    opacity: 0;
+    transform: translateY(14px);
+    will-change: opacity, transform;
+    transition:
+      opacity 0.65s var(--motion-ease-entrance),
+      transform 0.65s var(--motion-ease-entrance);
+  }
+
+  .hero-statement-line.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── Lower (dark block, fills remaining page) ───────── */
+  .lower {
+    flex: 1;
+    background-color: var(--color-primary-100);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    transform: translateY(100%);
+    will-change: transform;
+    transition: transform 0.85s var(--motion-ease-entrance);
+  }
+
+  .lower.is-visible {
+    transform: translateY(0);
+  }
+
+  /* ─── Footer (inside .lower) ─────────────────────────── */
+  .footer {
+    padding: 20px 48px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .footer-socials {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .footer-social {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-neutral-50);
+    text-decoration: none;
+    transition: opacity 0.18s var(--motion-ease-emphasized);
+  }
+
+  .footer-social:hover {
+    opacity: 0.55;
+  }
+
+  /* ─── Responsive: < 900px ────────────────────────────── */
+  @media (width < 900px) {
+    .site-nav { padding: 18px 24px; }
+
+    .menu-panel {
+      padding: 28px 24px;
+      block-size: 34dvh;
     }
 
-    .subheader {
-      font-size: var(--font-size-md);
+    .hero-top {
+      grid-template-columns: 1fr;
+      row-gap: 16px;
+    }
+
+    .hero-logo-col {
+      grid-column: 1;
+      grid-row: 1;
+      padding: 24px 24px 0;
+    }
+
+    .hero-bio {
+      grid-column: 1;
+      grid-row: 2;
+      align-self: start;
+      padding: 0 24px;
+    }
+
+    .hero-statement {
+      grid-column: 1;
+      grid-row: 3;
+      padding: 0 24px 24px;
+    }
+
+    .footer { padding: 20px 24px; }
+  }
+
+  @media (width < 560px) {
+    .hero-statement-line { font-size: 1.75rem; }
+  }
+
+  /* ─── Reduced motion ─────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-logo-svg,
+    .hero-bio,
+    .hero-statement-line,
+    .lower {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
     }
   }
 </style>
+
+<script>
+  /* ─── Entrance animation sequence ────────────────────── */
+  const svg     = document.querySelector<HTMLElement>('.hero-logo-svg');
+  const bio     = document.querySelector<HTMLElement>('.hero-bio');
+  const stLines = document.querySelectorAll<HTMLElement>('.hero-statement-line');
+  const lower   = document.getElementById('lower');
+
+  function show(el: HTMLElement | null, delay: number) {
+    if (!el) return;
+    setTimeout(() => el.classList.add('is-visible'), delay);
+  }
+
+  function runEntrance() {
+    if (lower) setTimeout(() => {
+      lower.classList.add('is-visible');
+      lower.removeAttribute('aria-hidden');
+    }, 250);
+
+    const base = 1150;
+    show(svg,        base);
+    show(bio,        base + 120);
+    show(stLines[0], base + 280);
+    show(stLines[1], base + 420);
+
+    setTimeout(() => {
+      document.body.classList.remove('is-loading');
+    }, base + 620);
+  }
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.body.classList.remove('is-loading');
+    lower?.removeAttribute('aria-hidden');
+  } else if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', runEntrance);
+  } else {
+    runEntrance();
+  }
+
+  /* ─── Menu ────────────────────────────────────────────── */
+  const menuPanel  = document.getElementById('menu-panel');
+  const menuToggle = document.getElementById('menu-toggle');
+
+  function openMenu() {
+    menuPanel?.classList.add('is-open');
+    menuToggle?.setAttribute('aria-expanded', 'true');
+    menuPanel?.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeMenu() {
+    menuPanel?.classList.remove('is-open');
+    menuPanel?.setAttribute('aria-hidden', 'true');
+    menuToggle?.setAttribute('data-anim', 'close');
+    setTimeout(() => {
+      menuToggle?.setAttribute('aria-expanded', 'false');
+      menuToggle?.removeAttribute('data-anim');
+    }, 250);
+  }
+
+  menuToggle?.addEventListener('click', () => {
+    menuPanel?.classList.contains('is-open') ? closeMenu() : openMenu();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && menuPanel?.classList.contains('is-open')) {
+      closeMenu();
+      menuToggle?.focus();
+    }
+  });
+
+  document.addEventListener('click', e => {
+    if (
+      menuPanel?.classList.contains('is-open') &&
+      !menuPanel.contains(e.target as Node) &&
+      !menuToggle?.contains(e.target as Node)
+    ) {
+      closeMenu();
+      menuToggle?.focus();
+    }
+  });
+
+  menuPanel?.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+</script>

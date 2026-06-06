@@ -1,386 +1,149 @@
 /**
  * DEV METRICS HUD
- * Dev-only observability overlay: FPS+sparkline, CWV, runtime signals, platform support.
+ * Dev-only overlay: rolling FPS, LCP, CLS, INP.
  * Stripped from production via `import.meta.env.DEV` guard at import site.
- * Backtick (`) cycles: full → compact → hidden
+ * Backtick (`) toggles show / hide.
  */
 
-const ROOT_ID = '__dev-metrics';
+const ROOT_ID  = '__dev-metrics';
 const STYLE_ID = '__dev-metrics-style';
-const STORAGE_KEY = '__dev-metrics-mode';
-const SPARK_W = 216;
-const SPARK_BAR = 2;
-const SPARK_GAP = 0.5;
-const FPS_SAMPLES = SPARK_W / SPARK_BAR;
-const FPS_SAMPLE_MS = 250;
-const FPS_SPARK_FLOOR = 20;
-const FPS_SPARK_CEIL = 75;
-
-type Status = 'good' | 'warn' | 'poor' | 'idle';
-type Mode = 'full' | 'compact' | 'hidden';
-const MODE_CYCLE: Mode[] = ['full', 'compact', 'hidden'];
+const FPS_WINDOW = 20;
+const REFRESH_RATES = [30, 48, 60, 72, 90, 120, 144, 165, 240];
+const snapFps = (v: number) => {
+  const nearest = REFRESH_RATES.reduce((a, b) => Math.abs(b - v) < Math.abs(a - v) ? b : a);
+  return Math.abs(nearest - v) <= 3 ? nearest : v;
+};
 
 const CSS = `
 #${ROOT_ID} {
   position: fixed;
-  bottom: 12px;
-  right: 12px;
+  bottom: 24px;
+  right: 24px;
   z-index: 2147483647;
-  width: 240px;
-  padding: 10px 12px 12px;
-  background: color-mix(in oklab, #0a0a0b 85%, transparent);
-  color: #e8e8ea;
-  font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  display: grid;
+  grid-template-columns: auto 7ch;
+  column-gap: 8px;
+  font: 11px/1.8 ui-monospace, SFMono-Regular, Menlo, monospace;
   font-variant-numeric: tabular-nums;
-  border: 1px solid color-mix(in oklab, #fff 8%, transparent);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(12px) saturate(1.4);
-  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  color: #fff;
   user-select: none;
   pointer-events: auto;
+  cursor: default;
   contain: layout style;
-  view-transition-name: dev-metrics;
 }
-#${ROOT_ID}[data-mode="hidden"] { display: none; }
-#${ROOT_ID}[data-mode="compact"] {
-  width: auto;
-  padding: 7px 11px;
-}
-::view-transition-old(dev-metrics),
-::view-transition-new(dev-metrics) {
-  animation-duration: 160ms;
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-}
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(dev-metrics),
-  ::view-transition-new(dev-metrics) { animation-duration: 0ms; }
-}
-#${ROOT_ID} .compact {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 14px;
-  white-space: nowrap;
-}
-#${ROOT_ID} .compact .metric {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 5px;
-}
-#${ROOT_ID} .compact .metric .label {
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #6b7280;
-}
-#${ROOT_ID} .compact .metric .value {
-  font-variant-numeric: tabular-nums;
-  font-size: 11px;
-  font-weight: 500;
-  min-width: 3ch;
-  text-align: right;
-  color: #e8e8ea;
-}
-#${ROOT_ID} .compact .metric.good .value { color: #22c55e; }
-#${ROOT_ID} .compact .metric.warn .value { color: #f59e0b; }
-#${ROOT_ID} .compact .metric.poor .value { color: #ef4444; }
-#${ROOT_ID} .compact .metric.idle .value { color: #6b7280; }
-#${ROOT_ID} .compact .compact-badges {
-  display: inline-flex;
-  gap: 6px;
-  margin-left: 4px;
-}
-#${ROOT_ID} header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 8px;
-  margin-bottom: 8px;
-  border-bottom: 1px solid color-mix(in oklab, #fff 6%, transparent);
-}
-#${ROOT_ID} h1 {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #9ca3af;
-  margin: 0;
-}
-#${ROOT_ID} .hint {
-  font-size: 10px;
-  color: #6b7280;
-}
-#${ROOT_ID} .hint kbd {
-  display: inline-block;
-  padding: 1px 5px;
-  font-family: inherit;
-  font-size: 10px;
-  color: #e8e8ea;
-  background: color-mix(in oklab, #fff 8%, transparent);
-  border: 1px solid color-mix(in oklab, #fff 10%, transparent);
-}
-#${ROOT_ID} .fps-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-#${ROOT_ID} .fps-val {
-  font-size: 20px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-#${ROOT_ID} .fps-unit {
-  font-size: 10px;
-  color: #6b7280;
-  margin-left: 2px;
-}
-#${ROOT_ID} .spark {
-  display: block;
-  width: 100%;
-  height: 22px;
-  margin-bottom: 10px;
-}
-#${ROOT_ID} section {
-  margin-top: 10px;
-  padding-top: 8px;
-  border-top: 1px solid color-mix(in oklab, #fff 6%, transparent);
-}
-#${ROOT_ID} section:first-of-type { margin-top: 0; padding-top: 0; border-top: 0; }
-#${ROOT_ID} section h2 {
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #6b7280;
-  margin: 0 0 6px;
-}
-#${ROOT_ID} .row {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  align-items: center;
-  gap: 8px;
-  padding: 2px 0;
-  color: #d1d5db;
-}
-#${ROOT_ID} .row .label { color: #9ca3af; }
-#${ROOT_ID} .row .value { font-variant-numeric: tabular-nums; text-align: right; }
-#${ROOT_ID} .dot {
-  width: 6px;
-  height: 6px;
-  background: #4b5563;
-}
-#${ROOT_ID} .dot.good { background: #22c55e; box-shadow: 0 0 6px color-mix(in oklab, #22c55e 60%, transparent); }
-#${ROOT_ID} .dot.warn { background: #f59e0b; box-shadow: 0 0 6px color-mix(in oklab, #f59e0b 60%, transparent); }
-#${ROOT_ID} .dot.poor { background: #ef4444; box-shadow: 0 0 6px color-mix(in oklab, #ef4444 60%, transparent); }
-#${ROOT_ID} .badge {
-  display: inline-block;
-  margin-left: 6px;
-  padding: 1px 5px;
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #fbbf24;
-  background: color-mix(in oklab, #fbbf24 18%, transparent);
-  border: 1px solid color-mix(in oklab, #fbbf24 30%, transparent);
-}
+#${ROOT_ID}[data-hidden] { display: none; }
+#${ROOT_ID} > div { display: contents; }
+#${ROOT_ID} .lbl { opacity: 0.5; }
+#${ROOT_ID} .val { text-align: right; }
+#${ROOT_ID} { cursor: pointer; }
 `;
-
-const STATUS_COLOR: Record<Status, string> = {
-  good: '#22c55e',
-  warn: '#f59e0b',
-  poor: '#ef4444',
-  idle: '#4b5563',
-};
-
-const cwv = {
-  lcp: (ms: number): Status => (ms === 0 ? 'idle' : ms < 2500 ? 'good' : ms < 4000 ? 'warn' : 'poor'),
-  cls: (v: number): Status => (v < 0.1 ? 'good' : v < 0.25 ? 'warn' : 'poor'),
-  inp: (ms: number): Status => (ms === 0 ? 'idle' : ms < 200 ? 'good' : ms < 500 ? 'warn' : 'poor'),
-  fps: (v: number): Status => (v >= 55 ? 'good' : v >= 30 ? 'warn' : 'poor'),
-};
 
 export function initDevMetrics() {
   if (typeof window === 'undefined') return;
   if (document.getElementById(ROOT_ID)) return;
 
   if (!document.getElementById(STYLE_ID)) {
-    const style = document.createElement('style');
-    style.id = STYLE_ID;
-    style.textContent = CSS;
-    document.head.appendChild(style);
+    const s = document.createElement('style');
+    s.id = STYLE_ID;
+    s.textContent = CSS;
+    document.head.appendChild(s);
   }
 
   const root = document.createElement('div');
   root.id = ROOT_ID;
   root.setAttribute('aria-hidden', 'true');
-  let mode: Mode = (localStorage.getItem(STORAGE_KEY) as Mode) || 'full';
-  if (!MODE_CYCLE.includes(mode)) mode = 'full';
-  root.dataset.mode = mode;
   document.body.appendChild(root);
 
+  // Build rows once — hold value element refs, never touch innerHTML again
+  const mkRow = (label: string, initial = '—'): HTMLElement => {
+    const row = document.createElement('div');
+    const lbl = document.createElement('span');
+    lbl.className = 'lbl';
+    lbl.textContent = `${label}: `;
+    const val = document.createElement('span');
+    val.className = 'val';
+    val.textContent = initial;
+    row.appendChild(lbl);
+    row.appendChild(val);
+    root.appendChild(row);
+    return val;
+  };
+
+  const fpsEl = mkRow('FPS', '—');
+  const fcpEl = mkRow('FCP', '—');
+  const lcpEl = mkRow('LCP', '—');
+  const clsEl = mkRow('CLS', '0.000');
+  const inpEl = mkRow('INP', '—');
+
   // State
-  let fps = 0;
-  const fpsHistory: number[] = [];
-  let cls = 0;
-  let lcp = 0;
-  let inp = 0;
-  let longTasks = 0;
+  let fps = 0, fcp = 0, clsScore = 0, lcp = 0, inp = 0;
+  const frameTimes: number[] = [];
 
   const observe = (
     type: string,
     cb: (entries: PerformanceEntryList) => void,
-    opts: Record<string, unknown> = { buffered: true }
+    opts: Record<string, unknown> = { buffered: true },
   ) => {
     try {
-      const po = new PerformanceObserver((list) => cb(list.getEntries()));
+      const po = new PerformanceObserver(list => cb(list.getEntries()));
       po.observe({ type, ...opts } as PerformanceObserverInit);
-    } catch {
-      /* unsupported */
-    }
+    } catch { /* unsupported */ }
   };
 
-  observe('layout-shift', (entries) => {
+  observe('layout-shift', entries => {
     for (const e of entries as unknown as Array<PerformanceEntry & { value: number; hadRecentInput: boolean }>) {
-      if (!e.hadRecentInput) cls += e.value;
+      if (!e.hadRecentInput) clsScore += e.value;
     }
+    clsEl.textContent = clsScore.toFixed(3);
   });
-  observe('largest-contentful-paint', (entries) => {
+
+  observe('paint', entries => {
+    const e = entries.find(e => e.name === 'first-contentful-paint');
+    if (e) { fcp = Math.round(e.startTime); fcpEl.textContent = `${fcp} ms`; }
+  });
+
+  observe('largest-contentful-paint', entries => {
     const last = entries[entries.length - 1];
-    if (last) lcp = Math.round(last.startTime);
-  });
-  observe('longtask', (entries) => {
-    longTasks += entries.length;
-  });
-  observe(
-    'event',
-    (entries) => {
-      for (const e of entries) {
-        if (e.duration > inp) inp = Math.round(e.duration);
-      }
-    },
-    { buffered: true, durationThreshold: 16 }
-  );
-
-  const rmQuery = matchMedia('(prefers-reduced-motion: reduce)');
-  let reducedMotion = rmQuery.matches;
-  rmQuery.addEventListener('change', (e) => {
-    reducedMotion = e.matches;
-    render();
+    if (last) { lcp = Math.round(last.startTime); lcpEl.textContent = `${lcp} ms`; }
   });
 
-  const sparkline = () => {
-    const peak = Math.max(FPS_SPARK_CEIL, ...fpsHistory);
-    const floor = FPS_SPARK_FLOOR;
-    const range = peak - floor;
-    const h = 22;
-    const barVis = SPARK_BAR - SPARK_GAP;
-    const baseline60 = h - ((60 - floor) / range) * h;
-    const startX = SPARK_W - fpsHistory.length * SPARK_BAR;
-    const bars = fpsHistory
-      .map((v, i) => {
-        const norm = Math.max(0, Math.min(1, (v - floor) / range));
-        const barH = Math.max(1, norm * h);
-        const y = h - barH;
-        const x = startX + i * SPARK_BAR;
-        const color = STATUS_COLOR[cwv.fps(v)];
-        return `<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${barVis.toFixed(2)}" height="${barH.toFixed(2)}" fill="${color}" opacity="0.9"/>`;
-      })
-      .join('');
-    const guide = `<line x1="0" x2="${SPARK_W}" y1="${baseline60.toFixed(2)}" y2="${baseline60.toFixed(2)}" stroke="#ffffff" stroke-opacity="0.12" stroke-dasharray="2 3"/>`;
-    return `<svg class="spark" viewBox="0 0 ${SPARK_W} ${h}" preserveAspectRatio="none">${guide}${bars}</svg>`;
-  };
+  observe('event', entries => {
+    for (const e of entries) {
+      if (e.duration > inp) { inp = Math.round(e.duration); inpEl.textContent = `${inp} ms`; }
+    }
+  }, { buffered: true, durationThreshold: 16 });
 
-  const row = (label: string, value: string, status?: Status) => {
-    const dot = status ? `<span class="dot ${status}"></span>` : '<span></span>';
-    return `<div class="row"><span class="label">${label}</span><span class="value">${value}</span>${dot}</div>`;
-  };
-
-  const compactMetric = (label: string, value: string, status: Status = 'idle') =>
-    `<div class="metric ${status}"><span class="label">${label}</span><span class="value">${value}</span></div>`;
-
-  const renderFull = () => `
-      <header>
-        <h1>Metrics${reducedMotion ? '<span class="badge">reduced motion</span>' : ''}</h1>
-        <span class="hint"><kbd>\`</kbd> cycle</span>
-      </header>
-      <div class="fps-row">
-        <span><span class="fps-val">${fps}</span><span class="fps-unit">fps</span></span>
-        <span class="dot ${cwv.fps(fps)}"></span>
-      </div>
-      ${sparkline()}
-      <section>
-        <h2>Core Web Vitals</h2>
-        ${row('LCP', lcp ? `${lcp} ms` : '—', cwv.lcp(lcp))}
-        ${row('CLS', cls.toFixed(3), cwv.cls(cls))}
-        ${row('INP', inp ? `${inp} ms` : '—', cwv.inp(inp))}
-        ${longTasks > 0 ? row('Long tasks', String(longTasks), 'warn') : ''}
-      </section>
-    `;
-
-  const renderCompact = () => {
-    const badges: string[] = [];
-    if (longTasks > 0) badges.push(`<span class="badge">LT ${longTasks}</span>`);
-    if (reducedMotion) badges.push(`<span class="badge">RM</span>`);
-    return `
-      <div class="compact">
-        ${compactMetric('FPS', String(fps), cwv.fps(fps))}
-        ${compactMetric('LCP', lcp ? `${lcp}` : '—', cwv.lcp(lcp))}
-        ${compactMetric('CLS', cls.toFixed(2), cwv.cls(cls))}
-        ${compactMetric('INP', inp ? `${inp}` : '—', cwv.inp(inp))}
-        ${badges.length ? `<span class="compact-badges">${badges.join('')}</span>` : ''}
-      </div>
-    `;
-  };
-
-  const render = () => {
-    if (mode === 'hidden') return;
-    root.innerHTML = mode === 'compact' ? renderCompact() : renderFull();
-  };
-
-  // FPS + periodic sampling
-  let frames = 0;
-  let lastSample = performance.now();
+  // RAF: rolling frame-time window — textContent only, no re-render
   const tick = (now: number) => {
-    frames++;
-    const delta = now - lastSample;
-    if (delta >= FPS_SAMPLE_MS) {
-      fps = Math.round((frames * 1000) / delta);
-      fpsHistory.push(fps);
-      if (fpsHistory.length > FPS_SAMPLES) fpsHistory.shift();
-      frames = 0;
-      lastSample = now;
-      render();
+    frameTimes.push(now);
+    if (frameTimes.length > FPS_WINDOW) frameTimes.shift();
+    if (frameTimes.length >= 2) {
+      const span = frameTimes[frameTimes.length - 1] - frameTimes[0];
+      const raw  = span > 0 ? (frameTimes.length - 1) / span * 1000 : 0;
+      // EMA smoothing — damps single-frame jitter, tracks real changes within ~4 frames
+      const next = snapFps(Math.round(fps === 0 ? raw : fps * 0.75 + raw * 0.25));
+      if (next !== fps) { fps = next; fpsEl.textContent = String(fps); }
     }
     requestAnimationFrame(tick);
   };
-  render();
   requestAnimationFrame(tick);
 
-  type ViewTransitionDoc = Document & {
-    startViewTransition?: (cb: () => void) => { finished: Promise<void> };
-  };
+  // Copy all metrics on click
+  root.addEventListener('click', () => {
+    const rows = root.querySelectorAll<HTMLElement>('div');
+    const text = Array.from(rows)
+      .map(r => r.textContent?.trim())
+      .filter(Boolean)
+      .join('\n');
+    navigator.clipboard.writeText(text).catch(() => {});
+  });
 
-  const applyMode = (next: Mode) => {
-    mode = next;
-    const doc = document as ViewTransitionDoc;
-    const swap = () => {
-      root.dataset.mode = mode;
-      render();
-    };
-    if (doc.startViewTransition && !reducedMotion) {
-      doc.startViewTransition(swap);
-    } else {
-      swap();
-    }
-    localStorage.setItem(STORAGE_KEY, mode);
-  };
-
-  document.addEventListener('keydown', (e) => {
+  // Show / hide
+  let hidden = false;
+  document.addEventListener('keydown', e => {
     if (e.key === '`' && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey) {
-      const next = MODE_CYCLE[(MODE_CYCLE.indexOf(mode) + 1) % MODE_CYCLE.length];
-      applyMode(next);
+      hidden = !hidden;
+      hidden ? root.setAttribute('data-hidden', '') : root.removeAttribute('data-hidden');
     }
   });
 }

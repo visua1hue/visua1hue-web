@@ -28,6 +28,12 @@ body {
   color: var(--color-text-default);
 }
 
+main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 img {
   -webkit-touch-callout: none;
   -webkit-user-select: none;

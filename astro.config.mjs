@@ -36,6 +36,9 @@ export default defineConfig({
     }),
   ],
 
+  // Dev Toolbar
+  devToolbar: { enabled: false },
+
   // Prefetch Performance Tuning
   prefetch: {
     defaultStrategy: 'hover',

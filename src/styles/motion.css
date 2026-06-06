@@ -1,6 +1,7 @@
 :root {
   --motion-dur-base: 180ms;
   --motion-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-ease-entrance: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 [data-motion] {
@@ -8,8 +9,40 @@
   opacity: 0.01;
 }
 
-[data-motion="outline-fill"] {
-  -webkit-text-stroke: 1.5px var(--color-text-highlight);
+svg [data-motion] {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.wordmark svg {
+  overflow: visible;
+}
+
+/* Stroke layer — drawn outline, compositor-promoted */
+svg [data-motion] .stroke-layer {
+  will-change: opacity;
+}
+
+svg [data-motion] .stroke-layer path,
+svg [data-motion] .stroke-layer rect {
+  fill: none;
+  stroke: var(--color-text-muted);
+  stroke-width: 6;
+  stroke-linejoin: miter;
+  stroke-miterlimit: 10;
+  stroke-linecap: butt;
+}
+
+/* Fill layer — hidden until reveal, compositor-promoted */
+svg [data-motion] .fill-layer {
+  opacity: 0;
+  will-change: opacity;
+}
+
+svg [data-motion] .fill-layer path,
+svg [data-motion] .fill-layer rect {
+  fill: var(--color-text-default);
+  stroke: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

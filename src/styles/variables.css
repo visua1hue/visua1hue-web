@@ -1,10 +1,12 @@
 :root {
-  /* LAYER 1: COLOR PALETTE - PRIMARY */
+  /* LAYER 1: COLOR PALETTE - RAW */
+  --color-greige-400: oklch(0.794 0.018 67.565);
+
   --color-primary-100: oklch(0.1449 0.0031 247.37);
   --color-primary-500: oklch(0.982 0.005 95.099);
   --color-primary-700: oklch(0.8764 0.0154 261.5);
   --color-neutral-0: oklch(0.982 0.005 95.099);
-
+  --color-neutral-50: oklch(0.956 0.003 48.718);
   --color-neutral-100: oklch(0.8764 0.0154 261.5);
   --color-neutral-300: oklch(0.3677 0.0111 248.13);
   --color-neutral-500: oklch(0.2674 0.009 248.17);
@@ -12,14 +14,18 @@
   --color-neutral-900: oklch(0.1449 0.0031 247.37);
 
   /* LAYER 2: COLOR PALETTE - SEMANTIC TOKENS */
-  --color-bg-body: var(--color-primary-100);
-  --color-bg-surface: var(--color-neutral-700);
-  --color-text-default: var(--color-primary-500);
-  --color-text-muted: oklch(0.619 0.01 100.088);
-  --color-text-highlight: var(--color-primary-500);
-  --color-interactive-default: var(--color-primary-500);
-  --color-interactive-hover: var(--color-primary-700);
-  --color-border-default: var(--color-primary-500);
+  --color-bg-body: var(--color-greige-400);
+  --color-bg-surface: var(--color-primary-100);
+  --color-text-default: var(--color-primary-100);
+  --color-text-muted: color-mix(in oklch, var(--color-primary-100) 40%, transparent);
+  --color-text-highlight: var(--color-primary-100);
+  --color-interactive-default: var(--color-primary-100);
+  --color-interactive-hover: color-mix(
+    in oklch,
+    var(--color-primary-100) 65%,
+    transparent
+  );
+  --color-border-default: var(--color-primary-100);
 
   --font-primary: var(--font-inter);
 
@@ -57,6 +63,7 @@
   --border-width: 1px;
 
   --shadow-sm: 0 1px 2px oklch(from var(--color-neutral-900) l c h / 0.05);
-  --shadow-md: 0 4px 6px -1px oklch(from var(--color-neutral-900) l c h / 0.1),
+  --shadow-md:
+    0 4px 6px -1px oklch(from var(--color-neutral-900) l c h / 0.1),
     0 2px 4px -2px oklch(from var(--color-neutral-900) l c h / 0.1);
 }
