@@ -7,7 +7,6 @@ import Layout from "@layouts/Layout.astro";
   title="VISUA1HUE — Consultant and Developer"
   description="Independent consultant and developer. Building reliable, performant software for teams that ship."
 >
-  <!-- ─── Menu panel ─────────────────────────────────────── -->
   <div class="menu-panel" id="menu-panel" aria-hidden="true">
     <div class="menu-ghost" aria-hidden="true"></div>
     <div class="menu-socials">
@@ -38,7 +37,6 @@ import Layout from "@layouts/Layout.astro";
     </nav>
   </div>
 
-  <!-- ─── Hero ─────────────────────────────────────────────  -->
   <section class="hero" data-entrance>
     <div class="hero-top">
       <a href="/" class="hero-logo-col wordmark" aria-label="Home">
@@ -152,12 +150,10 @@ import Layout from "@layouts/Layout.astro";
     </nav>
   </section>
 
-  <!-- ─── Lower (dark accent block) ────────────────────────  -->
   <div class="lower" id="lower"></div>
 </Layout>
 
 <style>
-  /* ─── Body layout (flex column for .lower flex:1) ───────── */
   :global(body) {
     display: flex;
     flex-direction: column;
@@ -174,7 +170,6 @@ import Layout from "@layouts/Layout.astro";
     overflow: hidden;
   }
 
-  /* ─── Menu panel ─────────────────────────────────────── */
   .menu-panel {
     position: fixed;
     inset-block-start: 0;
@@ -232,31 +227,14 @@ import Layout from "@layouts/Layout.astro";
     font-size: clamp(1.125rem, 1.5vw, 1.375rem);
     font-weight: 500;
     letter-spacing: -0.02em;
-    color: var(--color-primary-100);
+    color: oklch(from var(--color-primary-100) l c h / 0.2);
     text-decoration: none;
-    opacity: 0.4;
-    transition: opacity 0.18s ease;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .menu-social::after {
-    content: "↗";
-    opacity: 0;
-    transition: opacity 0.18s ease;
-    flex-shrink: 0;
+    transition: color 0.35s ease;
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .menu-socials:has(.menu-social:hover) .menu-social {
-      opacity: 0.15;
-    }
-    .menu-socials:has(.menu-social:hover) .menu-social:hover {
-      opacity: 1;
-    }
-    .menu-social:hover::after {
-      opacity: 1;
+    .menu-social:hover {
+      color: var(--color-primary-100);
     }
   }
 
@@ -284,15 +262,11 @@ import Layout from "@layouts/Layout.astro";
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .menu-nav ul:has(a:hover) a {
-      opacity: 0.2;
-    }
-    .menu-nav ul:has(a:hover) a:hover {
+    .menu-nav a:hover {
       opacity: 1;
     }
   }
 
-  /* ─── Nav — button only ──────────────────────────────── */
   .site-nav {
     grid-row: 1;
     grid-column: 1;
@@ -321,7 +295,6 @@ import Layout from "@layouts/Layout.astro";
     display: block;
   }
 
-  .btn-menu:focus,
   .btn-menu:focus-visible {
     outline: none;
   }
@@ -439,7 +412,6 @@ import Layout from "@layouts/Layout.astro";
     animation: line-top-to-bottom 0.22s linear both;
   }
 
-  /* ─── Hero ───────────────────────────────────────────── */
   .hero {
     --header-height: 29.33333vw;
     grid-row: 1;
@@ -473,7 +445,6 @@ import Layout from "@layouts/Layout.astro";
     padding: 28px 28px 0;
   }
 
-  /* ─── Logo SVG ──────────────────────────────────────── */
   .hero-logo-col:focus-visible {
     outline: none;
   }
@@ -495,7 +466,6 @@ import Layout from "@layouts/Layout.astro";
     transform: translateY(0);
   }
 
-  /* ─── Bio ────────────────────────────────────────────── */
   .hero-bio {
     grid-column: 2;
     grid-row: 1;
@@ -530,7 +500,6 @@ import Layout from "@layouts/Layout.astro";
     opacity: 0.4;
   }
 
-  /* ─── Statement ──────────────────────────────────────── */
   .hero-statement {
     grid-column: 2;
     grid-row: 2;
@@ -553,7 +522,7 @@ import Layout from "@layouts/Layout.astro";
   .hero-statement-line::after {
     content: '';
     position: absolute;
-    inset: 0;
+    inset: 0 0 -0.3em;
     background: var(--color-bg-body);
     pointer-events: none;
     will-change: opacity;
@@ -564,7 +533,6 @@ import Layout from "@layouts/Layout.astro";
     opacity: 0;
   }
 
-  /* ─── Lower (dark block, fills remaining page) ───────── */
   .lower {
     grid-row: 2;
     grid-column: 1;
@@ -581,7 +549,6 @@ import Layout from "@layouts/Layout.astro";
     transform: translateY(0);
   }
 
-  /* ─── Responsive: < 900px ────────────────────────────── */
   @media (width < 900px) {
     .site-nav {
       padding: 20px 24px;
@@ -641,7 +608,6 @@ import Layout from "@layouts/Layout.astro";
     }
   }
 
-  /* ─── Reduced motion ─────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
     .hero-logo-svg,
     .site-nav {
@@ -664,63 +630,10 @@ import Layout from "@layouts/Layout.astro";
 </style>
 
 <script>
-  /* ─── Entrance animation sequence ────────────────────── */
-  const svg = document.querySelector<HTMLElement>(".hero-logo-svg");
-  const bio = document.querySelector<HTMLElement>(".hero-bio");
-  const nav = document.querySelector<HTMLElement>(".site-nav");
-  const stLines = document.querySelectorAll<HTMLElement>(".hero-statement-line");
-  const lower = document.getElementById("lower");
+  import { runEntrance } from "@scripts/animation/entrance";
+  import { initOverlay } from "@scripts/overlay";
 
-  function show(el: HTMLElement | null, delay: number) {
-    if (!el) return;
-    setTimeout(() => {
-      el.classList.add("is-visible");
-      el.addEventListener(
-        "transitionend",
-        () => {
-          el.style.willChange = "auto";
-        },
-        { once: true },
-      );
-    }, delay);
-  }
-
-  async function runEntrance() {
-    await document.fonts.ready;
-
-    setTimeout(() => {
-      if (lower) {
-        lower.classList.add("is-visible");
-        lower.addEventListener(
-          "transitionend",
-          () => {
-            lower.style.willChange = "auto";
-          },
-          { once: true },
-        );
-      }
-    }, 50);
-
-    const base = 100;
-    show(svg, base);
-    show(bio, base + 320);
-    stLines.forEach((el) => show(el, base + 320));
-    show(nav, base + 320);
-
-    setTimeout(() => {
-      document.body.classList.remove("is-loading");
-    }, base + 520);
-  }
-
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    document.body.classList.remove("is-loading");
-  } else if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", runEntrance);
-  } else {
-    runEntrance();
-  }
-
-  /* ─── Logo — force full reload so entrance animation replays ── */
+  // force full reload so entrance animation replays on logo click
   document
     .querySelector<HTMLAnchorElement>(".hero-logo-col")
     ?.addEventListener("click", (e) => {
@@ -728,62 +641,11 @@ import Layout from "@layouts/Layout.astro";
       window.location.reload();
     });
 
-  /* ─── Menu ────────────────────────────────────────────── */
-  const menuPanel = document.getElementById("menu-panel");
-  const menuToggle = document.getElementById("menu-toggle");
-
-  const menuContent = [
-    menuPanel?.querySelector<HTMLElement>(".menu-socials"),
-    menuPanel?.querySelector<HTMLElement>(".menu-nav"),
-  ].filter(Boolean) as HTMLElement[];
-
-  function closeMenu() {
-    menuContent.forEach((el) => {
-      el.style.opacity = "0";
-    });
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => {
-        menuPanel?.classList.remove("is-open");
-        menuPanel?.setAttribute("aria-hidden", "true");
-        menuToggle?.setAttribute("aria-expanded", "false");
-        menuToggle?.setAttribute("data-anim", "close");
-        setTimeout(() => menuToggle?.removeAttribute("data-anim"), 250);
-      }),
-    );
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.body.classList.remove("is-loading");
+  } else {
+    runEntrance();
   }
 
-  function openMenu() {
-    menuContent.forEach((el) => {
-      el.style.opacity = "";
-    });
-    menuPanel?.classList.add("is-open");
-    menuToggle?.setAttribute("aria-expanded", "true");
-    menuPanel?.setAttribute("aria-hidden", "false");
-  }
-
-  menuToggle?.addEventListener("click", () => {
-    menuPanel?.classList.contains("is-open") ? closeMenu() : openMenu();
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && menuPanel?.classList.contains("is-open")) {
-      closeMenu();
-      menuToggle?.focus();
-    }
-  });
-
-  document.addEventListener("click", (e) => {
-    if (
-      menuPanel?.classList.contains("is-open") &&
-      !menuPanel.contains(e.target as Node) &&
-      !menuToggle?.contains(e.target as Node)
-    ) {
-      closeMenu();
-      menuToggle?.focus();
-    }
-  });
-
-  menuPanel
-    ?.querySelectorAll("a")
-    .forEach((a) => a.addEventListener("click", closeMenu));
+  initOverlay();
 </script>

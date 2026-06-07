@@ -2,6 +2,11 @@
   --motion-dur-base: 180ms;
   --motion-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-ease-entrance: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-spring: linear(
+    0, 0.009, 0.035 2.1%, 0.141, 0.281 6.7%, 0.723 12.9%, 0.938 16.7%,
+    1.026, 1.089 22.3%, 1.102, 1.099 24.4%, 1.09 25.9%, 1.035 31.3%,
+    1.007 36.2%, 0.999 40.5%, 0.995 44.1%, 0.998 52.8%, 1
+  );
 }
 
 [data-motion] {
