@@ -74,10 +74,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         }
       });
 
-      // Dev-only metrics HUD (stripped from production)
-      if (import.meta.env.DEV) {
-        import("@scripts/dev/metrics").then((m) => m.initDevMetrics());
+      // Metrics HUD — lazy-loaded on backtick; auto-restores if localStorage flag is set
+      const _metricsKey = '__dev-metrics-visible';
+      let _metricsInit = false;
+      if (localStorage.getItem(_metricsKey) === 'true') {
+        _metricsInit = true;
+        import('@scripts/dev/metrics').then(m => m.initDevMetrics());
       }
+      document.addEventListener('keydown', async (e) => {
+        if (e.key === '`' && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey && !_metricsInit) {
+          _metricsInit = true;
+          const { initDevMetrics } = await import('@scripts/dev/metrics');
+          initDevMetrics();
+        }
+      });
     </script>
   </body>
 </html>

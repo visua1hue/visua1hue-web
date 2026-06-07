@@ -25,7 +25,7 @@ export default defineConfig({
       weights: ['400', '500', '700'],
       styles: ['normal'],
       subsets: ['latin'],
-      display: 'swap',
+      display: 'optional',
     },
   ],
 

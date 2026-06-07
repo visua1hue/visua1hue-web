@@ -1,20 +1,17 @@
 /**
- * DEV METRICS HUD
- * Dev-only overlay: rolling FPS, LCP, CLS, INP.
- * Stripped from production via `import.meta.env.DEV` guard at import site.
- * Backtick (`) toggles show / hide.
+ * METRICS HUD
+ * Overlay: rolling FPS, LCP, CLS, INP.
+ * Lazy-loaded on first backtick (`) press. Subsequent backticks toggle show / hide.
  */
 
 const ROOT_ID  = '__dev-metrics';
 const STYLE_ID = '__dev-metrics-style';
 const FPS_WINDOW = 20;
-const REFRESH_RATES = [30, 48, 60, 72, 90, 120, 144, 165, 240];
-const snapFps = (v: number) => {
-  const nearest = REFRESH_RATES.reduce((a, b) => Math.abs(b - v) < Math.abs(a - v) ? b : a);
-  return Math.abs(nearest - v) <= 3 ? nearest : v;
-};
 
 const CSS = `
+@keyframes __dev-fps-pump {
+  to { transform: translateX(0.01px); }
+}
 #${ROOT_ID} {
   position: fixed;
   bottom: 24px;
@@ -30,8 +27,9 @@ const CSS = `
   pointer-events: auto;
   cursor: default;
   contain: layout style;
+  animation: __dev-fps-pump 1s linear infinite alternate;
 }
-#${ROOT_ID}[data-hidden] { display: none; }
+#${ROOT_ID}[data-hidden] { display: none; animation: none; }
 #${ROOT_ID} > div { display: contents; }
 #${ROOT_ID} .lbl { opacity: 0.5; }
 #${ROOT_ID} .val { text-align: right; }
@@ -113,16 +111,15 @@ export function initDevMetrics() {
     }
   }, { buffered: true, durationThreshold: 16 });
 
-  // RAF: rolling frame-time window — textContent only, no re-render
+  // RAF: rolling frame-time window — always write, shows live fluctuation
   const tick = (now: number) => {
     frameTimes.push(now);
     if (frameTimes.length > FPS_WINDOW) frameTimes.shift();
     if (frameTimes.length >= 2) {
       const span = frameTimes[frameTimes.length - 1] - frameTimes[0];
       const raw  = span > 0 ? (frameTimes.length - 1) / span * 1000 : 0;
-      // EMA smoothing — damps single-frame jitter, tracks real changes within ~4 frames
-      const next = snapFps(Math.round(fps === 0 ? raw : fps * 0.75 + raw * 0.25));
-      if (next !== fps) { fps = next; fpsEl.textContent = String(fps); }
+      fps = Math.round(fps === 0 ? raw : fps * 0.7 + raw * 0.3);
+      fpsEl.textContent = String(fps);
     }
     requestAnimationFrame(tick);
   };
@@ -138,12 +135,20 @@ export function initDevMetrics() {
     navigator.clipboard.writeText(text).catch(() => {});
   });
 
-  // Show / hide
+  // Show / hide — persisted to localStorage
+  const STORAGE_KEY = '__dev-metrics-visible';
+  localStorage.setItem(STORAGE_KEY, 'true');
   let hidden = false;
   document.addEventListener('keydown', e => {
     if (e.key === '`' && !e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey) {
       hidden = !hidden;
-      hidden ? root.setAttribute('data-hidden', '') : root.removeAttribute('data-hidden');
+      if (hidden) {
+        root.setAttribute('data-hidden', '');
+        localStorage.setItem(STORAGE_KEY, 'false');
+      } else {
+        root.removeAttribute('data-hidden');
+        localStorage.setItem(STORAGE_KEY, 'true');
+      }
     }
   });
 }
