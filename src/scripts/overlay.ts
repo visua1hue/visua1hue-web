@@ -34,6 +34,17 @@ export function initOverlay(): void {
     if (e.key === "Escape" && panel.classList.contains("is-open")) {
       close();
       toggle.focus();
+      return;
+    }
+    if (
+      e.key === "/" &&
+      !e.metaKey && !e.ctrlKey && !e.altKey &&
+      !(e.target instanceof HTMLInputElement) &&
+      !(e.target instanceof HTMLTextAreaElement)
+    ) {
+      e.preventDefault();
+      panel.classList.contains("is-open") ? close() : open();
+      toggle.focus();
     }
   });
 
