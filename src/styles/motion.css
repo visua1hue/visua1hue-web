@@ -14,42 +14,6 @@
   opacity: 0.01;
 }
 
-svg [data-motion] {
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.wordmark svg {
-  overflow: visible;
-}
-
-/* Stroke layer — drawn outline, compositor-promoted */
-svg [data-motion] .stroke-layer {
-  will-change: opacity;
-}
-
-svg [data-motion] .stroke-layer path,
-svg [data-motion] .stroke-layer rect {
-  fill: none;
-  stroke: var(--color-text-muted);
-  stroke-width: 6;
-  stroke-linejoin: miter;
-  stroke-miterlimit: 10;
-  stroke-linecap: butt;
-}
-
-/* Fill layer — hidden until reveal, compositor-promoted */
-svg [data-motion] .fill-layer {
-  opacity: 0;
-  will-change: opacity;
-}
-
-svg [data-motion] .fill-layer path,
-svg [data-motion] .fill-layer rect {
-  fill: var(--color-text-default);
-  stroke: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
   [data-motion] {
     animation: none !important;
