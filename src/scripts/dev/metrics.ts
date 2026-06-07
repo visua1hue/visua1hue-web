@@ -6,7 +6,6 @@
 
 const ROOT_ID  = '__dev-metrics';
 const STYLE_ID = '__dev-metrics-style';
-const FPS_WINDOW = 20;
 
 const CSS = `
 @keyframes __dev-fps-pump {
@@ -75,7 +74,12 @@ export function initDevMetrics() {
 
   // State
   let fps = 0, fcp = 0, clsScore = 0, lcp = 0, inp = 0;
-  const frameTimes: number[] = [];
+  let lcpDone = false;
+  let frameCount = 0, bucketStart = 0;
+
+  const stopLcp = () => { lcpDone = true; };
+  window.addEventListener('pointerdown', stopLcp, { once: true, capture: true });
+  window.addEventListener('keydown', stopLcp, { once: true, capture: true });
 
   const observe = (
     type: string,
@@ -101,25 +105,30 @@ export function initDevMetrics() {
   });
 
   observe('largest-contentful-paint', entries => {
+    if (lcpDone) return;
     const last = entries[entries.length - 1];
     if (last) { lcp = Math.round(last.startTime); lcpEl.textContent = `${lcp} ms`; }
   });
 
   observe('event', entries => {
-    for (const e of entries) {
+    for (const e of entries as unknown as Array<PerformanceEntry & { interactionId: number }>) {
+      if (!e.interactionId) continue;
       if (e.duration > inp) { inp = Math.round(e.duration); inpEl.textContent = `${inp} ms`; }
     }
   }, { buffered: true, durationThreshold: 16 });
 
-  // RAF: rolling frame-time window — always write, shows live fluctuation
+  // RAF: time-bucketed counter + EMA — writes DOM only on bucket boundary when value changes
   const tick = (now: number) => {
-    frameTimes.push(now);
-    if (frameTimes.length > FPS_WINDOW) frameTimes.shift();
-    if (frameTimes.length >= 2) {
-      const span = frameTimes[frameTimes.length - 1] - frameTimes[0];
-      const raw  = span > 0 ? (frameTimes.length - 1) / span * 1000 : 0;
-      fps = Math.round(fps === 0 ? raw : fps * 0.7 + raw * 0.3);
-      fpsEl.textContent = String(fps);
+    if (bucketStart === 0) bucketStart = now;
+    frameCount++;
+    const elapsed = now - bucketStart;
+    if (elapsed >= 250) {
+      const raw = frameCount / elapsed * 1000;
+      fps = fps === 0 ? raw : fps * 0.85 + raw * 0.15;
+      frameCount = 0;
+      bucketStart = now;
+      const rounded = Math.round(fps);
+      if (fpsEl.textContent !== String(rounded)) fpsEl.textContent = String(rounded);
     }
     requestAnimationFrame(tick);
   };
