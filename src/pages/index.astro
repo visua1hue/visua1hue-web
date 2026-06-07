@@ -128,7 +128,7 @@ import Layout from "@layouts/Layout.astro";
 
       <div class="hero-bio">
         <span class="hero-bio-role"
-          >Came for the engineering.<br />Stayed for the architecture.</span
+          >Came for the engineering. Stayed for the architecture. Now AI-accelerated.</span
         >
       </div>
 
@@ -547,6 +547,12 @@ import Layout from "@layouts/Layout.astro";
 
   .lower.is-visible {
     transform: translateY(0);
+  }
+
+  @media (min-width: 1024px) {
+    .hero-bio {
+      padding: 24px 160px 0 28px;
+    }
   }
 
   @media (width < 900px) {
