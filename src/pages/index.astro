@@ -145,7 +145,7 @@ import Layout from "@layouts/Layout.astro";
         aria-expanded="false"
         aria-controls="menu-panel"
         aria-label="Toggle navigation menu"
-        ></button
+        ><span class="btn-menu-inner" aria-hidden="true"></span></button
       >
     </nav>
   </section>
@@ -318,6 +318,40 @@ import Layout from "@layouts/Layout.astro";
     left: 0;
     inline-size: 100%;
     block-size: var(--_border);
+  }
+
+  .btn-menu-inner {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    inline-size: 20px;
+    block-size: 20px;
+    pointer-events: none;
+    border-right: 5px solid var(--color-primary-100);
+    border-bottom: 5px solid var(--color-primary-100);
+    opacity: 0.35;
+    will-change: opacity;
+    transition: opacity 0.2s ease;
+    animation: inner-l-pulse 3s ease-in-out infinite;
+    animation-delay: 1.5s;
+  }
+
+  @keyframes inner-l-pulse {
+    0%, 30% { opacity: 0.35; }
+    65% { opacity: 0.8; }
+    100% { opacity: 0.35; }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .btn-menu:hover .btn-menu-inner {
+      opacity: 1;
+    }
+  }
+
+  .btn-menu[aria-expanded="true"] .btn-menu-inner,
+  .btn-menu[data-anim="close"] .btn-menu-inner {
+    opacity: 0;
+    animation-play-state: paused;
   }
 
   @keyframes line-right-to-left {
@@ -631,6 +665,11 @@ import Layout from "@layouts/Layout.astro";
     .hero-statement-line::after {
       transition: none !important;
       opacity: 0 !important;
+    }
+
+    .btn-menu-inner {
+      animation: none !important;
+      opacity: 0.35;
     }
   }
 </style>
