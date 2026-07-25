@@ -1,7 +1,7 @@
 {
   "name": "visua1hue-web",
   "compatibility_date": "2025-10-12",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": ["nodejs_compat", "disable_nodejs_process_v2"],
   "preview_urls": true,
   "routes": [
     {
