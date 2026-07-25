@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.5",
   "scripts": {
-    "dev": "pkill -f 'astro dev' 2>/dev/null; lsof -ti:4321 | xargs kill -9 2>/dev/null; rm -rf .wrangler .astro && astro dev",
+    "dev": "lsof -ti:4321 | xargs kill -9 2>/dev/null; pkill -9 -f \"$(pwd)/node_modules.*workerd\" 2>/dev/null; rm -rf .wrangler .astro && astro dev",
     "build": "astro build",
     "preview": "wrangler dev",
     "deploy": "astro build && wrangler deploy"
