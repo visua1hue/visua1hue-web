@@ -16,16 +16,21 @@ export default defineConfig({
     configPath: 'wrangler.jsonc',
   }),
 
-  // Fonts (stable in Astro 6)
+  // Fonts — self-hosted, vendored from rsms/inter releases (see .github/workflows/sync-inter-font.yml)
   fonts: [
     {
-      provider: fontProviders.fontsource(),
+      provider: fontProviders.local(),
       name: 'Inter',
       cssVariable: '--font-inter',
-      weights: ['400', '500', '700'],
-      styles: ['normal'],
-      subsets: ['latin'],
-      display: 'optional',
+      options: {
+        variants: [
+          {
+            weight: '100 900',
+            style: 'normal',
+            src: ['./src/assets/fonts/InterVariable.woff2'],
+          },
+        ],
+      },
     },
   ],
 

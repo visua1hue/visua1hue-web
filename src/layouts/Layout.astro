@@ -48,13 +48,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <!-- Theme color -->
     <meta name="theme-color" content="oklch(0.794 0.018 67.565)" />
 
-    <Font
-      cssVariable="--font-inter"
-      preload={[
-        { weight: "400", subset: "latin" },
-        { weight: "500", subset: "latin" },
-      ]}
-    />
+    <Font cssVariable="--font-inter" preload />
 
     <ClientRouter />
   </head>

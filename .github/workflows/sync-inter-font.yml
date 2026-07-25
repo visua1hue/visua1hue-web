@@ -1,0 +1,40 @@
+name: Sync Inter font
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch latest Inter release
+        id: release
+        run: |
+          data=$(curl -sL https://api.github.com/repos/rsms/inter/releases/latest)
+          tag=$(echo "$data" | jq -r '.tag_name')
+          url=$(echo "$data" | jq -r '.assets[] | select(.name | test("^Inter-.*\\.zip$")) | .browser_download_url')
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Download and extract
+        run: |
+          curl -sL -o inter.zip "${{ steps.release.outputs.url }}"
+          mkdir -p src/assets/fonts
+          unzip -j -o inter.zip "web/InterVariable.woff2" "LICENSE.txt" -d src/assets/fonts
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet -- src/assets/fonts; then
+            git add src/assets/fonts
+            git commit -m "chore: sync Inter font to ${{ steps.release.outputs.tag }}"
+            git push
+          else
+            echo "No changes."
+          fi
