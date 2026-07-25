@@ -1,7 +1,7 @@
 {
   "name": "visua1hue-web",
   "type": "module",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "scripts": {
     "dev": "pkill -f 'astro dev' 2>/dev/null; lsof -ti:4321 | xargs kill -9 2>/dev/null; rm -rf .wrangler .astro && astro dev",
     "build": "astro build",
@@ -16,7 +16,8 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@astrojs/cloudflare": "14.1.4",
+    "@cloudflare/vite-plugin": "^1.47.0",
     "typescript": "^5.9.3",
-    "wrangler": "4.98.0"
+    "wrangler": "4.114.0"
   }
 }
