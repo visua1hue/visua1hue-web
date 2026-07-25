@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "pkill -f 'astro dev' 2>/dev/null; lsof -ti:4321 | xargs kill -9 2>/dev/null; rm -rf .wrangler .astro && astro dev",
     "build": "astro build",
-    "preview": "wrangler dev --config dist/server/wrangler.json",
-    "deploy": "astro build && wrangler deploy --config dist/server/wrangler.json"
+    "preview": "wrangler dev",
+    "deploy": "astro build && wrangler deploy"
   },
   "dependencies": {
     "astro": "7.1.3",
