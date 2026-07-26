@@ -1,153 +1,18 @@
 ---
 export const prerender = true;
 import Layout from "@layouts/Layout.astro";
+import Logotype from "@components/Logotype.astro";
 ---
 
 <Layout
   title="VISUA1HUE — Consultant and Developer"
-  description="Independent consultant and developer. Building reliable, performant software for teams that ship."
+  description="Independent Consultant and Developer. Building reliable, performant solutions."
 >
-  <div class="menu-panel" id="menu-panel" aria-hidden="true">
-    <div class="menu-ghost" aria-hidden="true"></div>
-    <div class="menu-socials">
-      <a
-        class="menu-social"
-        href="https://twitter.com/visua1hue"
-        target="_blank"
-        rel="noopener noreferrer">Twitter</a
-      >
-      <a
-        class="menu-social"
-        href="https://bsky.app/profile/visua1hue.bsky.social"
-        target="_blank"
-        rel="noopener noreferrer">Bluesky</a
-      >
-      <a
-        class="menu-social"
-        href="https://linkedin.com/in/michaelhuebel/"
-        target="_blank"
-        rel="noopener noreferrer">LinkedIn</a
-      >
-    </div>
-    <nav class="menu-nav" aria-label="Site navigation">
-      <ul>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-  </div>
-
   <section class="hero" data-entrance>
-    <div class="hero-top">
-      <a href="/" class="hero-logo-col wordmark" aria-label="Home">
-        <svg
-          class="hero-logo-svg"
-          viewBox="310 749 1870 271"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-label="VISUA1HUE"
-          role="img"
-          style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"
-        >
-          <!-- V -->
-          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
-            <path
-              fill="currentColor"
-              style="fill-rule:nonzero;"
-              d="M538.1,606.924l44,0l90.667,-243.667l-44.333,0l-52.667,140.333c-4.667,12.333 -9.667,27.333 -15.667,48.667c-5.333,-19.667 -10,-34 -15.333,-48.667l-53.333,-140.333l-45.333,0l92,243.667Z"
-            ></path>
-          </g>
-          <!-- I -->
-          <g transform="matrix(1,0,0,1,-99.275939,387.924668)">
-            <rect
-              fill="currentColor"
-              style="fill-rule:nonzero;"
-              x="703.1"
-              y="363.258"
-              width="42.667"
-              height="243.667"></rect>
-          </g>
-          <!-- S -->
-          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
-            <path
-              fill="currentColor"
-              style="fill-rule:nonzero;"
-              d="M785.767,431.258c0,37.333 21.667,61 63,70l38.667,8.667c20,4.333 28.333,14 28.333,30.333c0,20.333 -18,32.667 -46.333,32.667c-27.333,0 -44,-12.333 -44.333,-33l-42.667,0c1,43.667 35,71.333 87,71.333c53.667,0 89,-29.333 89,-74.667c0,-36.333 -20.333,-57.667 -62,-66.667l-38.333,-8.333c-20.333,-4.667 -29.667,-14.333 -29.667,-31.667c0,-20.333 17,-33 43.333,-33c24,0 39,12.333 40,33.333l42.667,0c-1.333,-44 -32.667,-71.333 -82,-71.333c-51.333,0 -86.667,29.667 -86.667,72.333Z"
-            ></path>
-          </g>
-          <!-- U -->
-          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
-            <path
-              fill="currentColor"
-              style="fill-rule:nonzero;"
-              d="M995.433,517.924c0,57.333 37.333,93 96.333,93c59.333,0 96.667,-36 96.667,-93l0,-154.667l-42.667,0l0,152c0,34.667 -19.333,54.333 -54,54.333c-34.667,0 -53.667,-19.333 -53.667,-54.333l0,-152l-42.667,0l0,154.667Z"
-            ></path>
-          </g>
-          <!-- A -->
-          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
-            <path
-              fill="currentColor"
-              style="fill-rule:nonzero;"
-              d="M1251.767,606.924l19.667,-56.333l91,0l19.667,56.333l45,0l-88,-243.667l-43.667,0l-88,243.667l44.333,0Zm60,-171c2.333,-6.667 4.333,-14 5.333,-18.667c0.667,5 3,12.333 5,18.667l28,78.667l-66,0l27.667,-78.667Z"
-            ></path>
-          </g>
-          <!-- 1 -->
-          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
-            <path
-              fill="currentColor"
-              style="fill-rule:nonzero;"
-              d="M1495.433,401.591l0,205.333l41,0l0,-243.667l-94.333,0l0,38.333l53.333,0Z"
-            ></path>
-          </g>
-          <!-- H -->
-          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
-            <path
-              fill="currentColor"
-              style="fill-rule:nonzero;"
-              d="M1633.1,606.924l0,-103.333l108,0l0,103.333l42.667,0l0,-243.667l-42.667,0l0,100.667l-108,0l0,-100.667l-42.667,0l0,243.667l42.667,0Z"
-            ></path>
-          </g>
-          <!-- U (second) -->
-          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
-            <path
-              fill="currentColor"
-              style="fill-rule:nonzero;"
-              d="M1836.1,517.924c0,57.333 37.333,93 96.333,93c59.333,0 96.667,-36 96.667,-93l0,-154.667l-42.667,0l0,152c0,34.667 -19.333,54.333 -54,54.333c-34.667,0 -53.667,-19.333 -53.667,-54.333l0,-152l-42.667,0l0,154.667Z"
-            ></path>
-          </g>
-          <!-- E -->
-          <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
-            <path
-              fill="currentColor"
-              style="fill-rule:nonzero;"
-              d="M2232.767,606.924l0,-39.333l-108.667,0l0,-64.667l97.333,0l0,-37.667l-97.333,0l0,-62.667l108.667,0l0,-39.333l-151.333,0l0,243.667l151.333,0Z"
-            ></path>
-          </g>
-        </svg>
-      </a>
-
-      <div class="hero-bio">
-        <span class="hero-bio-role"
-          >Came for the engineering. Stayed for the architecture. Now AI-accelerated.</span
-        >
-      </div>
-
-      <div class="hero-statement">
-        <span class="hero-statement-line">Built to perform.</span>
-        <span class="hero-statement-line">Designed to scale.</span>
-      </div>
-    </div>
-
-    <nav class="site-nav" aria-label="Primary navigation">
-      <button
-        class="btn-menu"
-        id="menu-toggle"
-        aria-expanded="false"
-        aria-controls="menu-panel"
-        aria-label="Toggle navigation menu"
-        ><span class="btn-menu-inner" aria-hidden="true"></span></button
-      >
-    </nav>
+    <a href="/" class="logotype-link" aria-label="Home">
+      <Logotype />
+    </a>
+    <!-- row 3 reserved for future text; columns 9/13 beside the logotype free for a corner mark -->
   </section>
 
   <div class="lower" id="lower"></div>
@@ -170,401 +35,26 @@ import Layout from "@layouts/Layout.astro";
     overflow: hidden;
   }
 
-  .menu-panel {
-    position: fixed;
-    inset-block-start: 0;
-    inset-inline-start: 0;
-    inset-inline-end: 0;
-    background-color: var(--color-neutral-50);
-    z-index: 150;
-    display: grid;
-    grid-template-columns: 58fr 42fr;
-    grid-template-rows: auto auto;
-    row-gap: clamp(16px, 2.5vw, 36px);
-    overflow: hidden;
-    transition:
-      transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-      display 0.28s allow-discrete;
-  }
-
-  .menu-panel:not(.is-open) {
-    display: none;
-    transform: translateY(-100%);
-  }
-
-  @starting-style {
-    .menu-panel.is-open {
-      transform: translateY(-100%);
-    }
-  }
-
-  /* Invisible spacer — same aspect ratio as hero logo, drives panel height to match hero */
-  .menu-ghost {
-    grid-column: 1;
-    grid-row: 1;
-    padding: 28px 28px 0;
-    pointer-events: none;
-  }
-
-  .menu-ghost::after {
-    content: "";
-    display: block;
-    width: 100%;
-    aspect-ratio: 1870 / 271;
-  }
-
-  .menu-socials {
-    grid-column: 2;
-    grid-row: 1;
-    align-self: center;
-    padding: 0 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-
-  .menu-social {
-    font-size: clamp(1.125rem, 1.5vw, 1.375rem);
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    color: oklch(from var(--color-primary-100) l c h / 0.2);
-    text-decoration: none;
-    transition: color 0.35s ease;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .menu-social:hover {
-      color: var(--color-primary-100);
-    }
-  }
-
-  .menu-nav {
-    grid-column: 2;
-    grid-row: 2;
-    padding: 0 28px 28px;
-  }
-
-  .menu-nav ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .menu-nav a {
-    font-size: clamp(1.5rem, 3vw, 2.25rem);
-    font-weight: 500;
-    color: var(--color-primary-100);
-    text-decoration: none;
-    line-height: 1.06;
-    display: block;
-    letter-spacing: -0.03em;
-    transition: opacity 0.18s ease;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .menu-nav a:hover {
-      opacity: 1;
-    }
-  }
-
-  .site-nav {
-    grid-row: 1;
-    grid-column: 1;
-    align-self: end;
-    justify-self: end;
-    z-index: 200;
-    padding: 28px 32px;
-    opacity: 0;
-    will-change: opacity;
-    transition: opacity 0.5s ease;
-  }
-
-  .site-nav.is-visible {
-    opacity: 1;
-  }
-
-  .btn-menu {
-    --_size: 40px;
-    --_border: 6px;
-    position: relative;
-    inline-size: var(--_size);
-    block-size: var(--_size);
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    display: block;
-  }
-
-  .btn-menu:focus-visible {
-    outline: none;
-  }
-
-  .btn-menu::before,
-  .btn-menu::after {
-    content: "";
-    position: absolute;
-    background: var(--color-primary-100);
-  }
-
-  .btn-menu::before {
-    top: 0;
-    right: 0;
-    inline-size: var(--_border);
-    block-size: 100%;
-  }
-
-  .btn-menu::after {
-    bottom: 0;
-    left: 0;
-    inline-size: 100%;
-    block-size: var(--_border);
-  }
-
-  .btn-menu-inner {
-    position: absolute;
-    bottom: -4px;
-    right: -4px;
-    inline-size: 20px;
-    block-size: 20px;
-    pointer-events: none;
-    border-right: 5px solid var(--color-primary-100);
-    border-bottom: 5px solid var(--color-primary-100);
-    opacity: 0.35;
-    will-change: opacity;
-    transition: opacity 0.2s ease;
-    animation: inner-l-pulse 3s ease-in-out infinite;
-    animation-delay: 1.5s;
-  }
-
-  @keyframes inner-l-pulse {
-    0%, 30% { opacity: 0.35; }
-    65% { opacity: 0.8; }
-    100% { opacity: 0.35; }
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .btn-menu:hover .btn-menu-inner {
-      opacity: 1;
-    }
-  }
-
-  .btn-menu[aria-expanded="true"] .btn-menu-inner,
-  .btn-menu[data-anim="close"] .btn-menu-inner {
-    opacity: 0;
-    animation-play-state: paused;
-  }
-
-  @keyframes line-right-to-left {
-    0% {
-      transform: translateX(0);
-      animation-timing-function: ease-in;
-    }
-    35% {
-      transform: translateX(0) scaleY(0);
-      animation-timing-function: linear;
-    }
-    65% {
-      transform: translateX(calc(-1 * (var(--_size) - var(--_border))))
-        scaleY(0);
-      animation-timing-function: ease-out;
-    }
-    100% {
-      transform: translateX(calc(-1 * (var(--_size) - var(--_border))));
-    }
-  }
-
-  @keyframes line-bottom-to-top {
-    0% {
-      transform: translateY(0);
-      animation-timing-function: ease-in;
-    }
-    35% {
-      transform: translateY(0) scaleX(0);
-      animation-timing-function: linear;
-    }
-    65% {
-      transform: translateY(calc(-1 * (var(--_size) - var(--_border))))
-        scaleX(0);
-      animation-timing-function: ease-out;
-    }
-    100% {
-      transform: translateY(calc(-1 * (var(--_size) - var(--_border))));
-    }
-  }
-
-  .btn-menu[aria-expanded="true"]::before {
-    animation: line-right-to-left 0.22s linear both;
-  }
-
-  .btn-menu[aria-expanded="true"]::after {
-    animation: line-bottom-to-top 0.22s linear both;
-  }
-
-  @keyframes line-left-to-right {
-    0% {
-      transform: translateX(calc(-1 * (var(--_size) - var(--_border))));
-      animation-timing-function: ease-in;
-    }
-    35% {
-      transform: translateX(calc(-1 * (var(--_size) - var(--_border))))
-        scaleY(0);
-      animation-timing-function: linear;
-    }
-    65% {
-      transform: translateX(0) scaleY(0);
-      animation-timing-function: ease-out;
-    }
-    100% {
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes line-top-to-bottom {
-    0% {
-      transform: translateY(calc(-1 * (var(--_size) - var(--_border))));
-      animation-timing-function: ease-in;
-    }
-    35% {
-      transform: translateY(calc(-1 * (var(--_size) - var(--_border))))
-        scaleX(0);
-      animation-timing-function: linear;
-    }
-    65% {
-      transform: translateY(0) scaleX(0);
-      animation-timing-function: ease-out;
-    }
-    100% {
-      transform: translateY(0);
-    }
-  }
-
-  .btn-menu[data-anim="close"]::before {
-    animation: line-left-to-right 0.22s linear both;
-  }
-
-  .btn-menu[data-anim="close"]::after {
-    animation: line-top-to-bottom 0.22s linear both;
-  }
-
   .hero {
-    --header-height: 29.33333vw;
-    grid-row: 1;
-    grid-column: 1;
-    background-color: var(--color-greige-400);
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: minmax(var(--header-height), auto);
-  }
-
-  @media (min-width: 1024px) {
-    .hero {
-      --header-height: 13.19444vw;
-    }
-  }
-
-  .hero-top {
     grid-row: 1;
     grid-column: 1;
     display: grid;
-    grid-template-columns: 58fr 42fr;
-    grid-template-rows: auto auto;
-    row-gap: clamp(16px, 2.5vw, 36px);
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: clamp(72px, 9vw, 132px) auto auto 1fr;
+    column-gap: clamp(16px, 2.5vw, 36px);
+    padding-inline: 28px;
+    padding-block: clamp(28px, 4vw, 56px);
+    min-block-size: clamp(460px, 38vw, 680px);
+    background-color: var(--color-neutral-50);
   }
 
-  .hero-logo-col {
-    grid-column: 1;
-    grid-row: 1;
-    display: flex;
-    align-items: flex-start;
-    padding: 28px 28px 0;
-  }
-
-  .hero-logo-col:focus-visible {
-    outline: none;
-  }
-
-  .hero-logo-svg {
-    width: 100%;
-    height: auto;
-    color: var(--color-primary-100);
-    opacity: 0.01;
-    transform: translateY(16px);
-    will-change: opacity, transform;
-    transition:
-      opacity 0.85s var(--motion-ease-entrance),
-      transform 0.85s var(--motion-ease-entrance);
-  }
-
-  .hero-logo-svg.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .hero-bio {
-    grid-column: 2;
-    grid-row: 1;
-    padding: 24px 28px 0;
-    align-self: center;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    position: relative;
-  }
-
-  .hero-bio::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--color-bg-body);
-    pointer-events: none;
-    will-change: opacity;
-    transition: opacity 0.6s ease-in-out;
-  }
-
-  .hero-bio.is-visible::after {
-    opacity: 0;
-  }
-
-  .hero-bio-role {
-    display: block;
-    font-size: clamp(1.125rem, 1.5vw, 1.375rem);
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    color: var(--color-primary-100);
-    opacity: 0.4;
-  }
-
-  .hero-statement {
-    grid-column: 2;
+  .logotype-link {
     grid-row: 2;
-    padding: 0 28px 28px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    grid-column: 1 / 9;
   }
 
-  .hero-statement-line {
-    display: block;
-    font-size: clamp(1.5rem, 3vw, 2.25rem);
-    font-weight: 500;
-    line-height: 1.06;
-    color: var(--color-primary-100);
-    letter-spacing: -0.03em;
-    position: relative;
-  }
-
-  .hero-statement-line::after {
-    content: '';
-    position: absolute;
-    inset: 0 0 -0.3em;
-    background: var(--color-bg-body);
-    pointer-events: none;
-    will-change: opacity;
-    transition: opacity 0.6s ease-in-out;
-  }
-
-  .hero-statement-line.is-visible::after {
-    opacity: 0;
+  .logotype-link:focus-visible {
+    outline: none;
   }
 
   .lower {
@@ -583,104 +73,33 @@ import Layout from "@layouts/Layout.astro";
     transform: translateY(0);
   }
 
-  @media (min-width: 1024px) {
-    .hero-bio {
-      padding: 24px 160px 0 28px;
-    }
-  }
-
   @media (width < 900px) {
-    .site-nav {
-      padding: 20px 24px;
+    .hero {
+      column-gap: 16px;
+      padding-inline: 24px;
+      padding-block: clamp(24px, 6vw, 40px);
+      min-block-size: clamp(360px, 60vw, 460px);
     }
 
-    .menu-panel {
-      grid-template-columns: 1fr;
-      row-gap: 16px;
-    }
-
-    .menu-ghost {
-      grid-column: 1;
-      padding: 24px 24px 0;
-    }
-
-    .menu-socials {
-      grid-column: 1;
-      grid-row: 2;
-      align-self: start;
-      padding: 0 24px;
-    }
-
-    .menu-nav {
-      grid-column: 1;
-      grid-row: 3;
-      padding: 0 24px 24px;
-    }
-
-    .hero-top {
-      grid-template-columns: 1fr;
-      row-gap: 16px;
-    }
-
-    .hero-logo-col {
-      grid-column: 1;
-      grid-row: 1;
-      padding: 24px 24px 0;
-    }
-
-    .hero-bio {
-      grid-column: 1;
-      grid-row: 2;
-      align-self: start;
-      padding: 0 24px;
-    }
-
-    .hero-statement {
-      grid-column: 1;
-      grid-row: 3;
-      padding: 0 24px 24px;
-    }
-  }
-
-  @media (width < 560px) {
-    .hero-statement-line {
-      font-size: 1.75rem;
+    .logotype-link {
+      grid-column: 1 / 13;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero-logo-svg,
-    .site-nav {
-      opacity: 1 !important;
-    }
-
-    .hero-logo-svg,
-    .site-nav,
     .lower {
       transition: none !important;
       transform: none !important;
-    }
-
-    .hero-bio::after,
-    .hero-statement-line::after {
-      transition: none !important;
-      opacity: 0 !important;
-    }
-
-    .btn-menu-inner {
-      animation: none !important;
-      opacity: 0.35;
     }
   }
 </style>
 
 <script>
   import { runEntrance } from "@scripts/animation/entrance";
-  import { initOverlay } from "@scripts/overlay";
 
   // force full reload so entrance animation replays on logo click
   document
-    .querySelector<HTMLAnchorElement>(".hero-logo-col")
+    .querySelector<HTMLAnchorElement>(".logotype-link")
     ?.addEventListener("click", (e) => {
       e.preventDefault();
       window.location.reload();
@@ -691,6 +110,4 @@ import Layout from "@layouts/Layout.astro";
   } else {
     runEntrance();
   }
-
-  initOverlay();
 </script>

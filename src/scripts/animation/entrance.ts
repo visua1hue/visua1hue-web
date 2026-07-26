@@ -10,9 +10,6 @@ export async function runEntrance(): Promise<void> {
   await document.fonts.ready;
   const base = 100;
   show(document.getElementById("lower"), 50);
-  show(document.querySelector<HTMLElement>(".hero-logo-svg"), base);
-  show(document.querySelector<HTMLElement>(".hero-bio"), base + 320);
-  document.querySelectorAll<HTMLElement>(".hero-statement-line").forEach((el) => show(el, base + 320));
-  show(document.querySelector<HTMLElement>(".site-nav"), base + 320);
+  show(document.querySelector<HTMLElement>(".logotype"), base);
   setTimeout(() => document.body.classList.remove("is-loading"), base + 520);
 }
