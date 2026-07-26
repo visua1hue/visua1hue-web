@@ -1,12 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
   <!-- Icon from Material Design Icons by Pictogrammers - https://github.com/Templarian/MaterialDesign/blob/master/LICENSE -->
   <style>
-    .mark {
-      fill: #414141;
+    path {
+      fill: #939393;
+    }
+    @media (prefers-color-scheme: dark) {
+      path {
+        fill: #c3c3c3;
+      }
     }
   </style>
-  <path
-    class="mark"
-    d="M18 6H6v12h12z"
-  />
+  <path d="M19 5H5v14h14z" />
 </svg>
