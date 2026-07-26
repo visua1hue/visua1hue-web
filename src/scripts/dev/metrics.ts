@@ -17,11 +17,18 @@ const CSS = `
   right: 24px;
   z-index: 2147483647;
   display: grid;
-  grid-template-columns: auto 7ch;
+  grid-template-columns: auto minmax(7ch, auto);
   column-gap: 8px;
   font: 11px/1.8 ui-monospace, SFMono-Regular, Menlo, monospace;
   font-variant-numeric: tabular-nums;
-  color: #fff;
+  color: oklch(1 0 0);
+  /* Grayscale the backdrop before differencing it — without this, a saturated
+     bg (e.g. red) differences against white into another hue (cyan) instead
+     of a clean invert. backdrop-filter runs first, then the blend mode below
+     diffs against the now-desaturated result. */
+  -webkit-backdrop-filter: grayscale(1);
+  backdrop-filter: grayscale(1);
+  mix-blend-mode: difference;
   user-select: none;
   pointer-events: auto;
   cursor: default;
@@ -30,8 +37,8 @@ const CSS = `
 }
 #${ROOT_ID}[data-hidden] { display: none; animation: none; }
 #${ROOT_ID} > div { display: contents; }
-#${ROOT_ID} .lbl { opacity: 0.5; }
-#${ROOT_ID} .val { text-align: right; }
+#${ROOT_ID} .lbl { opacity: 0.5; white-space: nowrap; }
+#${ROOT_ID} .val { text-align: right; white-space: nowrap; }
 #${ROOT_ID} { cursor: pointer; }
 `;
 
