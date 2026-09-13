@@ -1,3 +1,4 @@
+<div class="logotype-stage">
 <svg
   class="logotype"
   viewBox="310 747 1870 273"
@@ -8,6 +9,7 @@
   style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"
 >
   <g fill="currentColor">
+  <g id="glyphs">
     <!-- V -->
     <g transform="matrix(1,0,0,1,-99.275939,388.924668)">
       <path
@@ -74,9 +76,35 @@
       ></path>
     </g>
   </g>
+  </g>
 </svg>
 
+  <!-- Moving window: a dog-eared clipped viewport. Its content (placeholder
+       "image" + a duplicate of #glyphs, difference-blended) is counter-
+       transformed against the window's own movement so it stays visually
+       pinned to the real glyphs underneath — only the clipped viewport moves. -->
+  <div class="logotype-window" aria-hidden="true">
+    <div class="logotype-window-inner">
+      <div class="logotype-window-image"></div>
+      <svg
+        class="logotype-window-glyphs"
+        viewBox="310 747 1870 273"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <use href="#glyphs" fill="#fff"></use>
+      </svg>
+    </div>
+  </div>
+</div>
+
 <style>
+  .logotype-stage {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
   .logotype {
     width: 100%;
     height: auto;
@@ -101,4 +129,103 @@
       transform: none !important;
     }
   }
+
+  /* Dog-eared clipped viewport that follows the cursor. Width/height and
+     transform are set via JS — this only owns the shape and fade. */
+  .logotype-window {
+    position: absolute;
+    top: 0;
+    left: 0;
+    inline-size: 140px;
+    block-size: 140px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    transition: opacity 0.2s ease;
+    clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
+  }
+
+  .logotype-window.is-visible {
+    opacity: 1;
+  }
+
+  /* Sized to match .logotype-stage exactly (via JS) and counter-transformed
+     against .logotype-window's own movement, so this stays visually pinned
+     in place — the window above only changes which slice of it is visible. */
+  .logotype-window-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    will-change: transform;
+  }
+
+  .logotype-window-image {
+    position: absolute;
+    inset: 0;
+    /* No real photo yet — a placeholder standing in for one. Biased dark:
+       a difference-blended duplicate needs strong invert-contrast wherever
+       it lands, which a ~50%-luminance midtone can't provide. */
+    background: linear-gradient(135deg, #000000 0%, #262626 100%);
+  }
+
+  .logotype-window-glyphs {
+    position: absolute;
+    top: 0;
+    left: 0;
+    inline-size: 100%;
+    block-size: auto;
+    mix-blend-mode: difference;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logotype-window {
+      display: none;
+    }
+  }
 </style>
+
+<script>
+  const stage = document.querySelector<HTMLElement>(".logotype-stage");
+  const win = document.querySelector<HTMLElement>(".logotype-window");
+  const inner = document.querySelector<HTMLElement>(".logotype-window-inner");
+  const canHover = window.matchMedia(
+    "(hover: hover) and (pointer: fine)",
+  ).matches;
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  if (stage && win && inner && canHover && !reducedMotion) {
+    const boxSize = 140;
+
+    // .logotype-window-inner must be exactly stage-sized so the duplicate
+    // glyphs render at the same scale as the real ones — it's a sibling of
+    // the small clipped window, not a descendant of the stage, so it can't
+    // just inherit the stage's size.
+    const syncInnerSize = () => {
+      const rect = stage.getBoundingClientRect();
+      inner.style.width = `${rect.width}px`;
+      inner.style.height = `${rect.height}px`;
+    };
+
+    syncInnerSize();
+    window.addEventListener("resize", syncInnerSize);
+
+    stage.addEventListener("mousemove", (e) => {
+      const rect = stage.getBoundingClientRect();
+      const x = e.clientX - rect.left - boxSize / 2;
+      const y = e.clientY - rect.top - boxSize / 2;
+      win.style.transform = `translate(${x}px, ${y}px)`;
+      inner.style.transform = `translate(${-x}px, ${-y}px)`;
+    });
+
+    stage.addEventListener("mouseenter", () => {
+      win.classList.add("is-visible");
+    });
+
+    stage.addEventListener("mouseleave", () => {
+      win.classList.remove("is-visible");
+    });
+  }
+</script>
