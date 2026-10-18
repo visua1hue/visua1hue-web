@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Subsets Geist Mono Regular to Basic Latin plus a few dashes and spaces used by the mono labels.
-# Usage: scripts/subset-geist-mono.sh path/to/GeistMono-Regular.woff2
+# Usage: tools/subset-geist-mono.sh path/to/GeistMono-Regular.woff2
 # Source: dist/fonts/geist-mono/ in the `geist` npm package.
 set -eu
 src="${1:?path to GeistMono-Regular.woff2}"

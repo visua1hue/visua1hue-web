@@ -44,7 +44,7 @@ export default defineConfig({
       },
     },
     {
-      // Vendored from the `geist` npm package (OFL), subset by scripts/subset-geist-mono.sh; only 400 is used
+      // Vendored from the `geist` npm package (OFL), subset by tools/subset-geist-mono.sh; only 400 is used
       provider: fontProviders.local(),
       name: 'Geist Mono',
       cssVariable: '--font-geist-mono',
