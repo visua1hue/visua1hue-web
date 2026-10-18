@@ -2,7 +2,7 @@ const GLYPHS = "!<>-_/\\[]{}=+*^?#%01ABCDEF";
 const DURATION = 520;
 
 /** Shows the year in hex; scrambles to decimal on hover/focus and back on leave. */
-export function initYear(el: HTMLElement) {
+export function initYear(el: HTMLElement): () => void {
   const y = new Date().getFullYear();
   const hex = `0x${y.toString(16).toUpperCase()}`;
   const dec = String(y);
@@ -33,6 +33,11 @@ export function initYear(el: HTMLElement) {
     raf = requestAnimationFrame(tick);
   }
 
-  for (const e of ["mouseenter", "focus"]) el.addEventListener(e, () => scramble(dec));
-  for (const e of ["mouseleave", "blur"]) el.addEventListener(e, () => scramble(hex));
+  const ac = new AbortController();
+  for (const e of ["mouseenter", "focus"]) el.addEventListener(e, () => scramble(dec), { signal: ac.signal });
+  for (const e of ["mouseleave", "blur"]) el.addEventListener(e, () => scramble(hex), { signal: ac.signal });
+  return () => {
+    ac.abort();
+    cancelAnimationFrame(raf);
+  };
 }

@@ -10,7 +10,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
   <a class="legal ext" href="/privacy"><span class="t">Privacy Policy</span><Arrow /></a>
   <div class="meta">
     <!-- role=img: screen readers read the decimal label, not the scrambling glyphs -->
-    <span>Copyright <span class="year" id="year" tabindex="0" role="img" aria-label={String(year)}>{yearHex}</span></span>
+    <span>Copyright <span class="year" data-year tabindex="0" role="img" aria-label={String(year)}>{yearHex}</span></span>
   </div>
 </footer>
 
@@ -70,6 +70,5 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
 <script>
   import { initYear } from "@scripts/footer/year";
 
-  const el = document.getElementById("year");
-  if (el) initYear(el);
+  document.querySelectorAll<HTMLElement>("[data-year]").forEach((el) => initYear(el));
 </script>
