@@ -76,6 +76,8 @@ export default defineConfig({
     },
     build: {
       minify: true,
+      // Ship every script as a file so the CSP can drop 'unsafe-inline' for scripts
+      assetsInlineLimit: 0,
     },
   },
 });
