@@ -1,0 +1,73 @@
+---
+import Arrow from "@components/Arrow.astro";
+
+// Build year as a fallback; scripts/footer/year.ts swaps in the current one
+const yearHex = `0x${new Date().getFullYear().toString(16).toUpperCase()}`;
+---
+
+<footer>
+  <a class="legal ext" href="#privacy"><span class="t">Privacy Policy</span><Arrow /></a>
+  <div class="meta">
+    <span>Copyright <span class="year" id="year" tabindex="0" aria-label="Copyright year">{yearHex}</span></span>
+  </div>
+</footer>
+
+<style>
+  footer {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding: 20px clamp(16px, 4vw, 40px);
+    font-size: 13px;
+    background: var(--color-bg);
+  }
+
+  .legal,
+  .meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+  }
+
+  .legal {
+    min-height: var(--hit-target);
+    display: flex;
+  }
+
+  .legal:hover {
+    color: var(--color-fg);
+  }
+
+  .meta {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .year {
+    display: inline-block;
+    width: 6ch;
+    text-align: left;
+    white-space: pre;
+    color: var(--color-muted);
+    cursor: default;
+    min-height: var(--hit-target);
+    line-height: var(--hit-target);
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+<script>
+  import { initYear } from "@scripts/footer/year";
+
+  const el = document.getElementById("year");
+  if (el) initYear(el);
+</script>
