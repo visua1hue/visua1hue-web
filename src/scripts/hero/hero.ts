@@ -8,7 +8,7 @@ const STILL_TIME = 12;
 /** Field fade-in, seconds. */
 const INTRO = 1.8;
 /** The field drifts slowly; above 60fps only costs battery. */
-const MIN_FRAME_MS = 1000 / 60 - 1;
+const FRAME_MS = 1000 / 60;
 
 export function initHero(root: HTMLElement): () => void {
   const parts = heroParts(root);
@@ -66,8 +66,10 @@ export function initHero(root: HTMLElement): () => void {
   let onScreen = true;
   const frame = (now: number) => {
     raf = requestAnimationFrame(frame);
-    if (now - last < MIN_FRAME_MS) return;
-    last = now;
+    const elapsed = now - last;
+    // 1ms slack so a 60Hz display never skips; the remainder keeps 90-144Hz averaging 60fps
+    if (elapsed < FRAME_MS - 1) return;
+    last = now - (elapsed >= FRAME_MS ? elapsed % FRAME_MS : 0);
     const t = Math.max(0, now - t0) / 1000;
     renderer.draw(t, Math.min(1, t / INTRO), glitch?.(t, current.height) ?? null);
   };
