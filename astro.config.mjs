@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
-import icon from 'astro-icon';
 import { execSync } from 'node:child_process';
 
 // Short commit for the BUILD link. Workers Builds exposes the SHA; local builds read git.
@@ -60,13 +59,6 @@ export default defineConfig({
         ],
       },
     },
-  ],
-
-  // Integrations
-  integrations: [
-    icon({
-      iconDir: 'src/assets/icons',
-    }),
   ],
 
   // Dev Toolbar

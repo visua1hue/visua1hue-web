@@ -1,64 +1,20 @@
 :root {
-  /* LAYER 1: COLOR PALETTE - RAW */
-  --color-primary-100: oklch(0.1449 0.0031 247.37);
-  --color-primary-500: oklch(0.982 0.005 95.099);
-  --color-primary-700: oklch(0.8764 0.0154 261.5);
-  --color-neutral-0: oklch(0.982 0.005 95.099);
-  --color-neutral-50: oklch(0.956 0.003 48.718);
-  --color-neutral-100: oklch(0.8764 0.0154 261.5);
-  --color-neutral-300: oklch(0.3677 0.0111 248.13);
-  --color-neutral-500: oklch(0.2674 0.009 248.17);
-  --color-neutral-700: oklch(0.1916 0.0058 248.13);
-  --color-neutral-900: oklch(0.1449 0.0031 247.37);
+  /* COLOR — dark only */
+  --color-bg: #08090a;
+  --color-fg: #f7f8f8;
+  --color-soft: #c9cdd3; /* emphasised secondary text */
+  --color-muted: #8a8f98;
+  --color-subtle: #5a5e66; /* mono labels */
+  --color-faint: #3e4147;
 
-  /* LAYER 2: COLOR PALETTE - SEMANTIC TOKENS */
-  --color-bg-body: oklch(1 0 0);
-  --color-bg-surface: var(--color-primary-100);
-  --color-text-default: var(--color-primary-100);
-  --color-text-muted: color-mix(in oklch, var(--color-primary-100) 40%, transparent);
-  --color-text-highlight: var(--color-primary-100);
-  --color-interactive-default: var(--color-primary-100);
-  --color-interactive-hover: color-mix(in oklch, var(--color-primary-100) 65%, transparent);
-  --color-border-default: var(--color-primary-100);
-
+  /* TYPE */
   --font-primary: var(--font-inter);
   --font-mono: var(--font-geist-mono);
 
-  --font-size-sm: 0.875rem; /* 14px */
-  --font-size-base: 1rem; /* 16px */
-  --font-size-md: 1.125rem; /* 18px */
-  --font-size-lg: 1.25rem; /* 20px */
-  --font-size-xl: 1.5rem; /* 24px */
-  --font-size-xxl: 2.25rem; /* 36px */
+  /* LAYOUT */
+  --grid-size: 24px; /* hero grid square; mirrored in scripts/hero/layout.ts */
+  --hit-target: 44px;
 
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-bold: 700;
-
-  --spacing-xs: 0.25rem; /* 4px */
-  --spacing-sm: 0.5rem; /* 8px */
-  --spacing-md: 1rem; /* 16px */
-  --spacing-lg: 2rem; /* 32px */
-  --spacing-xl: 4rem; /* 64px */
-  --spacing-xxl: 8rem; /* 128px */
-
-  --container-width: 1240px;
-  --container-padding: var(--spacing-lg);
-
-  --line-height-base: 1.5;
-
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-
-  --border-radius-sm: var(--radius-sm);
-  --border-radius-md: var(--radius-md);
-  --border-radius-lg: var(--radius-lg);
-
-  --border-width: 1px;
-
-  --shadow-sm: 0 1px 2px oklch(from var(--color-neutral-900) l c h / 0.05);
-  --shadow-md:
-    0 4px 6px -1px oklch(from var(--color-neutral-900) l c h / 0.1),
-    0 2px 4px -2px oklch(from var(--color-neutral-900) l c h / 0.1);
+  /* MOTION */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
 }

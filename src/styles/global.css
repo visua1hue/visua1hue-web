@@ -1,43 +1,117 @@
 @import "./variables.css";
-@import "./motion.css";
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
-html {
-  font-family: var(--font-primary);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  line-height: 1.6;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html { scroll-behavior: smooth; }
+[hidden] {
+  display: none !important;
 }
 
 html,
 body {
-  overscroll-behavior: none;
-  touch-action: manipulation;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom, 0);
-  background-color: var(--color-bg-body);
-  color: var(--color-text-default);
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-fg);
 }
 
-main {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr;
-  flex: 1;
+body {
+  font-family: var(--font-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
 }
 
-img {
-  user-select: none;
-  pointer-events: none;
+a {
+  color: var(--color-muted);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-fg);
+}
+
+.dim {
+  color: var(--color-faint);
+}
+
+/* Link with hover underline on .t and a trailing ↗ arrow */
+.ext {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.ext .t {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.ext:hover .t,
+.ext:focus-visible .t {
+  text-decoration-color: currentColor;
+}
+
+.ext .arw {
+  flex: none;
+  opacity: 0;
+  transform: translate(-1px, 1px);
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.ext:hover .arw,
+.ext:focus-visible .arw {
+  opacity: 0.45;
+  transform: none;
+}
+
+/* One-row mono block locked to the hero grid; position set by scripts/hero/layout.ts */
+.grid-cell {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 10px;
+  background: var(--color-bg);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes flick {
+  0% { opacity: 1; }
+  4% { opacity: 0.25; }
+  7% { opacity: 1; }
+  52% { opacity: 1; }
+  54% { opacity: 0.4; }
+  55% { opacity: 1; }
+  78% { opacity: 0.7; }
+  80% { opacity: 1; }
 }

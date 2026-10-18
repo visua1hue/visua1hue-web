@@ -1,5 +1,4 @@
 ---
-import { ClientRouter } from "astro:transitions";
 import { Font } from "astro:assets";
 import "@styles/global.css";
 
@@ -47,29 +46,14 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
     <meta name="twitter:description" content={description} />
 
     <!-- Theme color -->
-    <meta name="theme-color" content="oklch(1 0 0)" />
+    <meta name="theme-color" content="#08090A" />
 
     <Font cssVariable="--font-inter" preload />
     <Font cssVariable="--font-geist-mono" preload />
-
-    <ClientRouter />
   </head>
-  <body class="is-loading">
-    <main>
-      <slot />
-    </main>
+  <body>
+    <slot />
     <script>
-      import { initAnimations } from "@scripts/animation/motion";
-
-      // astro:page-load fires on initial load and every View Transition navigation
-      document.addEventListener('astro:page-load', () => {
-        initAnimations();
-        // Release scroll-lock on pages that don't run their own entrance animation
-        if (!document.querySelector('[data-entrance]')) {
-          document.body.classList.remove('is-loading');
-        }
-      });
-
       // Metrics HUD — lazy-loaded on backtick; auto-restores if localStorage flag is set
       const _metricsKey = '__dev-metrics-visible';
       let _metricsInit = false;
