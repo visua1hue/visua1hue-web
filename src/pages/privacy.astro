@@ -1,0 +1,122 @@
+---
+export const prerender = true;
+import Layout from "@layouts/Layout.astro";
+import Footer from "@components/Footer.astro";
+---
+
+<Layout title="Privacy Policy — VISUA1HUE" description="What this site does and doesn't do with your data.">
+  <main>
+    <article class="policy">
+      <a class="back" href="/">← VISUA1HUE</a>
+      <h1 class="label">Privacy Policy</h1>
+      <!-- TODO before launch: add controller name and contact details (GDPR Art. 13) and have this reviewed -->
+
+      <p class="lead">
+        <strong>No cookies, no analytics, no tracking.</strong> This site doesn't load anything from third parties: fonts
+        and scripts are served from this domain.
+      </p>
+
+      <h2>Hosting</h2>
+      <p>
+        The site runs on Cloudflare. To deliver and protect it, Cloudflare processes technical data for every request:
+        IP address, browser, requested page and time. This is kept in short-lived logs and isn't used to identify or
+        profile you. Legal basis: legitimate interest in running a secure website (Art. 6(1)(f) GDPR).
+        See <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare's privacy policy</a>.
+      </p>
+
+      <h2>Stored on your device</h2>
+      <p>
+        If you switch <strong>DEBUG</strong> on, your choice is saved in your browser's local storage
+        under <code>visua1hue-debug</code>. The performance numbers it shows are measured in your browser and never sent
+        anywhere. Clearing site data removes it.
+      </p>
+
+      <h2>External links</h2>
+      <p>Links to LinkedIn and GitHub take you to their sites, where their privacy policies apply.</p>
+
+      <h2>Your rights</h2>
+      <p>
+        You have the right to access, correct, delete or restrict processing of your data, to object to processing, and
+        to complain to a data protection authority.
+      </p>
+    </article>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .policy {
+    width: 100%;
+    max-width: 760px;
+    padding: 120px 24px clamp(96px, 12vw, 144px);
+    color: var(--color-muted);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .back,
+  .label,
+  h2 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--hit-target);
+    color: var(--color-subtle);
+  }
+
+  .back:hover {
+    color: var(--color-fg);
+  }
+
+  .label {
+    margin: 32px 0 28px;
+    color: var(--color-subtle);
+  }
+
+  h2 {
+    margin: 48px 0 12px;
+    color: var(--color-subtle);
+  }
+
+  p {
+    margin: 0;
+  }
+
+  .lead {
+    font-size: clamp(21px, 2.6vw, 28px);
+    font-weight: 500;
+    line-height: 1.38;
+    letter-spacing: -0.02em;
+  }
+
+  strong {
+    font-weight: 500;
+    color: var(--color-fg);
+  }
+
+  p a {
+    color: var(--color-fg);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--color-soft);
+  }
+</style>
