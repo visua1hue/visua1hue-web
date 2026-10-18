@@ -42,7 +42,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
   const cfRuntime = (
     locals as { cfContext?: { waitUntil?: (p: Promise<unknown>) => void } }
   ).cfContext;
-  const cacheAvailable = typeof caches !== "undefined";
+  // Dev runs in workerd too; caching there serves stale HTML after edits
+  const cacheAvailable = !import.meta.env.DEV && typeof caches !== "undefined";
   const isCacheable = request.method === "GET" || request.method === "HEAD";
   const cacheKey =
     isCacheable && cacheAvailable ? new Request(request.url, request) : null;
