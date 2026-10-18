@@ -47,8 +47,10 @@ export function initReveal(root: HTMLElement): () => void {
 
   const ac = new AbortController();
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Wrap even under reduced motion (CSS keeps words fully lit there): span boundaries
+  // shift glyphs by sub-pixels, so wrapping in only one mode would render text differently
   const words: HTMLElement[] = [];
-  if (!reduce) paras.forEach((p) => wrapWords(p, words));
+  paras.forEach((p) => wrapWords(p, words));
 
   let m: Metrics;
   const measure = () => {
