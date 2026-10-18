@@ -66,13 +66,13 @@ export default defineConfig({
   // Integrations
   integrations: [securityHeaders()],
 
+  // CSS is small (~12KB); inlining saves a render-blocking request per page
+  build: {
+    inlineStylesheets: 'always',
+  },
+
   // Dev Toolbar
   devToolbar: { enabled: false },
-
-  // Prefetch Performance Tuning
-  prefetch: {
-    defaultStrategy: 'hover',
-  },
 
   // Vite Configuration
   vite: {
