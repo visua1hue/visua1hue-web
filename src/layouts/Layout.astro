@@ -49,7 +49,8 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
     <meta name="theme-color" content="#08090A" />
 
     <Font cssVariable="--font-inter" preload />
-    <Font cssVariable="--font-geist-mono" preload />
+    <!-- Mono is only used for small labels; not worth a preload -->
+    <Font cssVariable="--font-geist-mono" />
   </head>
   <body>
     <slot />
