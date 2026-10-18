@@ -1,0 +1,130 @@
+---
+import SocialLink from "@components/SocialLink.astro";
+---
+
+<section class="about" id="about" aria-labelledby="about-label">
+  <canvas class="quote" id="quote" aria-hidden="true"></canvas>
+  <p class="label fade" id="about-label">About</p>
+  <p class="prose" data-reveal>
+    You've found my node on the web, where I share <strong>what I build, what I learn and what I'm curious about.</strong>
+  </p>
+  <p class="prose" data-reveal>
+    It all started with machines I wasn't supposed to open. No internet, no manuals, <strong
+      >just a screwdriver and a lot of trial and error.</strong
+    >
+  </p>
+  <p class="prose" data-reveal>
+    I never stopped. Only the machines changed: <strong>software, then systems, then platforms.</strong> Lately I've been
+    drifting toward <strong>solution architecture</strong>, designing how the pieces fit before anyone builds them.
+  </p>
+  <p class="prose" data-reveal>
+    Now I'm building <strong>AI-accelerated workflows and products.</strong> Same curiosity, new machines.
+  </p>
+  <p class="prose" data-reveal>
+    Always up for a good conversation and meeting new people. Find me on <SocialLink
+      href="https://www.linkedin.com/in/michaelhuebel/"
+      icon="linkedin">LinkedIn</SocialLink
+    > or <SocialLink href="https://github.com/visua1hue" icon="github">GitHub</SocialLink>.
+  </p>
+</section>
+
+<style>
+  .about {
+    --pad-top: clamp(64px, 9vw, 104px);
+    position: relative;
+    width: 100%;
+    max-width: 760px;
+    padding: var(--pad-top) 24px clamp(96px, 12vw, 144px);
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .about > :not(.quote) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .label {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Dithered quotation mark drawn by scripts/about/quote.ts */
+  .quote {
+    position: absolute;
+    z-index: 0;
+    top: calc(var(--pad-top) + 30px);
+    left: clamp(-96px, -6vw, 4px);
+    width: clamp(120px, 15vw, 190px);
+    height: clamp(100px, 12.5vw, 158px);
+    pointer-events: none;
+    image-rendering: pixelated;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+
+  .quote:global(.in) {
+    opacity: 1;
+  }
+
+  .prose {
+    margin: 0;
+    font-size: clamp(21px, 2.6vw, 28px);
+    font-weight: 500;
+    line-height: 1.38;
+    letter-spacing: -0.02em;
+    color: var(--color-muted);
+  }
+
+  .prose strong {
+    font-weight: 500;
+    color: var(--color-fg);
+  }
+
+  /* Words are wrapped at runtime by scripts/about/reveal.ts */
+  .prose :global(.w) {
+    opacity: 0.16;
+    transition: opacity 0.25s linear;
+  }
+
+  .fade {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 0.8s ease,
+      transform 0.8s var(--ease-out);
+  }
+
+  .fade:global(.in) {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .prose :global(.w) {
+      opacity: 1;
+    }
+
+    .fade {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  import { drawQuote } from "@scripts/about/quote";
+  import { initReveal } from "@scripts/about/reveal";
+
+  const quote = document.getElementById("quote") as HTMLCanvasElement | null;
+  if (quote) drawQuote(quote);
+  initReveal(document.getElementById("about"));
+</script>
