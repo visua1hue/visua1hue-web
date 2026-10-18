@@ -32,6 +32,22 @@ export default defineConfig({
         ],
       },
     },
+    {
+      // Vendored from the `geist` npm package (OFL); only 400 is used
+      provider: fontProviders.local(),
+      name: 'Geist Mono',
+      cssVariable: '--font-geist-mono',
+      fallbacks: ['ui-monospace', 'monospace'],
+      options: {
+        variants: [
+          {
+            weight: '400',
+            style: 'normal',
+            src: ['./src/assets/fonts/GeistMono-Regular.woff2'],
+          },
+        ],
+      },
+    },
   ],
 
   // Integrations
