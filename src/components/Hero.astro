@@ -1,0 +1,68 @@
+---
+import Logotype from "@components/Logotype.astro";
+import RoleLine from "@components/RoleLine.astro";
+import BuildBadge from "@components/BuildBadge.astro";
+import DebugToggle from "@components/DebugToggle.astro";
+---
+
+<section class="hero" id="hero">
+  <div class="grid" aria-hidden="true"></div>
+  <canvas class="field" aria-hidden="true"></canvas>
+  <DebugToggle />
+  <BuildBadge />
+  <Logotype />
+  <RoleLine />
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    padding: 0 16px;
+    text-align: center;
+    width: 100%;
+    margin-inline: auto;
+    /* Pre-layout guess matching scripts/hero/layout.ts at its 14+2 row minimum,
+       so the first paint doesn't shift when the script snaps the grid */
+    width: calc(round(down, 100vw - 2 * clamp(10px, 2vw, 24px) - 1px, var(--grid-size)) + 1px);
+    height: calc(16 * var(--grid-size) + 1px);
+    padding-bottom: calc(2 * var(--grid-size));
+  }
+
+  /* 24px squares with + markers at the corners */
+  .grid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2248%22%20height%3D%2248%22%20viewBox%3D%220%200%2048%2048%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%3E%3Cg%20opacity%3D%220.07%22%20stroke%3D%22%238A8F98%22%3E%3Cpath%20d%3D%22M48%2023.5H0%22%2F%3E%3Cpath%20d%3D%22M48%2047.5H0%22%2F%3E%3Cpath%20d%3D%22M23.5%200V48%22%2F%3E%3Cpath%20d%3D%22M47.5%200V48%22%2F%3E%3C%2Fg%3E%3Cg%20opacity%3D%220.16%22%20fill%3D%22%238A8F98%22%3E%3Cpath%20d%3D%22M24%20-5H23V-1H19V0H23V4H24V0H28V-1H24V-5Z%22%2F%3E%3Cpath%20d%3D%22M24%2043H23V47H19V48H23V52H24V48H28V47H24V43Z%22%2F%3E%3Cpath%20d%3D%22M0%2019H-1V23H-5V24H-1V28H0V24H4V23H0V19Z%22%2F%3E%3Cpath%20d%3D%22M0%20-5H-1V-1H-5V0H-1V4H0V0H4V-1H0V-5Z%22%2F%3E%3Cpath%20d%3D%22M48%2019H47V23H43V24H47V28H48V24H52V23H48V19Z%22%2F%3E%3Cpath%20d%3D%22M24%2019H23V23H19V24H23V28H24V24H28V23H24V19Z%22%2F%3E%3Cpath%20d%3D%22M0%2043H-1V47H-5V48H-1V52H0V48H4V47H0V43Z%22%2F%3E%3Cpath%20d%3D%22M48%20-5H47V-1H43V0H47V4H48V0H52V-1H48V-5Z%22%2F%3E%3Cpath%20d%3D%22M48%2043H47V47H43V48H47V52H48V48H52V47H48V43Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+    background-size: 48px 48px;
+    background-position: -23px -23px;
+  }
+
+  .field {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    image-rendering: pixelated;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+
+  .field.on {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  import { initHero } from "@scripts/hero/hero";
+
+  const hero = document.getElementById("hero");
+  if (hero) initHero(hero);
+</script>

@@ -1,0 +1,190 @@
+---
+const cells = [
+  { label: "LCP", key: "lcp", initial: "—", unit: "ms" },
+  { label: "INP", key: "inp", initial: "—", unit: "ms" },
+  { label: "CLS", key: "cls", initial: "0.000", unit: "" },
+  { label: "FPS", key: "fps", initial: "—", unit: "" },
+] as const;
+---
+
+<button class="grid-cell toggle" id="dbg" type="button" aria-pressed="false" data-cell="debug"
+  ><span class="dim">Debug:</span><span class="v" id="dbgv">False</span></button
+>
+<div class="panel" id="dbgpanel" aria-hidden="true" hidden>
+  {
+    cells.map((c) => (
+      <div class="grid-cell metric" data-cell="metric">
+        <span class="dim">{c.label}</span>
+        <span class="v">
+          <span class="n" data-m={c.key}>{c.initial}</span>
+          <span class="u">{c.unit}</span>
+        </span>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .toggle {
+    all: unset;
+    box-sizing: border-box;
+    /* all: unset wipes .grid-cell; restore it */
+    position: absolute;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 10px;
+    background: var(--color-bg);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-subtle);
+    cursor: pointer;
+    /* Pre-layout position (row 14, right-aligned); scripts/hero/layout.ts owns it after */
+    top: 337px;
+    right: 25px;
+    width: 119px;
+    height: 23px;
+  }
+
+  .toggle .dim {
+    width: 7.5ch;
+    display: inline-block;
+  }
+
+  .toggle .v {
+    color: var(--color-muted);
+    width: 5ch;
+    text-align: left;
+    margin-left: 1px;
+  }
+
+  .toggle:hover .v,
+  .toggle:focus-visible .v,
+  .toggle[aria-pressed="true"] .v {
+    color: var(--color-fg);
+  }
+
+  .toggle:focus-visible {
+    outline: 1px solid var(--color-subtle);
+    outline-offset: -1px;
+  }
+
+  .panel {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .metric {
+    font-variant-numeric: tabular-nums;
+    width: 119px;
+    height: 23px;
+  }
+
+  /* Pre-layout positions: two per row in rows 13-14 from column 1 */
+  .metric:nth-child(odd) {
+    left: 25px;
+  }
+
+  .metric:nth-child(even) {
+    left: 169px;
+  }
+
+  .metric:nth-child(-n + 2) {
+    top: 313px;
+  }
+
+  .metric:nth-child(n + 3) {
+    top: 337px;
+  }
+
+  .metric .dim {
+    width: 5ch;
+    display: inline-block;
+  }
+
+  .metric .v {
+    display: inline-flex;
+    color: var(--color-soft);
+    animation: flick 2.6s steps(1, end) infinite;
+  }
+
+  .metric .n {
+    width: 5ch;
+    text-align: right;
+  }
+
+  .metric .u {
+    width: 3ch;
+    padding-left: 1ch;
+  }
+
+  .metric:nth-child(2) .v {
+    animation-delay: -0.7s;
+  }
+
+  .metric:nth-child(3) .v {
+    animation-delay: -1.3s;
+  }
+
+  .metric:nth-child(4) .v {
+    animation-delay: -1.9s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .metric .v {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { subscribeMetrics, type Metrics } from "@scripts/metrics";
+
+  const KEY = "visua1hue-debug";
+  const btn = document.getElementById("dbg")!;
+  const val = document.getElementById("dbgv")!;
+  const panel = document.getElementById("dbgpanel")!;
+  const out = Object.fromEntries(
+    [...panel.querySelectorAll<HTMLElement>("[data-m]")].map((el) => [el.dataset.m, el]),
+  ) as Record<"lcp" | "inp" | "cls" | "fps", HTMLElement>;
+
+  const render = (m: Readonly<Metrics>) => {
+    if (m.lcp !== null) out.lcp.textContent = String(m.lcp);
+    if (m.inp !== null) out.inp.textContent = String(m.inp);
+    if (m.fps !== null) out.fps.textContent = String(m.fps);
+    out.cls.textContent = m.cls.toFixed(3);
+  };
+
+  let unsubscribe: (() => void) | null = null;
+
+  function set(on: boolean) {
+    btn.setAttribute("aria-pressed", String(on));
+    val.textContent = on ? "True" : "False";
+    panel.hidden = !on;
+    if (on && !unsubscribe) unsubscribe = subscribeMetrics(render);
+    if (!on && unsubscribe) {
+      unsubscribe();
+      unsubscribe = null;
+    }
+    try {
+      localStorage.setItem(KEY, on ? "1" : "0");
+    } catch {
+      /* storage blocked */
+    }
+  }
+
+  let initial = false;
+  try {
+    initial = localStorage.getItem(KEY) === "1";
+  } catch {
+    /* storage blocked */
+  }
+  set(initial);
+  btn.addEventListener("click", () => set(btn.getAttribute("aria-pressed") !== "true"));
+</script>

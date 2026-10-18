@@ -1,11 +1,27 @@
 ---
 export const prerender = true;
 import Layout from "@layouts/Layout.astro";
+import Hero from "@components/Hero.astro";
 ---
 
 <Layout
   title="VISUA1HUE — Consultant and Developer"
   description="Independent Consultant and Developer. Building reliable, performant solutions."
 >
-  <main></main>
+  <main>
+    <Hero />
+  </main>
 </Layout>
+
+<style>
+  main {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* 5 empty grid rows above the hero */
+    padding-top: 120px;
+  }
+</style>

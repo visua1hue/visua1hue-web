@@ -1,0 +1,38 @@
+---
+import Arrow from "@components/Arrow.astro";
+
+const sha = __BUILD_SHA__;
+const href = `https://github.com/visua1hue/visua1hue-web/commit/${sha}`;
+---
+
+<div class="grid-cell build" data-cell="build">
+  <a class="ext" href={href} aria-label={`Build ${sha} on GitHub`}
+    ><span class="dim">Build:</span><span class="t">{sha}</span><Arrow /></a
+  >
+</div>
+
+<style>
+  /* Pre-layout position (row 13, right-aligned); scripts/hero/layout.ts owns it after */
+  .build {
+    top: 313px;
+    right: 25px;
+    width: 119px;
+    height: 23px;
+  }
+
+  a {
+    color: var(--color-subtle);
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  a:hover {
+    color: var(--color-fg);
+  }
+
+  .dim {
+    width: 7.5ch;
+    display: inline-block;
+  }
+</style>

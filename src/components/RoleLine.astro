@@ -1,0 +1,158 @@
+<div class="copy">
+  <p class="tag">Curious by default.</p>
+  <p class="roles">
+    <span>Currently</span>
+    <button
+      class="role"
+      id="role"
+      type="button"
+      aria-expanded="false"
+      aria-label="Technical Consultant, Innovation, at Centric Software"
+      ><b>Technical Consultant</b><span class="more" aria-hidden="true"
+        ><span>&nbsp;– Innovation at Centric Software</span></span
+      ><span class="plus" aria-hidden="true">+</span></button
+    >
+    <span class="sep" aria-hidden="true">/</span>
+    <span class="prev">Previously Solutions Engineer</span>
+  </p>
+</div>
+
+<style>
+  .copy {
+    position: relative;
+    z-index: 2;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    animation: rise 1.2s ease both 0.9s;
+  }
+
+  /* Dark halo so the text stays legible over the dither */
+  .copy::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -56px -140px;
+    background: radial-gradient(closest-side, rgba(8, 9, 10, 0.92), rgba(8, 9, 10, 0.75) 45%, rgba(8, 9, 10, 0));
+    pointer-events: none;
+  }
+
+  .tag {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+    color: var(--color-fg);
+  }
+
+  .roles {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    column-gap: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+    color: var(--color-muted);
+  }
+
+  .sep {
+    color: var(--color-faint);
+  }
+
+  .prev {
+    color: var(--color-subtle);
+  }
+
+  .role {
+    all: unset;
+    cursor: default;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--hit-target);
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .role b {
+    font-weight: 500;
+    color: var(--color-soft);
+  }
+
+  .more {
+    display: inline-grid;
+    grid-template-columns: 0fr;
+    opacity: 0;
+    transition:
+      grid-template-columns 0.45s var(--ease-out),
+      opacity 0.35s ease;
+  }
+
+  .more > span {
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--color-soft);
+  }
+
+  .plus {
+    display: inline-block;
+    width: 14px;
+    margin-left: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-subtle);
+    transition: transform 0.3s ease;
+  }
+
+  .role:hover .more,
+  .role:focus-visible .more,
+  .role[aria-expanded="true"] .more {
+    grid-template-columns: 1fr;
+    opacity: 1;
+  }
+
+  .role:hover .plus,
+  .role:focus-visible .plus,
+  .role[aria-expanded="true"] .plus {
+    transform: rotate(45deg);
+  }
+
+  .role:focus-visible {
+    outline: 1px solid var(--color-subtle);
+    outline-offset: 4px;
+  }
+
+  @media (max-width: 560px) {
+    .sep {
+      display: none;
+    }
+
+    .prev {
+      flex-basis: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .copy {
+      animation: none;
+    }
+
+    .more,
+    .plus {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // Tap toggles the expansion; hover and focus are handled in CSS
+  const role = document.getElementById("role");
+  role?.addEventListener("click", () => {
+    role.setAttribute("aria-expanded", String(role.getAttribute("aria-expanded") !== "true"));
+  });
+</script>
