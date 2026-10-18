@@ -1,5 +1,5 @@
 /**
- * Web vitals + FPS collector, kept in memory only and never sent anywhere.
+ * Web vitals + FPS collector for the DEBUG panel, kept in memory only and never sent anywhere.
  * One set of observers and one rAF loop, shared by every subscriber.
  */
 
