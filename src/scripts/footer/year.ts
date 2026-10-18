@@ -8,6 +8,7 @@ export function initYear(el: HTMLElement) {
   const dec = String(y);
   const len = Math.max(hex.length, dec.length);
   el.textContent = hex;
+  el.setAttribute("aria-label", dec);
 
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let raf = 0;

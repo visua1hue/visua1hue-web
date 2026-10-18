@@ -2,13 +2,15 @@
 import Arrow from "@components/Arrow.astro";
 
 // Build year as a fallback; scripts/footer/year.ts swaps in the current one
-const yearHex = `0x${new Date().getFullYear().toString(16).toUpperCase()}`;
+const year = new Date().getFullYear();
+const yearHex = `0x${year.toString(16).toUpperCase()}`;
 ---
 
 <footer>
   <a class="legal ext" href="#privacy"><span class="t">Privacy Policy</span><Arrow /></a>
   <div class="meta">
-    <span>Copyright <span class="year" id="year" tabindex="0" aria-label="Copyright year">{yearHex}</span></span>
+    <!-- role=img: screen readers read the decimal label, not the scrambling glyphs -->
+    <span>Copyright <span class="year" id="year" tabindex="0" role="img" aria-label={String(year)}>{yearHex}</span></span>
   </div>
 </footer>
 
