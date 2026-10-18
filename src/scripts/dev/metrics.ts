@@ -4,6 +4,8 @@
  * Lazy-loaded on first backtick (`) press. Subsequent backticks toggle show / hide.
  */
 
+import { subscribeMetrics } from '@scripts/metrics';
+
 const ROOT_ID  = '__dev-metrics';
 const STYLE_ID = '__dev-metrics-style';
 
@@ -79,67 +81,14 @@ export function initDevMetrics() {
   const clsEl = mkRow('CLS', '0.000');
   const inpEl = mkRow('INP', '—');
 
-  // State
-  let fps = 0, fcp = 0, clsScore = 0, lcp = 0, inp = 0;
-  let lcpDone = false;
-  let frameCount = 0, bucketStart = 0;
-
-  const stopLcp = () => { lcpDone = true; };
-  window.addEventListener('pointerdown', stopLcp, { once: true, capture: true });
-  window.addEventListener('keydown', stopLcp, { once: true, capture: true });
-
-  const observe = (
-    type: string,
-    cb: (entries: PerformanceEntryList) => void,
-    opts: Record<string, unknown> = { buffered: true },
-  ) => {
-    try {
-      const po = new PerformanceObserver(list => cb(list.getEntries()));
-      po.observe({ type, ...opts } as PerformanceObserverInit);
-    } catch { /* unsupported */ }
-  };
-
-  observe('layout-shift', entries => {
-    for (const e of entries as unknown as Array<PerformanceEntry & { value: number; hadRecentInput: boolean }>) {
-      if (!e.hadRecentInput) clsScore += e.value;
-    }
-    clsEl.textContent = clsScore.toFixed(3);
+  const ms = (v: number | null) => (v === null ? '—' : `${v} ms`);
+  subscribeMetrics(m => {
+    fpsEl.textContent = m.fps === null ? '—' : String(m.fps);
+    fcpEl.textContent = ms(m.fcp);
+    lcpEl.textContent = ms(m.lcp);
+    clsEl.textContent = m.cls.toFixed(3);
+    inpEl.textContent = ms(m.inp);
   });
-
-  observe('paint', entries => {
-    const e = entries.find(e => e.name === 'first-contentful-paint');
-    if (e) { fcp = Math.round(e.startTime); fcpEl.textContent = `${fcp} ms`; }
-  });
-
-  observe('largest-contentful-paint', entries => {
-    if (lcpDone) return;
-    const last = entries[entries.length - 1];
-    if (last) { lcp = Math.round(last.startTime); lcpEl.textContent = `${lcp} ms`; }
-  });
-
-  observe('event', entries => {
-    for (const e of entries as unknown as Array<PerformanceEntry & { interactionId: number }>) {
-      if (!e.interactionId) continue;
-      if (e.duration > inp) { inp = Math.round(e.duration); inpEl.textContent = `${inp} ms`; }
-    }
-  }, { buffered: true, durationThreshold: 16 });
-
-  // RAF: time-bucketed counter + EMA — writes DOM only on bucket boundary when value changes
-  const tick = (now: number) => {
-    if (bucketStart === 0) bucketStart = now;
-    frameCount++;
-    const elapsed = now - bucketStart;
-    if (elapsed >= 250) {
-      const raw = frameCount / elapsed * 1000;
-      fps = fps === 0 ? raw : fps * 0.85 + raw * 0.15;
-      frameCount = 0;
-      bucketStart = now;
-      const rounded = Math.round(fps);
-      if (fpsEl.textContent !== String(rounded)) fpsEl.textContent = String(rounded);
-    }
-    requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
 
   // Copy all metrics on click
   root.addEventListener('click', () => {
