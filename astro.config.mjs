@@ -2,6 +2,7 @@
 import { defineConfig, fontProviders } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import { execSync } from 'node:child_process';
+import securityHeaders from './integrations/security-headers.ts';
 
 // Short commit for the BUILD link. Workers Builds exposes the SHA; local builds read git.
 const buildSha = (() => {
@@ -60,6 +61,9 @@ export default defineConfig({
       },
     },
   ],
+
+  // Integrations
+  integrations: [securityHeaders()],
 
   // Dev Toolbar
   devToolbar: { enabled: false },
