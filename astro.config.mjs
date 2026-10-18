@@ -37,6 +37,7 @@ export default defineConfig({
       options: {
         variants: [
           {
+            // Glyph subset by tools/subset-inter.sh; axes untouched
             weight: '100 900',
             style: 'normal',
             src: ['./src/assets/fonts/InterVariable.woff2'],

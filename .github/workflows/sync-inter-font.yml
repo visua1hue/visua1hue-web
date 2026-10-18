@@ -21,11 +21,15 @@ jobs:
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           echo "url=$url" >> "$GITHUB_OUTPUT"
 
-      - name: Download and extract
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Download, extract and subset
         run: |
           curl -sL -o inter.zip "${{ steps.release.outputs.url }}"
           mkdir -p src/assets/fonts
-          unzip -j -o inter.zip "web/InterVariable.woff2" "LICENSE.txt" -d src/assets/fonts
+          unzip -j -o inter.zip "web/InterVariable.woff2" -d /tmp/inter
+          unzip -j -o inter.zip "LICENSE.txt" -d src/assets/fonts
+          tools/subset-inter.sh /tmp/inter/InterVariable.woff2
 
       - name: Commit if changed
         run: |
