@@ -1,16 +1,18 @@
 ---
+import type { HeroPart } from "@scripts/hero/parts";
+
 // Wordmark plus a hidden copy (.slice) that scripts/hero/glitch.ts clips and shifts
 const viewBox = "346.5 751 1787.5 250";
 ---
 
-<h1 class="logotype" id="logo" aria-label="VISUA1HUE">
+<h1 class="logotype" data-hero={"logo" satisfies HeroPart} aria-label="VISUA1HUE">
   <svg class="mark" viewBox={viewBox} aria-hidden="true"><use href="#wm"></use></svg>
-  <svg class="slice" id="slice" viewBox={viewBox} aria-hidden="true"
-    ><rect x="300" y="700" width="1900" height="352" fill="#08090A"></rect><use href="#wm"></use></svg
+  <svg class="slice" data-hero={"slice" satisfies HeroPart} viewBox={viewBox} aria-hidden="true"
+    ><rect class="slice-bg" x="300" y="700" width="1900" height="352"></rect><use href="#wm"></use></svg
   >
   <svg width="0" height="0" class="defs" aria-hidden="true">
     <defs>
-      <g id="wm" fill="#F7F8F8" transform="translate(-99.276 388.925)">
+      <g id="wm" fill="currentColor" transform="translate(-99.276 388.925)">
         <path
           d="M538.1,606.924l44,0l90.667,-243.667l-44.333,0l-52.667,140.333c-4.667,12.333 -9.667,27.333 -15.667,48.667c-5.333,-19.667 -10,-34 -15.333,-48.667l-53.333,-140.333l-45.333,0l92,243.667Z"
         ></path>
@@ -46,6 +48,12 @@ const viewBox = "346.5 751 1787.5 250";
     position: relative;
     z-index: 3;
     aspect-ratio: 1787.5 / 250;
+    color: var(--color-fg);
+  }
+
+  /* Covers the real wordmark under the shifted band */
+  .slice-bg {
+    fill: var(--color-bg);
   }
 
   .mark,

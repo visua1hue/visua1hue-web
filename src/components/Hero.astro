@@ -1,13 +1,14 @@
 ---
+import type { HeroPart } from "@scripts/hero/parts";
 import Logotype from "@components/Logotype.astro";
 import RoleLine from "@components/RoleLine.astro";
 import BuildBadge from "@components/BuildBadge.astro";
 import DebugToggle from "@components/DebugToggle.astro";
 ---
 
-<section class="hero" id="hero">
+<section class="hero" data-hero={"root" satisfies HeroPart}>
   <div class="grid" aria-hidden="true"></div>
-  <canvas class="field" aria-hidden="true"></canvas>
+  <canvas class="field" data-hero={"field" satisfies HeroPart} aria-hidden="true"></canvas>
   <BuildBadge />
   <DebugToggle />
   <Logotype />
@@ -18,6 +19,8 @@ import DebugToggle from "@components/DebugToggle.astro";
   .hero {
     position: relative;
     overflow: hidden;
+    /* Relayout and canvas repaints stay inside the hero */
+    contain: layout paint;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -27,14 +30,16 @@ import DebugToggle from "@components/DebugToggle.astro";
     text-align: center;
     width: 100%;
     margin-inline: auto;
-    /* Pre-layout guess matching scripts/hero/layout.ts at its 14+2 row minimum,
+    /* Pre-layout size: what scripts/hero/layout.ts computes at its minimum row count,
        so the first paint doesn't shift when the script snaps the grid */
-    width: calc(round(down, 100vw - 2 * clamp(10px, 2vw, 24px) - 1px, var(--grid-size)) + 1px);
-    height: calc(16 * var(--grid-size) + 1px);
-    padding-bottom: calc(2 * var(--grid-size));
+    width: calc(round(down, 100vw - 2 * var(--hero-margin) - 1px, var(--grid-size)) + 1px);
+    height: calc((var(--grid-dither-rows) + var(--grid-base-rows)) * var(--grid-size) + 1px);
+    padding-bottom: calc(var(--grid-base-rows) * var(--grid-size));
   }
 
-  /* 24px squares with + markers at the corners */
+  /* Grid lines with + markers. Stroke/fill is --color-muted (#8A8F98), inlined because
+     custom properties can't reach into a data URI; a CSS mask would, but it renders the
+     edge markers dimmer than the approved design */
   .grid {
     position: absolute;
     inset: 0;
@@ -62,7 +67,7 @@ import DebugToggle from "@components/DebugToggle.astro";
 
 <script>
   import { initHero } from "@scripts/hero/hero";
+  import { heroRoots } from "@scripts/hero/parts";
 
-  const hero = document.getElementById("hero");
-  if (hero) initHero(hero);
+  heroRoots().forEach((root) => initHero(root));
 </script>

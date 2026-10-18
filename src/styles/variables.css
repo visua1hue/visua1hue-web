@@ -1,3 +1,10 @@
+/* Registered so getComputedStyle resolves it to px for scripts/hero/layout.ts */
+@property --hero-margin {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
 :root {
   /* COLOR — dark only */
   --color-bg: #08090a;
@@ -11,8 +18,20 @@
   --font-primary: var(--font-inter);
   --font-mono: var(--font-geist-mono);
 
+  /* HERO GRID — single source; scripts/hero/layout.ts reads these at runtime */
+  --grid-size: 24px; /* one grid square */
+  --grid-dither-rows: 14; /* minimum dithered rows */
+  --grid-base-rows: 2; /* grid-only rows below the dither */
+  --grid-block-span: 5; /* squares spanned by BUILD/DEBUG/metric blocks */
+  --dither-cell: 2px; /* one dither dot, hero field and quote mark */
+  --hero-margin: clamp(10px, 2vw, 24px); /* min side gap; hero width snaps inside it */
+
+  /* Pre-layout block positions derived from the above (meta rows = last dithered row and the one below) */
+  --grid-meta-row-1: calc((var(--grid-dither-rows) - 1) * var(--grid-size) + 1px);
+  --grid-meta-row-2: calc(var(--grid-dither-rows) * var(--grid-size) + 1px);
+  --grid-meta-inset: calc(var(--grid-size) + 1px);
+
   /* LAYOUT */
-  --grid-size: 24px; /* hero grid square; mirrored in scripts/hero/layout.ts */
   --hit-target: 44px;
 
   /* MOTION */

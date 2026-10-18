@@ -76,8 +76,11 @@ a:hover {
   transform: none;
 }
 
-/* One-row mono block locked to the hero grid; position set by scripts/hero/layout.ts */
+/* One-row mono block locked to the hero grid. Size here is the pre-layout default;
+   scripts/hero/layout.ts sets position and size after measuring. */
 .grid-cell {
+  width: calc(var(--grid-block-span) * var(--grid-size) - 1px);
+  height: calc(var(--grid-size) - 1px);
   position: absolute;
   z-index: 3;
   display: flex;
@@ -90,6 +93,26 @@ a:hover {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+/* Large paragraph text (About, Privacy lead) */
+.text-lead {
+  margin: 0;
+  font-size: clamp(21px, 2.6vw, 28px);
+  font-weight: 500;
+  line-height: 1.38;
+  letter-spacing: -0.02em;
+}
+
+/* Small uppercase mono label */
+.text-label {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-subtle);
 }
 
 @keyframes rise {

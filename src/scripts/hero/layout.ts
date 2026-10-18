@@ -1,24 +1,32 @@
-import type { FieldGeometry } from "@scripts/webgl/dither";
+import { readTokens } from "@scripts/tokens";
+import type { FieldGeometry } from "./dither";
+import type { HeroParts } from "./parts";
 
-/** Grid square in CSS px; mirrors --grid-size. */
-export const GRID = 24;
-/** Dither cell in CSS px. */
-export const CELL = 2;
-/** Grid-only rows below the dithered area. */
-const BASE_ROWS = 2;
-/** Minimum dithered rows. */
-const MIN_ROWS = 14;
-/** Grid squares spanned by the BUILD/DEBUG blocks. */
-const BLOCK_SPAN = 5;
-
-export interface HeroElements {
-  hero: HTMLElement;
-  logo: HTMLElement;
-  copy: HTMLElement;
-  build: HTMLElement | null;
-  debug: HTMLElement | null;
-  metrics: HTMLElement[];
+/** Grid tokens from styles/variables.css; the pre-layout CSS uses the same ones. */
+export interface GridTokens {
+  /** Grid square, CSS px. */
+  size: number;
+  /** Minimum dithered rows. */
+  ditherRows: number;
+  /** Grid-only rows below the dither. */
+  baseRows: number;
+  /** Squares spanned by BUILD/DEBUG/metric blocks. */
+  blockSpan: number;
+  /** Dither dot, CSS px. */
+  cell: number;
+  /** Minimum side gap, CSS px (viewport-dependent; re-read on resize). */
+  margin: number;
 }
+
+export const readGridTokens = (el: Element): GridTokens =>
+  readTokens(el, {
+    size: "--grid-size",
+    ditherRows: "--grid-dither-rows",
+    baseRows: "--grid-base-rows",
+    blockSpan: "--grid-block-span",
+    cell: "--dither-cell",
+    margin: "--hero-margin",
+  });
 
 export interface HeroLayout {
   geometry: FieldGeometry;
@@ -27,47 +35,47 @@ export interface HeroLayout {
   height: number;
 }
 
-function place(el: HTMLElement, col: number, row: number, span: number) {
-  el.style.left = `${col * GRID + 1}px`;
-  el.style.top = `${row * GRID + 1}px`;
-  el.style.width = `${span * GRID - 1}px`;
-  el.style.height = `${GRID - 1}px`;
-  el.style.right = "auto";
-}
-
 /**
  * Snaps the hero to whole grid squares, sized to fit the wordmark and copy,
  * and locks the BUILD/DEBUG/metric blocks into grid rows.
  */
-export function layoutHero(els: HeroElements): HeroLayout {
-  const { hero, logo, copy } = els;
-  const margin = Math.min(24, Math.max(10, innerWidth * 0.02));
-  const nx = Math.max(1, Math.floor((innerWidth - 2 * margin - 1) / GRID));
+export function layoutHero(parts: HeroParts, t: GridTokens): HeroLayout {
+  const { root, logo, copy } = parts;
+  const G = t.size;
+  const place = (el: HTMLElement, col: number, row: number, span: number) => {
+    el.style.left = `${col * G + 1}px`;
+    el.style.top = `${row * G + 1}px`;
+    el.style.width = `${span * G - 1}px`;
+    el.style.height = `${G - 1}px`;
+    el.style.right = "auto";
+  };
+
+  const nx = Math.max(1, Math.floor((innerWidth - 2 * t.margin - 1) / G));
 
   // Measure content at natural height before snapping
-  hero.style.height = "auto";
-  hero.style.paddingBottom = "0px";
+  root.style.height = "auto";
+  root.style.paddingBottom = "0px";
   const contentH = copy.getBoundingClientRect().bottom - logo.getBoundingClientRect().top;
-  const target = Math.max(contentH + 2 * GRID + 40, MIN_ROWS * GRID);
-  const ditherRows = Math.max(1, Math.ceil((target - 1) / GRID));
-  const ny = ditherRows + BASE_ROWS;
+  const target = Math.max(contentH + 2 * G + 40, t.ditherRows * G);
+  const ditherRows = Math.max(1, Math.ceil((target - 1) / G));
+  const ny = ditherRows + t.baseRows;
 
-  const pw = nx * GRID + 1;
-  const ph = ny * GRID + 1;
-  hero.style.paddingBottom = `${BASE_ROWS * GRID}px`;
-  hero.style.width = `${pw}px`;
-  hero.style.height = `${ph}px`;
+  const pw = nx * G + 1;
+  const ph = ny * G + 1;
+  root.style.paddingBottom = `${t.baseRows * G}px`;
+  root.style.width = `${pw}px`;
+  root.style.height = `${ph}px`;
 
-  const span = Math.min(BLOCK_SPAN, Math.max(1, nx - 2));
+  const span = Math.min(t.blockSpan, Math.max(1, nx - 2));
   const rightCol = nx - 1 - span;
-  if (els.build) place(els.build, rightCol, ditherRows - 1, span);
-  if (els.debug) place(els.debug, rightCol, ditherRows, span);
+  if (parts.build) place(parts.build, rightCol, ditherRows - 1, span);
+  if (parts.debug) place(parts.debug, rightCol, ditherRows, span);
 
-  // Metrics fill the same two rows from the left, two per row, if they fit
+  // Metrics fill the same rows from the left, two per row, if they fit
   const perRow = Math.min(2, Math.max(0, Math.floor((rightCol - 1) / (span + 1))));
-  els.metrics.forEach((cell, i) => {
+  parts.metrics.forEach((cell, i) => {
     const row = perRow ? Math.floor(i / perRow) : Infinity;
-    if (row > BASE_ROWS - 1) {
+    if (row > t.baseRows - 1) {
       cell.style.display = "none";
       return;
     }
@@ -75,25 +83,26 @@ export function layoutHero(els: HeroElements): HeroLayout {
     place(cell, 1 + (i % perRow) * (span + 1), ditherRows - 1 + row, span);
   });
 
-  const cols = Math.ceil(pw / CELL);
-  const rows = Math.ceil(ph / CELL);
-  const h = rows * CELL;
-  const heroRect = hero.getBoundingClientRect();
+  const C = t.cell;
+  const cols = Math.ceil(pw / C);
+  const rows = Math.ceil(ph / C);
+  const h = rows * C;
+  const heroRect = root.getBoundingClientRect();
   const logoRect = logo.getBoundingClientRect();
 
   return {
-    width: cols * CELL,
+    width: cols * C,
     height: h,
     geometry: {
       cols,
       rows,
-      square: GRID / CELL,
+      square: G / C,
       ditherRows,
-      box: [0, (h - ph) / CELL, pw / CELL, h / CELL],
+      box: [0, (h - ph) / C, pw / C, h / C],
       logo: [
-        (logoRect.left - heroRect.left + logoRect.width / 2) / CELL,
-        (h - (logoRect.top - heroRect.top + logoRect.height / 2)) / CELL,
-        logoRect.width / 2 / CELL,
+        (logoRect.left - heroRect.left + logoRect.width / 2) / C,
+        (h - (logoRect.top - heroRect.top + logoRect.height / 2)) / C,
+        logoRect.width / 2 / C,
       ],
     },
   };

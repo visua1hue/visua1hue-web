@@ -1,58 +1,73 @@
-import { createDitherRenderer } from "@scripts/webgl/dither";
+import { createDitherRenderer } from "./dither";
 import { createGlitch } from "./glitch";
-import { layoutHero, type HeroElements, type HeroLayout } from "./layout";
+import { layoutHero, readGridTokens, type HeroLayout } from "./layout";
+import { heroParts } from "./parts";
 
 /** Field time used for the single still frame under reduced motion. */
 const STILL_TIME = 12;
 /** Field fade-in, seconds. */
 const INTRO = 1.8;
+/** The field drifts slowly; above 60fps only costs battery. */
+const MIN_FRAME_MS = 1000 / 60 - 1;
 
-export function initHero(hero: HTMLElement) {
-  const $ = <T extends HTMLElement>(sel: string) => hero.querySelector<T>(sel);
-  const canvas = $<HTMLCanvasElement>("canvas.field");
-  const logo = $("#logo");
-  const slice = $("#slice");
-  const copy = $(".copy");
-  if (!canvas || !logo || !slice || !copy) return;
-
-  const els: HeroElements = {
-    hero,
-    logo,
-    copy,
-    build: $("[data-cell=build]"),
-    debug: $("[data-cell=debug]"),
-    metrics: [...hero.querySelectorAll<HTMLElement>("[data-cell=metric]")],
-  };
-
+export function initHero(root: HTMLElement): () => void {
+  const parts = heroParts(root);
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const renderer = createDitherRenderer(canvas);
-  const glitch = reduce ? null : createGlitch(hero, logo, slice);
+  const renderer = createDitherRenderer(parts.field);
+  const ac = new AbortController();
+  const on = { signal: ac.signal };
 
   let current: HeroLayout;
+  const glitch = reduce ? null : createGlitch(parts, readGridTokens(root).cell);
+
   const relayout = () => {
-    current = layoutHero(els);
+    // Re-read: --hero-margin depends on the viewport
+    current = layoutHero(parts, readGridTokens(root));
     if (!renderer) return;
-    canvas.style.width = `${current.width}px`;
-    canvas.style.height = `${current.height}px`;
+    parts.field.style.width = `${current.width}px`;
+    parts.field.style.height = `${current.height}px`;
     renderer.resize(current.geometry);
     if (reduce) renderer.draw(STILL_TIME, 1, null);
   };
 
-  relayout();
-  addEventListener("resize", relayout);
-  // Webfont swap changes the copy height
-  document.fonts?.ready.then(relayout);
-  if (!renderer) return;
+  // The layout depends on width only; mobile URL-bar resizes change height on scroll
+  let lastWidth = innerWidth;
+  let pending = 0;
+  addEventListener(
+    "resize",
+    () => {
+      if (innerWidth === lastWidth || pending) return;
+      pending = requestAnimationFrame(() => {
+        pending = 0;
+        lastWidth = innerWidth;
+        relayout();
+      });
+    },
+    on,
+  );
 
-  canvas.classList.add("on");
-  if (reduce) return;
+  relayout();
+  // Webfont swap changes the copy height
+  document.fonts?.ready.then(() => !ac.signal.aborted && relayout());
+
+  const teardown = () => {
+    ac.abort();
+    cancelAnimationFrame(pending);
+    renderer?.destroy();
+  };
+  if (!renderer) return teardown;
+  parts.field.classList.add("on");
+  if (reduce) return teardown;
 
   // Animate only while the hero is on screen and the tab is visible
   const t0 = performance.now();
   let raf = 0;
+  let last = 0;
   let onScreen = true;
   const frame = (now: number) => {
     raf = requestAnimationFrame(frame);
+    if (now - last < MIN_FRAME_MS) return;
+    last = now;
     const t = Math.max(0, now - t0) / 1000;
     renderer.draw(t, Math.min(1, t / INTRO), glitch?.(t, current.height) ?? null);
   };
@@ -64,10 +79,17 @@ export function initHero(hero: HTMLElement) {
       raf = 0;
     }
   };
-  new IntersectionObserver(([e]) => {
+  const io = new IntersectionObserver(([e]) => {
     onScreen = e.isIntersecting;
     sync();
-  }).observe(hero);
-  document.addEventListener("visibilitychange", sync);
+  });
+  io.observe(root);
+  document.addEventListener("visibilitychange", sync, on);
   sync();
+
+  return () => {
+    io.disconnect();
+    cancelAnimationFrame(raf);
+    teardown();
+  };
 }

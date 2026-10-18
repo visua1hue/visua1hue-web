@@ -1,6 +1,7 @@
 /**
  * Web vitals + FPS collector for the DEBUG panel, kept in memory only and never sent anywhere.
- * One set of observers and one rAF loop, shared by every subscriber.
+ * One set of observers and one rAF loop, shared by every subscriber. Observers start on first
+ * subscribe and stay (they are passive); the rAF loop stops when the last subscriber leaves.
  */
 
 export interface Metrics {
@@ -35,7 +36,7 @@ const observe = (
   }
 };
 
-function start() {
+function startObservers() {
   started = true;
 
   // LCP stops being reported after the first input; match that
@@ -78,35 +79,52 @@ function start() {
     },
     { durationThreshold: 16 },
   );
+}
 
-  // Time-bucketed frame count smoothed with an EMA; emits only on bucket boundaries
-  let fps = 0;
-  let frames = 0;
-  let bucketStart = 0;
-  const tick = (now: number) => {
-    if (!bucketStart) bucketStart = now;
-    frames++;
-    const elapsed = now - bucketStart;
-    if (elapsed >= 250) {
-      const raw = (frames / elapsed) * 1000;
-      fps = fps ? fps * 0.85 + raw * 0.15 : raw;
-      frames = 0;
-      bucketStart = now;
-      const rounded = Math.round(fps);
-      if (rounded !== metrics.fps) {
-        metrics.fps = rounded;
-        emit();
-      }
-    }
-    requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
+// Time-bucketed frame count smoothed with an EMA; emits only on bucket boundaries.
+// Runs only while someone is subscribed.
+let raf = 0;
+let fps = 0;
+let frames = 0;
+let bucketStart = 0;
+
+function tick(now: number) {
+  raf = requestAnimationFrame(tick);
+  if (!bucketStart) bucketStart = now;
+  frames++;
+  const elapsed = now - bucketStart;
+  if (elapsed < 250) return;
+  const raw = (frames / elapsed) * 1000;
+  fps = fps ? fps * 0.85 + raw * 0.15 : raw;
+  frames = 0;
+  bucketStart = now;
+  const rounded = Math.round(fps);
+  if (rounded !== metrics.fps) {
+    metrics.fps = rounded;
+    emit();
+  }
+}
+
+function startFps() {
+  if (raf) return;
+  frames = 0;
+  bucketStart = 0;
+  raf = requestAnimationFrame(tick);
+}
+
+function stopFps() {
+  cancelAnimationFrame(raf);
+  raf = 0;
 }
 
 /** Subscribe to metric updates. Starts collection on first call. */
 export function subscribeMetrics(fn: Listener): () => void {
   listeners.add(fn);
-  if (!started) start();
+  if (!started) startObservers();
+  startFps();
   fn(metrics);
-  return () => listeners.delete(fn);
+  return () => {
+    listeners.delete(fn);
+    if (!listeners.size) stopFps();
+  };
 }

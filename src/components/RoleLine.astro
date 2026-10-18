@@ -1,10 +1,14 @@
-<div class="copy">
+---
+import type { HeroPart } from "@scripts/hero/parts";
+---
+
+<div class="copy" data-hero={"copy" satisfies HeroPart}>
   <p class="tag">Curious by default.</p>
   <p class="roles">
     <span>Currently</span>
     <button
       class="role"
-      id="role"
+      data-role
       type="button"
       aria-expanded="false"
       aria-label="Technical Consultant, Innovation, at Centric Software"
@@ -35,7 +39,12 @@
     position: absolute;
     z-index: -1;
     inset: -56px -140px;
-    background: radial-gradient(closest-side, rgba(8, 9, 10, 0.92), rgba(8, 9, 10, 0.75) 45%, rgba(8, 9, 10, 0));
+    background: radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--color-bg) 92%, transparent),
+      color-mix(in srgb, var(--color-bg) 75%, transparent) 45%,
+      transparent
+    );
     pointer-events: none;
   }
 
@@ -109,15 +118,12 @@
     transition: transform 0.3s ease;
   }
 
-  .role:hover .more,
-  .role:focus-visible .more,
+  /* scripts/hero/role.ts keeps aria-expanded in sync with hover, focus and taps */
   .role[aria-expanded="true"] .more {
     grid-template-columns: 1fr;
     opacity: 1;
   }
 
-  .role:hover .plus,
-  .role:focus-visible .plus,
   .role[aria-expanded="true"] .plus {
     transform: rotate(45deg);
   }
@@ -150,12 +156,7 @@
 </style>
 
 <script>
-  // Hover and focus expand it in CSS; touch has neither, so a tap toggles it.
-  // Not on desktop, where a click would leave it stuck open after the pointer leaves.
-  const role = document.getElementById("role");
-  if (role && matchMedia("(hover: none)").matches) {
-    role.addEventListener("click", () => {
-      role.setAttribute("aria-expanded", String(role.getAttribute("aria-expanded") !== "true"));
-    });
-  }
+  import { initRole } from "@scripts/hero/role";
+
+  document.querySelectorAll<HTMLElement>("[data-role]").forEach((el) => initRole(el));
 </script>

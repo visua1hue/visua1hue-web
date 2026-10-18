@@ -1,4 +1,6 @@
 ---
+import type { HeroPart } from "@scripts/hero/parts";
+
 const cells = [
   { label: "LCP", key: "lcp", initial: "—", unit: "ms" },
   { label: "INP", key: "inp", initial: "—", unit: "ms" },
@@ -7,47 +9,49 @@ const cells = [
 ] as const;
 ---
 
-<button class="grid-cell toggle" id="dbg" type="button" aria-pressed="false" data-cell="debug"
-  ><span class="dim">Debug:</span><span class="v" id="dbgv">False</span></button
->
-<div class="panel" id="dbgpanel" aria-hidden="true" hidden>
-  {
-    cells.map((c) => (
-      <div class="grid-cell metric" data-cell="metric">
-        <span class="dim">{c.label}</span>
-        <span class="v">
-          <span class="n" data-m={c.key}>{c.initial}</span>
-          <span class="u">{c.unit}</span>
-        </span>
-      </div>
-    ))
-  }
+<div class="debug" data-debug>
+  <button
+    class="grid-cell toggle"
+    type="button"
+    aria-pressed="false"
+    data-debug-toggle
+    data-hero={"debug" satisfies HeroPart}><span class="dim">Debug:</span><span class="v" data-debug-value>False</span></button
+  >
+  <div class="panel" aria-hidden="true" data-debug-panel hidden>
+    {
+      cells.map((c) => (
+        <div class="grid-cell metric" data-hero={"metric" satisfies HeroPart}>
+          <span class="dim">{c.label}</span>
+          <span class="v">
+            <span class="n" data-m={c.key}>{c.initial}</span>
+            <span class="u">{c.unit}</span>
+          </span>
+        </div>
+      ))
+    }
+  </div>
 </div>
 
 <style>
+  /* Scoping root for the script; no box, so it doesn't affect the hero layout */
+  .debug {
+    display: contents;
+  }
+
+  /* Button reset on top of .grid-cell */
   .toggle {
-    all: unset;
-    box-sizing: border-box;
-    /* all: unset wipes .grid-cell; restore it */
-    position: absolute;
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding-left: 10px;
-    background: var(--color-bg);
-    font-family: var(--font-mono);
-    font-size: 9.5px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    white-space: nowrap;
+    appearance: none;
+    margin: 0;
+    border: 0;
+    padding: 0 0 0 10px;
+    font-weight: inherit;
+    line-height: inherit;
+    text-align: inherit;
     color: var(--color-subtle);
     cursor: pointer;
-    /* Pre-layout position (row 14, right-aligned); scripts/hero/layout.ts owns it after */
-    top: 337px;
-    right: 25px;
-    width: 119px;
-    height: 23px;
+    /* Pre-layout position: second meta row, right-aligned */
+    top: var(--grid-meta-row-2);
+    right: var(--grid-meta-inset);
   }
 
   .toggle .dim {
@@ -82,25 +86,23 @@ const cells = [
 
   .metric {
     font-variant-numeric: tabular-nums;
-    width: 119px;
-    height: 23px;
   }
 
-  /* Pre-layout positions: two per row in rows 13-14 from column 1 */
+  /* Pre-layout positions: two per row in the meta rows, from column 1 */
   .metric:nth-child(odd) {
-    left: 25px;
+    left: var(--grid-meta-inset);
   }
 
   .metric:nth-child(even) {
-    left: 169px;
+    left: calc((var(--grid-block-span) + 2) * var(--grid-size) + 1px);
   }
 
   .metric:nth-child(-n + 2) {
-    top: 313px;
+    top: var(--grid-meta-row-1);
   }
 
   .metric:nth-child(n + 3) {
-    top: 337px;
+    top: var(--grid-meta-row-2);
   }
 
   .metric .dim {
@@ -144,47 +146,7 @@ const cells = [
 </style>
 
 <script>
-  import { subscribeMetrics, type Metrics } from "@scripts/metrics";
+  import { initDebugToggle } from "@scripts/debug/toggle";
 
-  const KEY = "visua1hue-debug";
-  const btn = document.getElementById("dbg")!;
-  const val = document.getElementById("dbgv")!;
-  const panel = document.getElementById("dbgpanel")!;
-  const out = Object.fromEntries(
-    [...panel.querySelectorAll<HTMLElement>("[data-m]")].map((el) => [el.dataset.m, el]),
-  ) as Record<"lcp" | "inp" | "cls" | "fps", HTMLElement>;
-
-  const render = (m: Readonly<Metrics>) => {
-    if (m.lcp !== null) out.lcp.textContent = String(m.lcp);
-    if (m.inp !== null) out.inp.textContent = String(m.inp);
-    if (m.fps !== null) out.fps.textContent = String(m.fps);
-    out.cls.textContent = m.cls.toFixed(3);
-  };
-
-  let unsubscribe: (() => void) | null = null;
-
-  function set(on: boolean) {
-    btn.setAttribute("aria-pressed", String(on));
-    val.textContent = on ? "True" : "False";
-    panel.hidden = !on;
-    if (on && !unsubscribe) unsubscribe = subscribeMetrics(render);
-    if (!on && unsubscribe) {
-      unsubscribe();
-      unsubscribe = null;
-    }
-    try {
-      localStorage.setItem(KEY, on ? "1" : "0");
-    } catch {
-      /* storage blocked */
-    }
-  }
-
-  let initial = false;
-  try {
-    initial = localStorage.getItem(KEY) === "1";
-  } catch {
-    /* storage blocked */
-  }
-  set(initial);
-  btn.addEventListener("click", () => set(btn.getAttribute("aria-pressed") !== "true"));
+  document.querySelectorAll<HTMLElement>("[data-debug]").forEach((root) => initDebugToggle(root));
 </script>

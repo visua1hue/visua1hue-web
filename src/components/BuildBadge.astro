@@ -1,23 +1,22 @@
 ---
+import type { HeroPart } from "@scripts/hero/parts";
 import Arrow from "@components/Arrow.astro";
 
 const sha = __BUILD_SHA__;
 const href = `https://github.com/visua1hue/visua1hue-web/commit/${sha}`;
 ---
 
-<div class="grid-cell build" data-cell="build">
+<div class="grid-cell build" data-hero={"build" satisfies HeroPart}>
   <a class="ext" href={href} title="View commit on GitHub"
     ><span class="dim">Build:</span><span class="t">{sha}</span><Arrow /></a
   >
 </div>
 
 <style>
-  /* Pre-layout position (row 13, right-aligned); scripts/hero/layout.ts owns it after */
+  /* Pre-layout position: first meta row, right-aligned */
   .build {
-    top: 313px;
-    right: 25px;
-    width: 119px;
-    height: 23px;
+    top: var(--grid-meta-row-1);
+    right: var(--grid-meta-inset);
   }
 
   a {
