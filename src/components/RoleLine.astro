@@ -150,9 +150,12 @@
 </style>
 
 <script>
-  // Tap toggles the expansion; hover and focus are handled in CSS
+  // Hover and focus expand it in CSS; touch has neither, so a tap toggles it.
+  // Not on desktop, where a click would leave it stuck open after the pointer leaves.
   const role = document.getElementById("role");
-  role?.addEventListener("click", () => {
-    role.setAttribute("aria-expanded", String(role.getAttribute("aria-expanded") !== "true"));
-  });
+  if (role && matchMedia("(hover: none)").matches) {
+    role.addEventListener("click", () => {
+      role.setAttribute("aria-expanded", String(role.getAttribute("aria-expanded") !== "true"));
+    });
+  }
 </script>
