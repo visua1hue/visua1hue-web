@@ -1,0 +1,58 @@
+---
+import type { HeroPart } from "@scripts/hero/parts";
+
+interface Props {
+  /** Short display text, e.g. "404". */
+  text: string;
+  /** Accessible heading text. */
+  label: string;
+}
+
+const { text, label } = Astro.props;
+---
+
+{/* Text counterpart of Logotype: the mark plus a hidden copy (.slice) that scripts/hero/glitch.ts clips and shifts */}
+<h1 class="code" data-hero={"logo" satisfies HeroPart} aria-label={label}>
+  <span class="mark" aria-hidden="true">{text}</span>
+  <span class="slice" data-hero={"slice" satisfies HeroPart} aria-hidden="true">{text}</span>
+</h1>
+
+<style>
+  .code {
+    --cover: 64px; /* > largest glitch shift, so the shifted cover never exposes the original */
+    position: relative;
+    z-index: 3;
+    margin: 0;
+    font-size: clamp(120px, 24vw, 280px);
+    font-weight: 500;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    color: var(--color-fg);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mark {
+    display: block;
+    animation: rise 1.4s var(--ease-out) both 0.25s;
+  }
+
+  .slice {
+    position: absolute;
+    inset: 0 calc(-1 * var(--cover));
+    padding-inline: var(--cover);
+    background: var(--color-bg);
+    visibility: hidden;
+    clip-path: inset(var(--t, 40%) 0 var(--b, 50%) 0);
+    transform: translateX(var(--x, 0));
+  }
+
+  .slice.on {
+    visibility: visible;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mark {
+      animation: none;
+    }
+  }
+</style>

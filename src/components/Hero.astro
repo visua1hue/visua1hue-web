@@ -1,18 +1,22 @@
 ---
+import type { GlitchPreset } from "@scripts/hero/glitch";
 import type { HeroPart } from "@scripts/hero/parts";
-import Logotype from "@components/Logotype.astro";
-import RoleLine from "@components/RoleLine.astro";
-import BuildBadge from "@components/BuildBadge.astro";
-import DebugToggle from "@components/DebugToggle.astro";
+
+interface Props {
+  glitch?: GlitchPreset;
+}
+
+const { glitch = "calm" } = Astro.props;
 ---
 
-<section class="hero" data-hero={"root" satisfies HeroPart}>
+{
+  /* Grid panel with the dither field. The slot must contain the parts scripts/hero/parts.ts
+     requires: a "logo" with its "slice" copy and a "copy" block; "build"/"debug"/"metric" are optional. */
+}
+<section class="hero" data-hero={"root" satisfies HeroPart} data-glitch={glitch}>
   <div class="grid" aria-hidden="true"></div>
   <canvas class="field" data-hero={"field" satisfies HeroPart} aria-hidden="true"></canvas>
-  <BuildBadge />
-  <DebugToggle />
-  <Logotype />
-  <RoleLine />
+  <slot />
 </section>
 
 <style>

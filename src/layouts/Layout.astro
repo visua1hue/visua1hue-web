@@ -5,11 +5,14 @@ import "@styles/global.css";
 interface Props {
   title: string;
   description?: string;
+  /** Keep the page out of search results (e.g. 404). */
+  noindex?: boolean;
 }
 
 const {
   title,
   description = "Technical Consultant – Innovation at Centric Software. Curious by default.",
+  noindex = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -25,31 +28,31 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content={noindex ? "noindex, follow" : "index, follow"} />
     <link rel="icon" type="image/svg+xml" href={faviconHref} />
     <link rel="canonical" href={canonicalURL.href} />
 
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
 
-    <!-- Open Graph -->
+    {/* Open Graph */}
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL.href} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content="VISUA1HUE" />
 
-    <!-- Twitter Card -->
+    {/* Twitter Card */}
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@visua1hue" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
 
-    <!-- Theme color -->
+    {/* Theme color */}
     <meta name="theme-color" content="#08090A" />
 
     <Font cssVariable="--font-inter" preload />
-    <!-- Mono is only used for small labels; not worth a preload -->
+    {/* Mono is only used for small labels; not worth a preload */}
     <Font cssVariable="--font-geist-mono" />
   </head>
   <body>

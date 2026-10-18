@@ -95,6 +95,17 @@ a:hover {
   white-space: nowrap;
 }
 
+/* Page body under a hero: 5 empty grid rows above it */
+.page-main {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 120px;
+}
+
 /* Large paragraph text (About, Privacy lead) */
 .text-lead {
   margin: 0;

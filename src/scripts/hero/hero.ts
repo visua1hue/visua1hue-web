@@ -1,5 +1,5 @@
 import { createDitherRenderer } from "./dither";
-import { createGlitch } from "./glitch";
+import { createGlitch, isGlitchPreset } from "./glitch";
 import { layoutHero, readGridTokens, type HeroLayout } from "./layout";
 import { heroParts } from "./parts";
 
@@ -18,7 +18,10 @@ export function initHero(root: HTMLElement): () => void {
   const on = { signal: ac.signal };
 
   let current: HeroLayout;
-  const glitch = reduce ? null : createGlitch(parts, readGridTokens(root).cell);
+  const preset = root.dataset.glitch;
+  const glitch = reduce
+    ? null
+    : createGlitch(parts, readGridTokens(root).cell, isGlitchPreset(preset) ? preset : "calm");
 
   const relayout = () => {
     // Re-read: --hero-margin depends on the viewport

@@ -1,0 +1,139 @@
+---
+export const prerender = true;
+import type { HeroPart } from "@scripts/hero/parts";
+import Layout from "@layouts/Layout.astro";
+import Hero from "@components/Hero.astro";
+import GlitchCode from "@components/GlitchCode.astro";
+import BuildBadge from "@components/BuildBadge.astro";
+import Footer from "@components/Footer.astro";
+---
+
+<Layout title="404 — VISUA1HUE" description="Nothing lives at this address." noindex>
+  <main class="page-main">
+    <Hero glitch="storm">
+      <BuildBadge />
+      <GlitchCode text="404" label="404: page not found" />
+      <div class="copy" data-hero={"copy" satisfies HeroPart}>
+        <p class="tag">Signal lost.</p>
+        <p class="line">
+          <span class="path">Nothing at <code data-path>this address</code></span>
+          <span class="sep" aria-hidden="true">/</span>
+          <a class="home" href="/">Back to VISUA1HUE</a>
+        </p>
+      </div>
+    </Hero>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .copy {
+    position: relative;
+    z-index: 2;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    animation: rise 1.2s ease both 0.9s;
+  }
+
+  /* Same halo as the homepage copy, keeps text legible over the dither */
+  .copy::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -56px -140px;
+    background: radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--color-bg) 92%, transparent),
+      color-mix(in srgb, var(--color-bg) 75%, transparent) 45%,
+      transparent
+    );
+    pointer-events: none;
+  }
+
+  .tag {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+  }
+
+  .line {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    column-gap: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-muted);
+  }
+
+  .path {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5ch;
+    max-width: min(60vw, 420px);
+  }
+
+  code {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-soft);
+  }
+
+  .sep {
+    color: var(--color-faint);
+  }
+
+  .home {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--hit-target);
+    color: var(--color-soft);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    transition: text-decoration-color 0.2s ease;
+  }
+
+  .home:hover,
+  .home:focus-visible {
+    color: var(--color-fg);
+    text-decoration-color: currentColor;
+  }
+
+  @media (max-width: 560px) {
+    .sep {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .copy {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // The page is static; show the path that was actually requested. textContent, never HTML.
+  document.querySelectorAll<HTMLElement>("[data-path]").forEach((el) => {
+    let path = location.pathname;
+    try {
+      path = decodeURIComponent(path);
+    } catch {
+      /* malformed escape: show it raw */
+    }
+    el.textContent = path;
+    el.title = path;
+  });
+</script>
