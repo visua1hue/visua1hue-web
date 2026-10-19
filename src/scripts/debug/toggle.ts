@@ -1,7 +1,7 @@
 import { subscribeMetrics, type Metrics } from "./metrics";
 
 const KEY = "visua1hue-debug";
-type Shown = "lcp" | "inp" | "cls" | "fps";
+type Shown = "fcp" | "lcp" | "inp" | "cls" | "fps";
 
 /** On unless the visitor switched it off. */
 const load = () => {
@@ -39,6 +39,7 @@ export function initDebugToggle(root: HTMLElement): () => void {
     out[key].textContent = text;
   };
   const render = (m: Readonly<Metrics>) => {
+    if (m.fcp !== null) write("fcp", String(m.fcp));
     if (m.lcp !== null) write("lcp", String(m.lcp));
     if (m.inp !== null) write("inp", String(m.inp));
     if (m.fps !== null) write("fps", String(m.fps));

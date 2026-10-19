@@ -62,7 +62,7 @@ footer nav>a,footer nav>span{min-height:44px;display:flex;align-items:center;gap
 .dbg-cell .n{width:5ch;text-align:right}
 .dbg-cell .u{width:3ch;padding-left:1ch}
 .dbg-cell .v{color:#C9CDD3;animation:flick 2.6s steps(1,end) infinite}
-.dbg-cell:nth-child(2) .v{animation-delay:-.7s}.dbg-cell:nth-child(3) .v{animation-delay:-1.3s}.dbg-cell:nth-child(4) .v{animation-delay:-1.9s}
+.dbg-cell:nth-child(2) .v{animation-delay:-.7s}.dbg-cell:nth-child(3) .v{animation-delay:-1.3s}.dbg-cell:nth-child(4) .v{animation-delay:-1.9s}.dbg-cell:nth-child(5) .v{animation-delay:-2.4s}
 @media (prefers-reduced-motion:reduce){.dbg-cell .v{animation:none}}
 .meta-top .dim{margin-right:0!important;width:7.5ch;display:inline-block}.meta-top a:hover{color:var(--fg)}
 .legal{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#747881;min-height:44px;display:flex;align-items:center}
@@ -121,6 +121,7 @@ a.ext:hover .arw,a.ext:focus-visible .arw{opacity:.45;transform:none}
 <canvas id="field" aria-hidden="true"></canvas>
 <button class="dbg-toggle" id="dbg" type="button" aria-pressed="false"><span class="dim">Debug:</span><span class="v" id="dbgv">False</span></button>
 <div class="dbg" id="dbgpanel" aria-hidden="true" hidden>
+<div class="dbg-cell"><span class="dim">FCP</span><span class="v"><span class="n" data-m="fcp">—</span><span class="u">ms</span></span></div>
 <div class="dbg-cell"><span class="dim">LCP</span><span class="v"><span class="n" data-m="lcp">—</span><span class="u">ms</span></span></div>
 <div class="dbg-cell"><span class="dim">INP</span><span class="v"><span class="n" data-m="inp">—</span><span class="u">ms</span></span></div>
 <div class="dbg-cell"><span class="dim">CLS</span><span class="v"><span class="n" data-m="cls">0.000</span><span class="u"></span></span></div>
@@ -188,7 +189,7 @@ a.ext:hover .arw,a.ext:focus-visible .arw{opacity:.45;transform:none}
     addEventListener('pointerdown', () => (lcpDone = true), { once: true, capture: true });
     obs('layout-shift', (es) => { es.forEach((e) => { if (!e.hadRecentInput) cls += e.value; }); data.cls = cls; m.cls.textContent = cls.toFixed(3); });
         obs('largest-contentful-paint', (es) => { if (lcpDone) return; const e = es[es.length - 1]; if (e) { data.lcp = Math.round(e.startTime); m.lcp.textContent = String(data.lcp); } });
-    obs('paint', (es) => { const e = es.find((x) => x.name === 'first-contentful-paint'); if (e) data.fcp = Math.round(e.startTime); });
+    obs('paint', (es) => { const e = es.find((x) => x.name === 'first-contentful-paint'); if (e) { data.fcp = Math.round(e.startTime); m.fcp.textContent = String(data.fcp); } });
     obs('event', (es) => { es.forEach((e) => { if (e.interactionId && e.duration > inp) { inp = Math.round(e.duration); data.inp = inp; m.inp.textContent = String(inp); } }); }, { durationThreshold: 16 });
     let fps = 0, n = 0, t0 = 0;
     const tick = (now) => {

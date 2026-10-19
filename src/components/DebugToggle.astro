@@ -2,6 +2,7 @@
 import type { HeroPart } from "@scripts/hero/parts";
 
 const cells = [
+  { label: "FCP", key: "fcp", initial: "—", unit: "ms" },
   { label: "LCP", key: "lcp", initial: "—", unit: "ms" },
   { label: "INP", key: "inp", initial: "—", unit: "ms" },
   { label: "CLS", key: "cls", initial: "0.000", unit: "" },
@@ -107,6 +108,10 @@ const cells = [
     --i: 3;
   }
 
+  .metric:nth-child(5) {
+    --i: 4;
+  }
+
   .metric .dim {
     width: 5ch;
     display: inline-block;
@@ -138,6 +143,10 @@ const cells = [
 
   .metric:nth-child(4) .v {
     animation-delay: -1.9s;
+  }
+
+  .metric:nth-child(5) .v {
+    animation-delay: -2.4s;
   }
 
   @media (prefers-reduced-motion: reduce) {
