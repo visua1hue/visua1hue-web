@@ -20,3 +20,11 @@
 
 /speculation-rules.json
   Content-Type: application/speculationrules+json
+
+# Production HTML only: returning visitors skip the revalidation for 5 min, then refresh
+# in the background. Previews keep the default so a fresh deploy shows on reload
+https://visua1hue.dev/
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+
+https://visua1hue.dev/privacy/
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
