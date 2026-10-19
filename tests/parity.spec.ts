@@ -3,30 +3,23 @@
  * same element boxes, and the same pixels under reduced motion, where both render
  * one deterministic dither frame and no glitch.
  *
- * The prototype loads Inter and Geist Mono from Google Fonts; those requests are
- * served our self-hosted files so the comparison is offline and font-identical.
+ * The prototype is served from a fake origin so its relative font URLs resolve to the
+ * self-hosted files (file:// pages cannot load fonts in Chromium).
  */
-import { readFile, writeFile } from "node:fs/promises";
+import { writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { expect, test, type Page } from "@playwright/test";
 import pixelmatch from "pixelmatch";
 import { PNG } from "pngjs";
 
 const root = new URL("../", import.meta.url);
-const PROTOTYPE = new URL("prototype/index.html", root).href;
-const font = (name: string) => readFile(fileURLToPath(new URL(`src/assets/fonts/${name}`, root)));
+const ORIGIN = "http://prototype.test";
+const PROTOTYPE = `${ORIGIN}/prototype/index.html`;
 
-const FONT_CSS = `
-@font-face { font-family: 'Inter'; src: url(https://fonts.gstatic.com/local/inter.woff2) format('woff2'); font-weight: 100 900; }
-@font-face { font-family: 'Geist Mono'; src: url(https://fonts.gstatic.com/local/mono.woff2) format('woff2'); font-weight: 400 500; }`;
-
-async function useLocalFonts(page: Page) {
-  await page.route("https://fonts.googleapis.com/**", (r) => r.fulfill({ contentType: "text/css", body: FONT_CSS }));
-  await page.route("https://fonts.gstatic.com/local/inter.woff2", async (r) =>
-    r.fulfill({ contentType: "font/woff2", body: await font("InterVariable.woff2") }),
-  );
-  await page.route("https://fonts.gstatic.com/local/mono.woff2", async (r) =>
-    r.fulfill({ contentType: "font/woff2", body: await font("GeistMono-Regular.woff2") }),
+/** Serves repo files under ORIGIN. */
+async function serveRepo(page: Page) {
+  await page.route(`${ORIGIN}/**`, (r) =>
+    r.fulfill({ path: fileURLToPath(new URL(`.${new URL(r.request().url()).pathname}`, root)) }),
   );
 }
 
@@ -79,7 +72,7 @@ for (const viewport of VIEWPORTS) {
     test.use({ viewport, reducedMotion: "reduce" });
 
     test("element boxes match the prototype", async ({ page }) => {
-      await useLocalFonts(page);
+      await serveRepo(page);
       await settle(page, PROTOTYPE);
       const expected = await boxes(page, 0);
       await settle(page, "/");
@@ -87,7 +80,7 @@ for (const viewport of VIEWPORTS) {
     });
 
     test("pixels match the prototype", async ({ page }, info) => {
-      await useLocalFonts(page);
+      await serveRepo(page);
       // The BUILD hash differs by design
       const hideHash = (sel: string) => page.addStyleTag({ content: `${sel} .t { visibility: hidden }` });
 
