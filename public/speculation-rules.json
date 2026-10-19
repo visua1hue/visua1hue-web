@@ -1,0 +1,3 @@
+{
+  "prefetch": [{ "where": { "href_matches": "/*" }, "eagerness": "immediate" }]
+}

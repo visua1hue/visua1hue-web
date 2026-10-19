@@ -9,3 +9,14 @@
 # Unhashed; a day of staleness is fine and skips a revalidation per visit
 /favicon.svg
   Cache-Control: public, max-age=86400
+
+# Same-origin links are prefetched on load; header-delivered so the CSP needs no inline script.
+# Per page: a second `/*` block would collide with the one integrations/security-headers.ts appends
+/
+  Speculation-Rules: "/speculation-rules.json"
+
+/privacy/
+  Speculation-Rules: "/speculation-rules.json"
+
+/speculation-rules.json
+  Content-Type: application/speculationrules+json
