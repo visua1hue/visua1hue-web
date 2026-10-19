@@ -45,7 +45,8 @@ const viewBox = "346.5 751 1787.5 250";
 <style>
   .logotype {
     margin: 0;
-    width: min(860px, 78vw);
+    /* Pre-layout estimate; scripts/hero/layout.ts sets the exact width in whole grid squares */
+    width: calc(50vw + max(0px, (640px - 100vw) * 0.35));
     position: relative;
     z-index: 3;
     aspect-ratio: 1787.5 / 250;
@@ -71,8 +72,13 @@ const viewBox = "346.5 751 1787.5 250";
     position: absolute;
   }
 
+  /* Hidden until scripts/hero/hero.ts adds .revealed; shown after 3s if a script fails */
   .mark {
-    animation: rise 1.4s var(--ease-out) both 0.25s;
+    animation: hold 0s 3s both;
+  }
+
+  .logotype.revealed .mark {
+    animation: none;
   }
 
   .slice {
@@ -86,7 +92,8 @@ const viewBox = "346.5 751 1787.5 250";
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .mark {
+    .mark,
+    .logotype.revealed .mark {
       animation: none;
     }
   }

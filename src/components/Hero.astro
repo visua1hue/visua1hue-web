@@ -58,11 +58,18 @@ const { glitch = "calm" } = Astro.props;
     z-index: 0;
     image-rendering: pixelated;
     opacity: 0;
-    transition: opacity 1.2s ease;
+    /* Short: the shader's intro does the real reveal */
+    transition: opacity 0.3s ease;
   }
 
   .field.on {
     opacity: 1;
+  }
+
+  /* Intro: above the logo, fully opaque at once, so its covers hide the logo (scripts/hero/hero.ts) */
+  .field.over {
+    z-index: 4;
+    transition: none;
   }
 </style>
 

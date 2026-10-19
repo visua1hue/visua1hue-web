@@ -139,6 +139,13 @@ a:hover {
   }
 }
 
+/* Hero logo: hidden until scripts/hero/hero.ts reveals it under the intro's covers; shown after a delay if it never does */
+@keyframes hold {
+  from {
+    opacity: 0;
+  }
+}
+
 @keyframes flick {
   0% { opacity: 1; }
   4% { opacity: 0.25; }

@@ -22,6 +22,8 @@ export interface FieldGeometry {
   box: [number, number, number, number];
   /** Wordmark centre and half-width, used to dim the field behind it. */
   logo: [number, number, number];
+  /** Grid squares the wordmark covers: column, row (from the top), columns, rows. The intro covers them. */
+  cover: [number, number, number, number];
 }
 
 /** Horizontal slice shift: rows y0..y1 sampled `shift` cells to the side. */
@@ -33,8 +35,8 @@ export interface GlitchSlice {
 
 export interface DitherRenderer {
   resize(geometry: FieldGeometry): void;
-  /** `intro` fades the field in, 0..1. */
-  draw(time: number, intro: number, glitch: GlitchSlice | null): void;
+  /** `intro` runs the intro, 0..1. `cover` keeps the squares over the wordmark covered. */
+  draw(time: number, intro: number, glitch: GlitchSlice | null, cover: boolean): void;
   destroy(): void;
 }
 
@@ -55,6 +57,8 @@ uniform vec3 u_logo;
 uniform vec4 u_box;
 uniform float u_square;
 uniform float u_ditherRows;
+uniform vec4 u_cover;
+uniform float u_coverOn;
 
 vec3 perm(vec3 x) { return mod(((x * 34.) + 1.) * x, 289.); }
 
@@ -81,6 +85,8 @@ float snoise(vec2 v) {
   return 130. * dot(m, g);
 }
 
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+
 float fbm(vec2 p) {
   float v = 0., a = .5;
   mat2 r = mat2(.8, .6, -.6, .8);
@@ -102,11 +108,11 @@ void main() {
 
   // Sample at the square's centre
   vec2 cc = vec2(u_box.x + (gid.x + .5) * S, u_box.w - (gid.y + .5) * S);
-  vec2 uv = cc / u_res.y * .72;
+  vec2 uv = cc / u_res.y * 1.08;
   float f = field(uv, u_time);
   float f2 = field(uv + vec2(-.008, .010), u_time);
   float shade = clamp((f - f2) * 11. + .5, 0., 1.);
-  float lum = smoothstep(.46, .86, f) * (.42 + .62 * shade);
+  float lum = smoothstep(.40, .82, f) * (.42 + .62 * shade);
   lum = pow(lum, 1.15) * .82;
 
   float e = length((cc - u_logo.xy) / u_logo.z * vec2(.95, 2.4));
@@ -116,11 +122,36 @@ void main() {
   vec2 crel = (gid + .5) * S;
   float ed = min(min(crel.x, bw.x - crel.x), min(crel.y, dh - crel.y));
   lum *= mix(1., .8, gy) * mix(.8, 1., smoothstep(0., u_res.y * .06, ed));
-  lum *= u_intro;
+
+  // Intro. Squares over the wordmark (u_cover) are opaque covers in random shades that drop
+  // out at random, revealing the logo square by square (the canvas sits above the logo
+  // while u_coverOn). Around them, a band of field-like clumps hugs the wordmark and
+  // dissolves while the field develops outward. At u_intro = 1 this is the plain field.
+  float covered = 0.;
+  if (u_intro < 1.) {
+    vec2 q = abs(gid + .5 - u_cover.xy - u_cover.zw * .5) - u_cover.zw * .5;
+    float outside = step(0., max(q.x, q.y));
+    // Shades weighted toward the low levels; bright squares are rare
+    float shade = .15 + .7 * pow(hash(gid + floor(u_time * 6.)), 2.2);
+    float develop = smoothstep(0., 1., (u_intro - .18 - .1 * e) / .4);
+    if (u_coverOn > .5 && outside < .5) {
+      covered = step(u_intro, .17 + .25 * hash(gid + 3.3));
+      lum = covered * step(.4, hash(gid + 9.2 + floor(u_time * 6.))) * shade;
+    } else {
+      float dist = length(max(q, 0.) * vec2(.4, 1.));
+      float reach = 1. - smoothstep(.5, 4.5, dist + 1.2 * snoise(gid * .3 + 3.1));
+      float clump = fbm(gid * .18 + vec2(u_time * .6, -u_time * .4));
+      float on = .02 + .12 * hash(gid);
+      float off = .33 + .25 * hash(gid + 7.1);
+      float alive = outside * step(on, u_intro) * step(u_intro, off) * step(.05, reach)
+        * step(.62 - .22 * reach, clump);
+      lum = max(lum * develop, alive * shade);
+    }
+  }
 
   // Level 0..5, stored exactly in an 8-bit channel
   float level = clamp(floor(lum * 5. + .35), 0., 5.);
-  outColor = vec4(level / 255., 0., 0., 1.);
+  outColor = vec4(level / 255., covered, 0., 1.);
 }
 `;
 
@@ -151,6 +182,19 @@ void main() {
   vec2 lc = rel - gid * S;
   float dh = u_ditherRows * S;
 
+  ivec2 size = textureSize(u_field, 0);
+  ivec2 at = clamp(ivec2(gid), ivec2(0), size - 1);
+  vec4 fv = texelFetch(u_field, at, 0);
+  float lum = round(fv.r * 255.) / 5.;
+  vec3 tone = mix(vec3(.52, .54, .58), vec3(.93, .94, .95), smoothstep(.35, .9, lum));
+
+  // Intro cover: the whole square, grid line included, is opaque so the logo beneath stays hidden
+  if (fv.g > .5 && all(equal(ivec2(gid), at))) {
+    float lit = step(1., lc.x) * step(1., lc.y) * step(b8(lc) + .008, lum);
+    outColor = vec4(mix(vec3(.031, .035, .039), tone, lit), 1.);
+    return;
+  }
+
   // Inside a square (skipping its 1-cell grid line), inside the box, and not in
   // the first or last dithered row
   float inSq = step(1., lc.x) * step(1., lc.y)
@@ -158,12 +202,7 @@ void main() {
     * step(rel.y, dh - .5) * step(S, rel.y) * step(rel.y, dh - S - .5);
   if (inSq < .5) { outColor = vec4(0.); return; }
 
-  ivec2 size = textureSize(u_field, 0);
-  ivec2 at = clamp(ivec2(gid), ivec2(0), size - 1);
-  float lum = round(texelFetch(u_field, at, 0).r * 255.) / 5.;
-
   float on = step(b8(lc) + .008, lum);
-  vec3 tone = mix(vec3(.52, .54, .58), vec3(.93, .94, .95), smoothstep(.35, .9, lum));
   outColor = vec4(tone * on, on);
 }
 `;
@@ -238,6 +277,8 @@ function createResources(gl: WebGL2RenderingContext) {
       box: fu("u_box"),
       square: fu("u_square"),
       ditherRows: fu("u_ditherRows"),
+      cover: fu("u_cover"),
+      coverOn: fu("u_coverOn"),
     },
     d: {
       field: du("u_field"),
@@ -299,6 +340,7 @@ export function createDitherRenderer(canvas: HTMLCanvasElement): DitherRenderer 
     gl.uniform4f(res.f.box, ...g.box);
     gl.uniform1f(res.f.square, g.square);
     gl.uniform1f(res.f.ditherRows, g.ditherRows);
+    gl.uniform4f(res.f.cover, ...g.cover);
 
     gl.useProgram(res.dither);
     gl.uniform1i(res.d.field, 0);
@@ -307,7 +349,7 @@ export function createDitherRenderer(canvas: HTMLCanvasElement): DitherRenderer 
     gl.uniform1f(res.d.ditherRows, g.ditherRows);
   }
 
-  function draw(time: number, intro: number, glitch: GlitchSlice | null): void {
+  function draw(time: number, intro: number, glitch: GlitchSlice | null, cover: boolean): void {
     if (!res || !geometry) return;
     gl.bindVertexArray(res.vao);
 
@@ -317,6 +359,7 @@ export function createDitherRenderer(canvas: HTMLCanvasElement): DitherRenderer 
     gl.useProgram(res.field);
     gl.uniform1f(res.f.time, time);
     gl.uniform1f(res.f.intro, intro);
+    gl.uniform1f(res.f.coverOn, cover ? 1 : 0);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
     // Pass 2: dither to the canvas

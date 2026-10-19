@@ -5,8 +5,10 @@ import { heroParts } from "./parts";
 
 /** Field time used for the single still frame under reduced motion. */
 const STILL_TIME = 12;
-/** Field fade-in, seconds. */
-const INTRO = 1.8;
+/** Intro length, seconds: covers over the wordmark drop out, a block cloud clears, the field develops. */
+const INTRO = 2.4;
+/** All covers are gone by then (dither.ts: off <= .42 of INTRO); the canvas moves back under the logo. */
+const UNCOVERED = 1.05;
 /** The field drifts slowly; above 60fps only costs battery. */
 const FRAME_MS = 1000 / 60;
 
@@ -18,6 +20,15 @@ export function initHero(root: HTMLElement): () => void {
   const on = { signal: ac.signal };
 
   let current: HeroLayout;
+  // CSS hides the logo until .revealed. With the intro, that happens on the first frame,
+  // drawn with the canvas above the logo and its squares covered.
+  let revealed = false;
+  const revealLogo = () => {
+    revealed = true;
+    parts.logo.classList.add("revealed");
+  };
+  if (!reduce && renderer) parts.field.classList.add("over");
+  else revealLogo();
   const preset = root.dataset.glitch;
   const glitch = reduce
     ? null
@@ -30,7 +41,7 @@ export function initHero(root: HTMLElement): () => void {
     parts.field.style.width = `${current.width}px`;
     parts.field.style.height = `${current.height}px`;
     renderer.resize(current.geometry);
-    if (reduce) renderer.draw(STILL_TIME, 1, null);
+    if (reduce) renderer.draw(STILL_TIME, 1, null, false);
   };
 
   // The layout depends on width only; mobile URL-bar resizes change height on scroll
@@ -74,7 +85,10 @@ export function initHero(root: HTMLElement): () => void {
     if (elapsed < FRAME_MS - 1) return;
     last = now - (elapsed >= FRAME_MS ? elapsed % FRAME_MS : 0);
     const t = Math.max(0, now - t0) / 1000;
-    renderer.draw(t, Math.min(1, t / INTRO), glitch?.(t, current.height) ?? null);
+    const covering = t < UNCOVERED;
+    renderer.draw(t, Math.min(1, t / INTRO), glitch?.(t, current.height) ?? null, covering);
+    if (!revealed) revealLogo();
+    if (!covering && parts.field.classList.contains("over")) parts.field.classList.remove("over");
   };
   const sync = () => {
     const run = onScreen && !document.hidden;

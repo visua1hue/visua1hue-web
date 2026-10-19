@@ -33,7 +33,12 @@ const { text, label } = Astro.props;
 
   .mark {
     display: block;
-    animation: rise 1.4s var(--ease-out) both 0.25s;
+    /* Hidden until scripts/hero/hero.ts adds .revealed; shown after 3s if a script fails */
+    animation: hold 0s 3s both;
+  }
+
+  .code.revealed .mark {
+    animation: none;
   }
 
   .slice {
@@ -51,7 +56,8 @@ const { text, label } = Astro.props;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .mark {
+    .mark,
+    .code.revealed .mark {
       animation: none;
     }
   }
