@@ -1,50 +1,10 @@
 import { defineMiddleware } from "astro:middleware";
 import { SECURITY_HEADERS } from "./security/headers";
 
-const applySecurity = (headers: Headers) => {
-  for (const [k, v] of Object.entries(SECURITY_HEADERS)) headers.set(k, v);
-};
-
-export const onRequest = defineMiddleware(async (context, next) => {
-  const { request, locals } = context;
-  const cfRuntime = (
-    locals as { cfContext?: { waitUntil?: (p: Promise<unknown>) => void } }
-  ).cfContext;
-  // Dev runs in workerd too; caching there serves stale HTML after edits
-  const cacheAvailable = !import.meta.env.DEV && typeof caches !== "undefined";
-  const isCacheable = request.method === "GET" || request.method === "HEAD";
-  const cacheKey =
-    isCacheable && cacheAvailable ? new Request(request.url, request) : null;
-  const edgeCache = cacheAvailable
-    ? (caches as unknown as { default: Cache }).default
-    : null;
-
-  if (cacheKey && edgeCache) {
-    const hit = await edgeCache.match(cacheKey);
-    if (hit) {
-      const res = new Response(hit.body, hit);
-      res.headers.set("x-cache", "HIT");
-      return res;
-    }
-  }
-
+// Pages are prerendered and served as static assets with headers from _headers; the
+// Worker only handles the rest (today: Astro's /_image endpoint), so set them here too
+export const onRequest = defineMiddleware(async (_context, next) => {
   const response = await next();
-  applySecurity(response.headers);
-
-  if (
-    cacheKey &&
-    edgeCache &&
-    response.status === 200 &&
-    response.headers.get("content-type")?.includes("text/html")
-  ) {
-    response.headers.set(
-      "Cache-Control",
-      "public, max-age=60, s-maxage=3600, stale-while-revalidate=86400",
-    );
-    response.headers.set("x-cache", "MISS");
-    const toStore = response.clone();
-    cfRuntime?.waitUntil?.(edgeCache.put(cacheKey, toStore));
-  }
-
+  for (const [k, v] of Object.entries(SECURITY_HEADERS)) response.headers.set(k, v);
   return response;
 });
