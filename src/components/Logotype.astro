@@ -3,7 +3,9 @@ import type { HeroPart } from "@scripts/hero/parts";
 
 // Wordmark plus a hidden copy (.slice) that scripts/hero/glitch.ts clips and shifts
 // Glyph paths copied from the master file src/assets/VISUA1HUE.svg; change the logo there first
-const viewBox = "346.5 751 1787.5 250";
+// Ink spans y 747.85..1000.18 (the S overshoots the cap height); the box must hold it, since
+// the .mark mask clips to it
+const viewBox = "346.5 747 1787.5 254";
 ---
 
 <h1 class="logotype" data-hero={"logo" satisfies HeroPart} aria-label="VISUA1HUE">
@@ -50,7 +52,7 @@ const viewBox = "346.5 751 1787.5 250";
     width: calc(50vw + max(0px, (640px - 100vw) * 0.35));
     position: relative;
     z-index: 3;
-    aspect-ratio: 1787.5 / 250;
+    aspect-ratio: 1787.5 / 254;
     /* cqw for the .mark and .slice-ink masks */
     container-type: inline-size;
     color: var(--color-fg);
