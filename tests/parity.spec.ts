@@ -81,14 +81,15 @@ for (const viewport of VIEWPORTS) {
 
     test("pixels match the prototype", async ({ page }, info) => {
       await serveRepo(page);
-      // The BUILD hash differs by design
-      const hideHash = (sel: string) => page.addStyleTag({ content: `${sel} .t { visibility: hidden }` });
+      // The BUILD hash differs by design; debug metrics are live measurements
+      const hideLive = (sel: string) =>
+        page.addStyleTag({ content: `${sel} .t, [data-m] { visibility: hidden }` });
 
       await settle(page, PROTOTYPE);
-      await hideHash(".meta-top");
+      await hideLive(".meta-top");
       const a = PNG.sync.read(await page.screenshot({ fullPage: true }));
       await settle(page, "/");
-      await hideHash("[data-hero=build]");
+      await hideLive("[data-hero=build]");
       const b = PNG.sync.read(await page.screenshot({ fullPage: true }));
 
       expect([b.width, b.height]).toEqual([a.width, a.height]);

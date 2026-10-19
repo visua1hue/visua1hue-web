@@ -206,7 +206,7 @@ a.ext:hover .arw,a.ext:focus-visible .arw{opacity:.45;transform:none}
     if (on) start();
     try { localStorage.setItem(KEY, on ? '1' : '0'); } catch (e) {}
   }
-  let init = false; try { init = localStorage.getItem(KEY) === '1'; } catch (e) {}
+  let init = true; try { init = localStorage.getItem(KEY) !== '0'; } catch (e) {}
   set(init);
   btn.addEventListener('click', () => set(btn.getAttribute('aria-pressed') !== 'true'));
 })();
@@ -533,33 +533,27 @@ void main(){
     const nx = Math.max(1, Math.floor((innerWidth - 2 * margin - 1) / GS));
     const headH = 0;
     const footH = document.querySelector('footer').getBoundingClientRect().height;
-    const BASE = 2;
     hero.style.height = 'auto';
-    hero.style.paddingBottom = '0px';
     const cTop = logo.getBoundingClientRect().top, cBot = hero.querySelector('.copy').getBoundingClientRect().bottom;
     const need = (cBot - cTop) + 2 * GS + 40;
     const target = Math.max(need, 14 * GS);
     const nyD = Math.max(1, Math.ceil((target - 1) / GS));
-    const ny = nyD + BASE;
-    hero.style.paddingBottom = (BASE * GS) + 'px';
-    const pw = nx * GS + 1, ph = ny * GS + 1;
+    const pw = nx * GS + 1, ph = nyD * GS + 1;
     hero.style.width = pw + 'px';
     hero.style.height = ph + 'px';
     hero.style.marginLeft = hero.style.marginRight = 'auto';
     const place = (el, col, row, span) => { el.style.left = (col * GS + 1) + 'px'; el.style.top = (row * GS + 1) + 'px'; el.style.width = (span * GS - 1) + 'px'; el.style.height = (GS - 1) + 'px'; el.style.right = 'auto'; };
     const span = Math.min(5, Math.max(1, nx - 2)), rc = nx - 1 - span;
     const mt = hero.querySelector('.meta-top');
-    if (mt) place(mt, rc, nyD - 1, span);
+    if (mt) place(mt, rc, 0, span);
     const db = hero.querySelector('.dbg-toggle');
-    if (db) place(db, rc, nyD, span);
+    if (db) place(db, rc, nyD - 1, span);
     const cells = [...hero.querySelectorAll('.dbg-cell')];
-    const perRow = Math.min(2, Math.max(0, Math.floor((rc - 1) / (span + 1))));
+    const fit = Math.max(0, Math.floor((rc - 2) / (span + 1)));
     cells.forEach((c, i) => {
-      const r = perRow ? Math.floor(i / perRow) : 99, k = perRow ? i % perRow : 0;
-      const row = nyD - 1 + r;
-      if (!perRow || r > BASE - 1) { c.style.display = 'none'; return; }
+      if (i >= fit) { c.style.display = 'none'; return; }
       c.style.display = '';
-      place(c, 1 + k * (span + 1), row, span);
+      place(c, 2 + i * (span + 1), nyD - 1, span);
     });
     const hr = hero.getBoundingClientRect();
     cols = Math.ceil(pw / PX); rows = Math.ceil(ph / PX);

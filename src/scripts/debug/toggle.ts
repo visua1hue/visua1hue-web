@@ -3,11 +3,12 @@ import { subscribeMetrics, type Metrics } from "./metrics";
 const KEY = "visua1hue-debug";
 type Shown = "lcp" | "inp" | "cls" | "fps";
 
+/** On unless the visitor switched it off. */
 const load = () => {
   try {
-    return localStorage.getItem(KEY) === "1";
+    return localStorage.getItem(KEY) !== "0";
   } catch {
-    return false; // storage blocked
+    return true; // storage blocked
   }
 };
 

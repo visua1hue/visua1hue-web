@@ -35,8 +35,7 @@ const { glitch = "calm" } = Astro.props;
     /* Pre-layout size: what scripts/hero/layout.ts computes at its minimum row count,
        so the first paint doesn't shift when the script snaps the grid */
     width: calc(round(down, 100vw - 2 * var(--hero-margin) - 1px, var(--grid-size)) + 1px);
-    height: calc((var(--grid-dither-rows) + var(--grid-base-rows)) * var(--grid-size) + 1px);
-    padding-bottom: calc(var(--grid-base-rows) * var(--grid-size));
+    height: calc(var(--grid-dither-rows) * var(--grid-size) + 1px);
   }
 
   /* Grid lines with + markers. Stroke/fill is --color-muted (#8A8F98), inlined because

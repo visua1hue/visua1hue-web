@@ -13,11 +13,11 @@ const cells = [
   <button
     class="grid-cell toggle"
     type="button"
-    aria-pressed="false"
+    aria-pressed="true"
     data-debug-toggle
-    data-hero={"debug" satisfies HeroPart}><span class="dim">Debug:</span><span class="v" data-debug-value>False</span></button
+    data-hero={"debug" satisfies HeroPart}><span class="dim">Debug:</span><span class="v" data-debug-value>True</span></button
   >
-  <div class="panel" aria-hidden="true" data-debug-panel hidden>
+  <div class="panel" aria-hidden="true" data-debug-panel>
     {
       cells.map((c) => (
         <div class="grid-cell metric" data-hero={"metric" satisfies HeroPart}>
@@ -49,8 +49,8 @@ const cells = [
     text-align: inherit;
     color: var(--color-subtle);
     cursor: pointer;
-    /* Pre-layout position: second meta row, right-aligned */
-    top: var(--grid-meta-row-2);
+    /* Pre-layout position: meta row, right-aligned */
+    top: var(--grid-meta-row);
     right: var(--grid-meta-inset);
   }
 
@@ -88,21 +88,23 @@ const cells = [
     font-variant-numeric: tabular-nums;
   }
 
-  /* Pre-layout positions: two per row in the meta rows, from column 1 */
-  .metric:nth-child(odd) {
-    left: var(--grid-meta-inset);
+  /* Pre-layout positions: one row left of DEBUG, from column 2, a gap square between blocks */
+  .metric {
+    --i: 0;
+    top: var(--grid-meta-row);
+    left: calc(var(--grid-meta-inset) + (1 + var(--i) * (var(--grid-block-span) + 1)) * var(--grid-size));
   }
 
-  .metric:nth-child(even) {
-    left: calc((var(--grid-block-span) + 2) * var(--grid-size) + 1px);
+  .metric:nth-child(2) {
+    --i: 1;
   }
 
-  .metric:nth-child(-n + 2) {
-    top: var(--grid-meta-row-1);
+  .metric:nth-child(3) {
+    --i: 2;
   }
 
-  .metric:nth-child(n + 3) {
-    top: var(--grid-meta-row-2);
+  .metric:nth-child(4) {
+    --i: 3;
   }
 
   .metric .dim {

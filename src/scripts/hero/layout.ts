@@ -8,8 +8,6 @@ export interface GridTokens {
   size: number;
   /** Minimum dithered rows. */
   ditherRows: number;
-  /** Grid-only rows below the dither. */
-  baseRows: number;
   /** Squares spanned by BUILD/DEBUG/metric blocks. */
   blockSpan: number;
   /** Dither dot, CSS px. */
@@ -22,7 +20,6 @@ export const readGridTokens = (el: Element): GridTokens =>
   readTokens(el, {
     size: "--grid-size",
     ditherRows: "--grid-dither-rows",
-    baseRows: "--grid-base-rows",
     blockSpan: "--grid-block-span",
     cell: "--dither-cell",
     margin: "--hero-margin",
@@ -37,7 +34,7 @@ export interface HeroLayout {
 
 /**
  * Snaps the hero to whole grid squares, sized to fit the wordmark and copy,
- * and locks the BUILD/DEBUG/metric blocks into grid rows.
+ * and locks BUILD into the first grid row and DEBUG plus metrics into the last dithered row.
  */
 export function layoutHero(parts: HeroParts, t: GridTokens): HeroLayout {
   const { root, logo, copy } = parts;
@@ -54,33 +51,28 @@ export function layoutHero(parts: HeroParts, t: GridTokens): HeroLayout {
 
   // Measure content at natural height before snapping
   root.style.height = "auto";
-  root.style.paddingBottom = "0px";
   const contentH = copy.getBoundingClientRect().bottom - logo.getBoundingClientRect().top;
   const target = Math.max(contentH + 2 * G + 40, t.ditherRows * G);
   const ditherRows = Math.max(1, Math.ceil((target - 1) / G));
-  const ny = ditherRows + t.baseRows;
 
   const pw = nx * G + 1;
-  const ph = ny * G + 1;
-  root.style.paddingBottom = `${t.baseRows * G}px`;
+  const ph = ditherRows * G + 1;
   root.style.width = `${pw}px`;
   root.style.height = `${ph}px`;
 
   const span = Math.min(t.blockSpan, Math.max(1, nx - 2));
   const rightCol = nx - 1 - span;
-  if (parts.build) place(parts.build, rightCol, ditherRows - 1, span);
-  if (parts.debug) place(parts.debug, rightCol, ditherRows, span);
+  const metaRow = ditherRows - 1;
+  if (parts.build) place(parts.build, rightCol, 0, span);
+  if (parts.debug) place(parts.debug, rightCol, metaRow, span);
 
-  // Metrics fill the same rows from the left, two per row, if they fit
-  const perRow = Math.min(2, Math.max(0, Math.floor((rightCol - 1) / (span + 1))));
+  // Metrics share DEBUG's row from column 2 (balances the empty space right of DEBUG's
+  // label); the ones that don't fit are hidden
+  const firstCol = 2;
+  const fit = Math.max(0, Math.floor((rightCol - firstCol) / (span + 1)));
   parts.metrics.forEach((cell, i) => {
-    const row = perRow ? Math.floor(i / perRow) : Infinity;
-    if (row > t.baseRows - 1) {
-      cell.style.display = "none";
-      return;
-    }
-    cell.style.display = "";
-    place(cell, 1 + (i % perRow) * (span + 1), ditherRows - 1 + row, span);
+    cell.style.display = i < fit ? "" : "none";
+    if (i < fit) place(cell, firstCol + i * (span + 1), metaRow, span);
   });
 
   const C = t.cell;
