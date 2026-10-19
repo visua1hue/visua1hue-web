@@ -11,8 +11,8 @@
   --color-fg: #f7f8f8;
   --color-soft: #c9cdd3; /* emphasised secondary text */
   --color-muted: #8a8f98;
-  --color-subtle: #5a5e66; /* mono labels */
-  --color-faint: #3e4147;
+  --color-subtle: #747881; /* mono labels; 4.5:1 on bg, the AA minimum */
+  --color-faint: #3e4147; /* decorative only (separators); fails text contrast */
 
   /* TYPE */
   --font-primary: var(--font-inter);

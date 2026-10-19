@@ -38,7 +38,7 @@ a:hover {
 }
 
 .dim {
-  color: var(--color-faint);
+  color: var(--color-subtle);
 }
 
 /* Link with hover underline on .t and a trailing ↗ arrow */
