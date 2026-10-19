@@ -51,8 +51,8 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
     {/* Theme color */}
     <meta name="theme-color" content="#08090A" />
 
-    <Font cssVariable="--font-inter" preload />
-    {/* Mono is only used for small labels; not worth a preload */}
+    {/* No preloads: Chrome holds first paint for a preloaded font (~115ms measured); swap metrics cover it */}
+    <Font cssVariable="--font-inter" />
     <Font cssVariable="--font-geist-mono" />
   </head>
   <body>
