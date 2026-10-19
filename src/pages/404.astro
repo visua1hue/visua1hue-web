@@ -78,6 +78,8 @@ import Footer from "@components/Footer.astro";
     align-items: baseline;
     gap: 0.5ch;
     max-width: min(60vw, 420px);
+    /* Keeps "Nothing at" on one line; only the path truncates */
+    white-space: nowrap;
   }
 
   code {
