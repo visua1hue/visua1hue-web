@@ -8,9 +8,10 @@ const viewBox = "346.5 751 1787.5 250";
 
 <h1 class="logotype" data-hero={"logo" satisfies HeroPart} aria-label="VISUA1HUE">
   <svg class="mark" viewBox={viewBox} aria-hidden="true"><use href="#wm"></use></svg>
-  <svg class="slice" data-hero={"slice" satisfies HeroPart} viewBox={viewBox} aria-hidden="true"
-    ><rect class="slice-bg" x="300" y="700" width="1900" height="352"></rect><use href="#wm"></use></svg
-  >
+  <span class="slice" data-hero={"slice" satisfies HeroPart} aria-hidden="true">
+    <svg viewBox={viewBox}><rect class="slice-bg" x="300" y="700" width="1900" height="352"></rect></svg>
+    <svg class="slice-ink" viewBox={viewBox}><use href="#wm"></use></svg>
+  </span>
   <svg width="0" height="0" class="defs" aria-hidden="true">
     <defs>
       <g id="wm" fill="currentColor" transform="translate(-99.276 388.925)">
@@ -50,6 +51,8 @@ const viewBox = "346.5 751 1787.5 250";
     position: relative;
     z-index: 3;
     aspect-ratio: 1787.5 / 250;
+    /* cqw for the .mark and .slice-ink masks */
+    container-type: inline-size;
     color: var(--color-fg);
   }
 
@@ -59,7 +62,8 @@ const viewBox = "346.5 751 1787.5 250";
   }
 
   .mark,
-  .slice {
+  .slice,
+  .slice svg {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -77,8 +81,45 @@ const viewBox = "346.5 751 1787.5 250";
     animation: hold 0s 3s both;
   }
 
+  /* Soft translucent patches over the wordmark, and its glitch copy, so the field shows
+     through (median alpha .8; low contrast keeps the letters evenly lit). Two tiles of
+     smooth noise drift apart and multiply, so the patches change shape instead of just
+     sliding. Tiles scale with the wordmark (cqw); each loop shifts each tile by exactly
+     its size, so it repeats seamlessly */
+  .mark,
+  .slice-ink {
+    mask-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.005' numOctaves='1' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1.6 0 0 0 -.06'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.005' numOctaves='1' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1.6 0 0 0 .2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mask-size:
+      92cqw 92cqw,
+      140cqw 140cqw;
+    mask-composite: intersect;
+  }
+
+  /* Fades in while the intro's covers drop out (hero.ts adds .revealed on the first frame) */
   .logotype.revealed .mark {
-    animation: none;
+    animation:
+      fade-in 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) 0.3s both,
+      drift 40s linear infinite;
+  }
+
+  .logotype.revealed .slice-ink {
+    animation: drift 40s linear infinite;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes drift {
+    to {
+      mask-position:
+        92cqw 0,
+        -140cqw 0;
+    }
   }
 
   .slice {
@@ -93,7 +134,8 @@ const viewBox = "346.5 751 1787.5 250";
 
   @media (prefers-reduced-motion: reduce) {
     .mark,
-    .logotype.revealed .mark {
+    .logotype.revealed .mark,
+    .logotype.revealed .slice-ink {
       animation: none;
     }
   }

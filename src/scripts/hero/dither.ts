@@ -124,8 +124,8 @@ void main() {
   lum *= mix(1., .8, gy) * mix(.8, 1., smoothstep(0., u_res.y * .06, ed));
 
   // Intro. Squares over the wordmark (u_cover) are opaque covers in random shades that drop
-  // out at random, revealing the logo square by square (the canvas sits above the logo
-  // while u_coverOn). Around them, a band of field-like clumps hugs the wordmark and
+  // out in random clusters, revealing the logo square by square (the canvas sits above the
+  // logo while u_coverOn). Around them, a band of field-like clumps hugs the wordmark and
   // dissolves while the field develops outward. At u_intro = 1 this is the plain field.
   float covered = 0.;
   if (u_intro < 1.) {
@@ -135,7 +135,9 @@ void main() {
     float shade = .15 + .7 * pow(hash(gid + floor(u_time * 6.)), 2.2);
     float develop = smoothstep(0., 1., (u_intro - .18 - .1 * e) / .4);
     if (u_coverOn > .5 && outside < .5) {
-      covered = step(u_intro, .17 + .25 * hash(gid + 3.3));
+      // Drop out in clusters: smooth noise picks the moment, a little hash roughens the edges
+      float n = smoothstep(-.55, .55, snoise(gid * .32 + 5.7));
+      covered = step(u_intro, .17 + .25 * (.8 * n + .2 * hash(gid + 3.3)));
       lum = covered * step(.4, hash(gid + 9.2 + floor(u_time * 6.))) * shade;
     } else {
       float dist = length(max(q, 0.) * vec2(.4, 1.));
