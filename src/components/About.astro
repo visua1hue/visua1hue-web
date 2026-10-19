@@ -99,6 +99,13 @@ import SocialLink from "@components/SocialLink.astro";
     transform: none;
   }
 
+  /* Words are wrapped once webfonts load; match their dim start until then */
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    .prose[data-reveal]:not(:has(:global(.w))) {
+      opacity: 0.16;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .prose :global(.w) {
       opacity: 1;
@@ -118,6 +125,7 @@ import SocialLink from "@components/SocialLink.astro";
   document.querySelectorAll<HTMLElement>("[data-about]").forEach((root) => {
     const quote = root.querySelector<HTMLCanvasElement>("[data-quote]");
     if (quote) initQuote(quote);
-    initReveal(root);
+    // Wrap words after the webfont swap: per-word spans turn the swap's rewrap into a large layout shift
+    document.fonts.ready.then(() => initReveal(root));
   });
 </script>
