@@ -40,18 +40,23 @@ export function createGlitch({ root, logo, slice }: HeroParts, cell: number, pre
     if (t > next) {
       const top = between(p.top);
       const height = Math.min(between(p.height), 1 - top);
-      const shift = (Math.random() < 0.5 ? -1 : 1) * between(p.shift);
+      // Band edges and shift on whole device pixels: a half-covered edge row blends the
+      // copy's dark backing into the wordmark and shows as a dark line
+      const snap = (v: number) => Math.round(v * devicePixelRatio) / devicePixelRatio;
+      const shift = snap((Math.random() < 0.5 ? -1 : 1) * between(p.shift));
       until = t + between(p.duration);
       next = t + between(p.gap);
 
       // Layout reads happen only here, once per glitch
       const lr = logo.getBoundingClientRect();
-      const yTop = lr.top - root.getBoundingClientRect().top + top * lr.height;
-      const yBot = yTop + height * lr.height;
+      const cut0 = snap(lr.top + top * lr.height) - lr.top;
+      const cut1 = snap(lr.top + (top + height) * lr.height) - lr.top;
+      const yTop = lr.top - root.getBoundingClientRect().top + cut0;
+      const yBot = yTop + cut1 - cut0;
       band = { y0: (canvasHeight - yBot) / cell, y1: (canvasHeight - yTop) / cell, shift: -shift / cell };
 
-      slice.style.setProperty("--t", `${top * 100}%`);
-      slice.style.setProperty("--b", `${(1 - top - height) * 100}%`);
+      slice.style.setProperty("--t", `${cut0}px`);
+      slice.style.setProperty("--b", `${lr.height - cut1}px`);
       slice.style.setProperty("--x", `${shift}px`);
       slice.classList.add("on");
       active = true;
