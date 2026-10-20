@@ -1,6 +1,6 @@
 import { appendFile } from "node:fs/promises";
 import type { AstroIntegration } from "astro";
-import { SECURITY_HEADERS } from "../src/security/headers";
+import { SECURITY_HEADERS } from "../src/security-headers";
 
 /**
  * Prerendered pages are served as static assets and never reach the middleware,
