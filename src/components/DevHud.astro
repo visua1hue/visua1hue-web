@@ -1,0 +1,78 @@
+---
+// Dev only: render it behind import.meta.env.DEV so it never reaches a production build.
+const cells = [
+  { label: "FPS", key: "fps", initial: "—", unit: "" },
+  { label: "FCP", key: "fcp", initial: "—", unit: "ms" },
+  { label: "LCP", key: "lcp", initial: "—", unit: "ms" },
+  { label: "INP", key: "inp", initial: "—", unit: "ms" },
+  { label: "CLS", key: "cls", initial: "0.000", unit: "" },
+  { label: "MEM", key: "mem", initial: "—", unit: "MB" },
+  { label: "DELAY", key: "delay", initial: "—", unit: "ms" },
+  { label: "JANK", key: "jank", initial: "—", unit: "%" },
+  { label: "NET", key: "net", initial: "—", unit: "" },
+  { label: "CSS", key: "css", initial: "—", unit: "" },
+] as const;
+---
+
+<div class="hud" aria-hidden="true" data-dev-hud>
+  {
+    cells.map((c) => (
+      <span class="cell">
+        <span class="dim">{c.label}</span>
+        <span class="n" data-m={c.key}>{c.initial}</span>
+        <span class="u">{c.unit}</span>
+      </span>
+    ))
+  }
+</div>
+
+<style>
+  .hud {
+    position: fixed;
+    right: var(--hero-margin);
+    bottom: var(--hero-margin);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    padding: 6px 10px;
+    background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .hud[hidden] {
+    display: none;
+  }
+
+  .cell {
+    display: grid;
+    grid-template-columns: 6ch 5ch 2ch;
+    align-items: baseline;
+    column-gap: 1ch;
+    line-height: 1.8;
+  }
+
+  .n {
+    text-align: right;
+    color: var(--color-soft);
+  }
+
+  .u {
+    color: var(--color-subtle);
+  }
+</style>
+
+<script>
+  import { initDevHud } from "@scripts/DevHud";
+
+  if (import.meta.env.DEV) {
+    document.querySelectorAll<HTMLElement>("[data-dev-hud]").forEach((root) => initDevHud(root));
+  }
+</script>

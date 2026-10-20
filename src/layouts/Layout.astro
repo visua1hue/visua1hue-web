@@ -1,6 +1,7 @@
 ---
 import { Font } from "astro:assets";
 import "@styles/global.css";
+import DevHud from "@components/DevHud.astro";
 
 interface Props {
   title: string;
@@ -65,5 +66,6 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
   </head>
   <body>
     <slot />
+    {import.meta.env.DEV && <DevHud />}
   </body>
 </html>
