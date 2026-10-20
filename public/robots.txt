@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://visua1hue.dev/sitemap-index.xml
