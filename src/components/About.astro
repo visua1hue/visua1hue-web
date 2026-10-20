@@ -51,7 +51,7 @@ import SocialLink from "@components/SocialLink.astro";
     gap: 10px;
   }
 
-  /* Dithered quotation mark drawn by scripts/about/quote.ts */
+  /* Dithered quotation mark drawn by scripts/lib/quote.ts */
   .quote {
     position: absolute;
     z-index: 0;
@@ -80,7 +80,7 @@ import SocialLink from "@components/SocialLink.astro";
     color: var(--color-fg);
   }
 
-  /* Words are wrapped at runtime by scripts/about/reveal.ts */
+  /* Words are wrapped at runtime by scripts/lib/reveal.ts */
   .prose :global(.w) {
     opacity: 0.16;
     transition: opacity 0.25s linear;
@@ -119,13 +119,7 @@ import SocialLink from "@components/SocialLink.astro";
 </style>
 
 <script>
-  import { initQuote } from "@scripts/about/quote";
-  import { initReveal } from "@scripts/about/reveal";
+  import { initAbout } from "@scripts/About";
 
-  document.querySelectorAll<HTMLElement>("[data-about]").forEach((root) => {
-    const quote = root.querySelector<HTMLCanvasElement>("[data-quote]");
-    if (quote) initQuote(quote);
-    // Wrap words after the webfont swap: per-word spans turn the swap's rewrap into a large layout shift
-    document.fonts.ready.then(() => initReveal(root));
-  });
+  document.querySelectorAll<HTMLElement>("[data-about]").forEach((root) => initAbout(root));
 </script>

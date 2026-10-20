@@ -1,6 +1,6 @@
-import { readTokens } from "@scripts/tokens";
+import { readTokens } from "./tokens";
 import type { FieldGeometry } from "./dither";
-import type { HeroParts } from "./parts";
+import type { HeroParts } from "./hero-parts";
 
 /** Grid tokens from styles/variables.css; the pre-layout CSS uses the same ones. */
 export interface GridTokens {

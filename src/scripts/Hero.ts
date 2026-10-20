@@ -1,7 +1,7 @@
-import { createDitherRenderer } from "./dither";
-import { createGlitch, isGlitchPreset } from "./glitch";
-import { layoutHero, readGridTokens, type HeroLayout } from "./layout";
-import { heroParts } from "./parts";
+import { createDitherRenderer } from "@scripts/lib/dither";
+import { createGlitch, isGlitchPreset } from "@scripts/lib/glitch";
+import { layoutHero, readGridTokens, type HeroLayout } from "@scripts/lib/hero-layout";
+import { heroParts } from "@scripts/lib/hero-parts";
 
 /** Field time used for the single still frame under reduced motion. */
 const STILL_TIME = 12;

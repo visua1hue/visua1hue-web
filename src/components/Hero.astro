@@ -1,6 +1,6 @@
 ---
-import type { GlitchPreset } from "@scripts/hero/glitch";
-import type { HeroPart } from "@scripts/hero/parts";
+import type { GlitchPreset } from "@scripts/lib/glitch";
+import type { HeroPart } from "@scripts/lib/hero-parts";
 
 interface Props {
   glitch?: GlitchPreset;
@@ -10,7 +10,7 @@ const { glitch = "calm" } = Astro.props;
 ---
 
 {
-  /* Grid panel with the dither field. The slot must contain the parts scripts/hero/parts.ts
+  /* Grid panel with the dither field. The slot must contain the parts scripts/lib/hero-parts.ts
      requires: a "logo" with its "slice" copy and a "copy" block; "build"/"debug"/"metric" are optional. */
 }
 <section class="hero" data-hero={"root" satisfies HeroPart} data-glitch={glitch}>
@@ -32,7 +32,7 @@ const { glitch = "calm" } = Astro.props;
     text-align: center;
     width: 100%;
     margin-inline: auto;
-    /* Pre-layout size: what scripts/hero/layout.ts computes at its minimum row count,
+    /* Pre-layout size: what scripts/lib/hero-layout.ts computes at its minimum row count,
        so the first paint doesn't shift when the script snaps the grid */
     width: calc(round(down, 100vw - 2 * var(--hero-margin) - 1px, var(--grid-size)) + 1px);
     height: calc(var(--grid-dither-rows) * var(--grid-size) + 1px);
@@ -66,7 +66,7 @@ const { glitch = "calm" } = Astro.props;
     opacity: 1;
   }
 
-  /* Intro: above the logo, fully opaque at once, so its covers hide the logo (scripts/hero/hero.ts) */
+  /* Intro: above the logo, fully opaque at once, so its covers hide the logo (scripts/Hero.ts) */
   .field.over {
     z-index: 4;
     transition: none;
@@ -74,8 +74,8 @@ const { glitch = "calm" } = Astro.props;
 </style>
 
 <script>
-  import { initHero } from "@scripts/hero/hero";
-  import { heroRoots } from "@scripts/hero/parts";
+  import { initHero } from "@scripts/Hero";
+  import { heroRoots } from "@scripts/lib/hero-parts";
 
   heroRoots().forEach((root) => initHero(root));
 </script>

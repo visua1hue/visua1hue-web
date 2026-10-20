@@ -1,5 +1,5 @@
 ---
-import type { HeroPart } from "@scripts/hero/parts";
+import type { HeroPart } from "@scripts/lib/hero-parts";
 
 const cells = [
   { label: "FCP", key: "fcp", initial: "—", unit: "ms" },
@@ -157,7 +157,7 @@ const cells = [
 </style>
 
 <script>
-  import { initDebugToggle } from "@scripts/debug/toggle";
+  import { initDebugToggle } from "@scripts/DebugToggle";
 
   document.querySelectorAll<HTMLElement>("[data-debug]").forEach((root) => initDebugToggle(root));
 </script>

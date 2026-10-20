@@ -77,7 +77,7 @@ a:hover {
 }
 
 /* One-row mono block locked to the hero grid. Size here is the pre-layout default;
-   scripts/hero/layout.ts sets position and size after measuring. */
+   scripts/lib/hero-layout.ts sets position and size after measuring. */
 .grid-cell {
   width: calc(var(--grid-block-span) * var(--grid-size) - 1px);
   height: calc(var(--grid-size) - 1px);
@@ -139,7 +139,7 @@ a:hover {
   }
 }
 
-/* Hero logo: hidden until scripts/hero/hero.ts reveals it under the intro's covers; shown after a delay if it never does */
+/* Hero logo: hidden until scripts/Hero.ts reveals it under the intro's covers; shown after a delay if it never does */
 @keyframes hold {
   from {
     opacity: 0;

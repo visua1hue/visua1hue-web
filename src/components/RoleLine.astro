@@ -1,5 +1,5 @@
 ---
-import type { HeroPart } from "@scripts/hero/parts";
+import type { HeroPart } from "@scripts/lib/hero-parts";
 ---
 
 <div class="copy" data-hero={"copy" satisfies HeroPart}>
@@ -118,7 +118,7 @@ import type { HeroPart } from "@scripts/hero/parts";
     transition: transform 0.3s ease;
   }
 
-  /* scripts/hero/role.ts keeps aria-expanded in sync with hover, focus and taps */
+  /* scripts/RoleLine.ts keeps aria-expanded in sync with hover, focus and taps */
   .role[aria-expanded="true"] .more {
     grid-template-columns: 1fr;
     opacity: 1;
@@ -156,7 +156,7 @@ import type { HeroPart } from "@scripts/hero/parts";
 </style>
 
 <script>
-  import { initRole } from "@scripts/hero/role";
+  import { initRole } from "@scripts/RoleLine";
 
   document.querySelectorAll<HTMLElement>("[data-role]").forEach((el) => initRole(el));
 </script>

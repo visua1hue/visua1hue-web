@@ -1,5 +1,5 @@
 import type { GlitchSlice } from "./dither";
-import type { HeroParts } from "./parts";
+import type { HeroParts } from "./hero-parts";
 
 /** Seconds, and fractions of the wordmark height / CSS px for the band. */
 interface GlitchTiming {

@@ -1,4 +1,4 @@
-import { readTokens } from "@scripts/tokens";
+import { readTokens } from "./tokens";
 
 /** Dot opacity on top of the canvas's CSS `color`. */
 const DOT_ALPHA = 0.22;

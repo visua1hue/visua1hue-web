@@ -1,5 +1,5 @@
 ---
-import type { HeroPart } from "@scripts/hero/parts";
+import type { HeroPart } from "@scripts/lib/hero-parts";
 
 interface Props {
   /** Short display text, e.g. "404". */
@@ -11,7 +11,7 @@ interface Props {
 const { text, label } = Astro.props;
 ---
 
-{/* Text counterpart of Logotype: the mark plus a hidden copy (.slice) that scripts/hero/glitch.ts clips and shifts */}
+{/* Text counterpart of Logotype: the mark plus a hidden copy (.slice) that scripts/lib/glitch.ts clips and shifts */}
 <h1 class="code" data-hero={"logo" satisfies HeroPart} aria-label={label}>
   <span class="mark" aria-hidden="true">{text}</span>
   <span class="slice" data-hero={"slice" satisfies HeroPart} aria-hidden="true">{text}</span>
@@ -33,7 +33,7 @@ const { text, label } = Astro.props;
 
   .mark {
     display: block;
-    /* Hidden until scripts/hero/hero.ts adds .revealed; shown after 3s if a script fails */
+    /* Hidden until scripts/Hero.ts adds .revealed; shown after 3s if a script fails */
     animation: hold 0s 3s both;
   }
 

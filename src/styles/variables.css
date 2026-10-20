@@ -1,4 +1,4 @@
-/* Registered so getComputedStyle resolves it to px for scripts/hero/layout.ts */
+/* Registered so getComputedStyle resolves it to px for scripts/lib/hero-layout.ts */
 @property --hero-margin {
   syntax: "<length>";
   inherits: true;
@@ -18,7 +18,7 @@
   --font-primary: var(--font-inter);
   --font-mono: var(--font-geist-mono);
 
-  /* HERO GRID — single source; scripts/hero/layout.ts reads these at runtime */
+  /* HERO GRID — single source; scripts/lib/hero-layout.ts reads these at runtime */
   --grid-size: 24px; /* one grid square */
   --grid-dither-rows: 14; /* minimum dithered rows */
   --grid-block-span: 5; /* squares spanned by BUILD/DEBUG/metric blocks */

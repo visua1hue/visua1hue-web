@@ -1,4 +1,4 @@
-import { subscribeMetrics, type Metrics } from "./metrics";
+import { subscribeMetrics, type Metrics } from "@scripts/lib/metrics";
 
 const KEY = "visua1hue-debug";
 type Shown = "fcp" | "lcp" | "inp" | "cls" | "fps";

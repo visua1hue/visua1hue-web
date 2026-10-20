@@ -1,7 +1,7 @@
 ---
-import type { HeroPart } from "@scripts/hero/parts";
+import type { HeroPart } from "@scripts/lib/hero-parts";
 
-// Wordmark plus a hidden copy (.slice) that scripts/hero/glitch.ts clips and shifts
+// Wordmark plus a hidden copy (.slice) that scripts/lib/glitch.ts clips and shifts
 // Glyph paths copied from the master file src/assets/VISUA1HUE.svg; change the logo there first
 // Ink spans y 747.85..1000.18 (the S overshoots the cap height); the box must hold it, since
 // the .mark mask clips to it
@@ -48,7 +48,7 @@ const viewBox = "346.5 747 1787.5 254";
 <style>
   .logotype {
     margin: 0;
-    /* Pre-layout estimate; scripts/hero/layout.ts sets the exact width in whole grid squares */
+    /* Pre-layout estimate; scripts/lib/hero-layout.ts sets the exact width in whole grid squares */
     width: calc(50vw + max(0px, (640px - 100vw) * 0.35));
     position: relative;
     z-index: 3;
@@ -78,7 +78,7 @@ const viewBox = "346.5 747 1787.5 254";
     position: absolute;
   }
 
-  /* Hidden until scripts/hero/hero.ts adds .revealed; shown after 3s if a script fails */
+  /* Hidden until scripts/Hero.ts adds .revealed; shown after 3s if a script fails */
   .mark {
     animation: hold 0s 3s both;
   }

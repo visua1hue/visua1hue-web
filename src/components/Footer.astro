@@ -1,7 +1,7 @@
 ---
 import Arrow from "@components/Arrow.astro";
 
-// Build year as a fallback; scripts/footer/year.ts swaps in the current one
+// Build year as a fallback; scripts/Footer.ts swaps in the current one
 const year = new Date().getFullYear();
 const yearHex = `0x${year.toString(16).toUpperCase()}`;
 ---
@@ -68,7 +68,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
 </style>
 
 <script>
-  import { initYear } from "@scripts/footer/year";
+  import { initYear } from "@scripts/Footer";
 
   document.querySelectorAll<HTMLElement>("[data-year]").forEach((el) => initYear(el));
 </script>
