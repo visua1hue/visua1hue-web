@@ -66,7 +66,7 @@ export default defineConfig({
   ],
 
   // Integrations
-  integrations: [securityHeaders(), modulePreload(), sitemap()],
+  integrations: [securityHeaders(), modulePreload(), sitemap({ filter: (page) => !page.endsWith('/privacy/') })],
 
   // CSS is small (~12KB); inlining saves a render-blocking request per page
   build: {
