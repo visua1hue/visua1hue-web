@@ -28,7 +28,7 @@ jobs:
           curl -sL -o inter.zip "${{ steps.release.outputs.url }}"
           mkdir -p src/assets/fonts
           unzip -j -o inter.zip "web/InterVariable.woff2" -d /tmp/inter
-          unzip -j -o inter.zip "LICENSE.txt" -d src/assets/fonts
+          unzip -p inter.zip "LICENSE.txt" > src/assets/fonts/LICENSE-Inter.txt
           tools/subset-inter.sh /tmp/inter/InterVariable.woff2
 
       - name: Commit if changed
