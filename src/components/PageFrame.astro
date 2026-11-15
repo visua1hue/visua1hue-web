@@ -337,9 +337,33 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
       position: fixed;
       inset: 0 0 auto;
       padding: 6px var(--page-x);
-      background: color-mix(in srgb, var(--color-bg) 82%, transparent);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: var(--color-bg);
+    }
+
+    /* Text fades out under the bar. Smoothstep: flat at both ends, so neither the bar's edge nor the
+       fade's end shows as a line */
+    .head::after {
+      content: "";
+      position: absolute;
+      /* 1px into the bar: a fractional bar height leaves a hairline seam otherwise */
+      inset: calc(100% - 1px) 0 auto;
+      height: 57px;
+      pointer-events: none;
+      background: linear-gradient(var(--color-bg), transparent);
+      background: linear-gradient(
+        in oklab,
+        var(--color-bg) 0%,
+        color-mix(in oklab, var(--color-bg) 97%, transparent) 10%,
+        color-mix(in oklab, var(--color-bg) 90%, transparent) 20%,
+        color-mix(in oklab, var(--color-bg) 78%, transparent) 30%,
+        color-mix(in oklab, var(--color-bg) 65%, transparent) 40%,
+        color-mix(in oklab, var(--color-bg) 50%, transparent) 50%,
+        color-mix(in oklab, var(--color-bg) 35%, transparent) 60%,
+        color-mix(in oklab, var(--color-bg) 22%, transparent) 70%,
+        color-mix(in oklab, var(--color-bg) 10%, transparent) 80%,
+        color-mix(in oklab, var(--color-bg) 3%, transparent) 90%,
+        transparent 100%
+      );
     }
 
     .side {
