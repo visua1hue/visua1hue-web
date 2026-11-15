@@ -6,7 +6,7 @@ I never stopped. Only the machines changed: **software, then systems, then platf
 
 Now I'm building **AI-accelerated workflows and products.** Same curiosity, new machines.
 
-Always up for **a good conversation** and meeting new people.
+Always up for **a good conversation** and connecting with new people.
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. **Sed do eiusmod tempor incididunt** ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.
 
