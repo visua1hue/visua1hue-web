@@ -3,8 +3,7 @@ export const prerender = true;
 import Layout from "@layouts/Layout.astro";
 ---
 
-{/* Same frame language as About and Privacy (nav, label over value, text column), standalone so it
-   doesn't take the page router */}
+{/* Standalone, outside the page router */}
 <Layout title="404 Not Found" description="Nothing lives at this address." noindex>
   <div class="nf">
     <header class="head">
@@ -55,7 +54,6 @@ import Layout from "@layouts/Layout.astro";
       "head ."
       "side main";
     column-gap: clamp(40px, 6vw, 96px);
-    /* Rows keep their height; the spare room stays below the text */
     align-content: start;
     font-size: var(--text-sm);
     line-height: 1.5;
@@ -167,8 +165,7 @@ import Layout from "@layouts/Layout.astro";
     color: var(--color-fg);
   }
 
-  /* Same fade and order as About and Privacy (nav, side, then text), without the logotype's lead.
-     The text is painted at once and a paper cover fades off it, so it stays the LCP */
+  /* As PageFrame, minus the logotype's lead. A cover fades off the text so it stays the LCP */
   @media (prefers-reduced-motion: no-preference) {
     .head,
     .side {
@@ -211,7 +208,7 @@ import Layout from "@layouts/Layout.astro";
 </style>
 
 <script>
-  // The page is static; show the path that was actually requested. textContent, never HTML
+  // Static page: show the requested path. textContent, never HTML
   document.querySelectorAll<HTMLElement>("[data-path]").forEach((el) => {
     let path = location.pathname;
     try {

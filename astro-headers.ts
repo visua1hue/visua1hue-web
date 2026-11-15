@@ -2,10 +2,7 @@ import { appendFile } from "node:fs/promises";
 import type { AstroIntegration } from "astro";
 import { SECURITY_HEADERS } from "./src/security-headers";
 
-/**
- * Prerendered pages are served as static assets and never reach the middleware,
- * so append the same headers to the Cloudflare `_headers` file after the build.
- */
+/** Prerendered pages never reach the middleware, so their headers go into `_headers`. */
 export default function securityHeaders(): AstroIntegration {
   let clientDir: URL;
   return {

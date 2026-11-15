@@ -1,14 +1,11 @@
 import { createTear, ease, frames, GLITCH, jumble } from "@scripts/lib/text-glitch";
 
 export interface PageGlitch {
-  /** The visible text tears and dims, then cuts out. */
   out(): Promise<void>;
-  /** The new visible text unjumbles word by word while the tear settles and it brightens. */
   in(): Promise<void>;
 }
 
-/** Text blocks of the column on screen. The privacy header counts as its title and date, never as
-    a block of its own as well: nested, a block would tear twice and its text jumble twice */
+/** Skips .policy-head itself: a nested block would tear and jumble twice */
 const BLOCKS = ":is(.about, .policy) > :not(.policy-head), .policy-head > *";
 
 function visibleBlocks(main: HTMLElement): HTMLElement[] {
@@ -19,7 +16,6 @@ function visibleBlocks(main: HTMLElement): HTMLElement[] {
   });
 }
 
-/** Every text node under `blocks`, with its original text. */
 function textNodes(blocks: HTMLElement[]): { node: Text; text: string }[] {
   const out: { node: Text; text: string }[] = [];
   for (const block of blocks) {
@@ -31,7 +27,7 @@ function textNodes(blocks: HTMLElement[]): { node: Text; text: string }[] {
   return out;
 }
 
-/** Text nodes' words, each with its moment (0..1) to snap right: roughly left to right, scattered. */
+/** Each word with the moment (0..1) it snaps right: roughly left to right, scattered */
 function wordsOf(texts: { node: Text; text: string }[]) {
   return texts.map(({ text }) =>
     [...text.matchAll(/\S+/g)].map((m) => {
@@ -41,7 +37,6 @@ function wordsOf(texts: { node: Text; text: string }[]) {
   );
 }
 
-/** Writes each text node with the words `jumbled(word)` says are jumbled at this moment. */
 function paint(
   texts: { node: Text; text: string }[],
   words: ReturnType<typeof wordsOf>,
@@ -57,13 +52,7 @@ function paint(
   });
 }
 
-/**
- * Page-swap glitch for the text column (pieces in lib/text-glitch.ts): the tear filter slips the real
- * text sideways in horizontal bands, and on the way in each word shows its own letters jumbled
- * until it snaps right. Monochrome, same font: nothing changes colour and line lengths hold. Only
- * the blocks on screen are filtered and jumbled, and only for the run; the dim is a compositor-only
- * Web Animation.
- */
+/** Only on-screen blocks get the filter and jumble, and only for the run */
 export function createPageGlitch(target: () => HTMLElement | null): PageGlitch {
   const tear = createTear();
 
@@ -79,7 +68,7 @@ export function createPageGlitch(target: () => HTMLElement | null): PageGlitch {
         fill: "forwards",
       });
       await frames(GLITCH.outMs, (t, now) => tear.set(ease.in(t), now));
-      // Cut: stays out until the swap replaces it
+      // Stays hidden until the swap replaces it
       main.style.opacity = "0";
       fade.cancel();
       tear.off(blocks);
@@ -98,7 +87,7 @@ export function createPageGlitch(target: () => HTMLElement | null): PageGlitch {
       main.setAttribute("aria-busy", "true");
       tear.on(blocks);
       const fade = main.animate([{ opacity: GLITCH.dim }, { opacity: 1 }], { duration: ms, easing: "ease-out" });
-      // Jumbled and torn from the first frame: this runs right after the swap, before paint
+      // Runs after the swap, before paint: jumbled and torn from the first frame
       paint(texts, words, () => true);
       tear.set(1, performance.now());
 

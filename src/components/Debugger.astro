@@ -1,6 +1,5 @@
 ---
-// Dev only: render it behind import.meta.env.DEV so it never reaches a production build.
-// Hidden by default; backtick toggles it, click copies the values (scripts/DevHud.ts)
+// Dev only: render behind import.meta.env.DEV so it never reaches production
 import type { DevMetrics } from "@scripts/lib/dev-metrics";
 
 const cells: { label: string; key: keyof DevMetrics; initial: string; unit: string }[] = [
@@ -30,11 +29,10 @@ const cells: { label: string; key: keyof DevMetrics; initial: string; unit: stri
 </button>
 
 <style>
-  /* Sits in the page frame's left column, under the meta */
   .debugger {
     display: flex;
     flex-direction: column;
-    /* Hug the cells; as a block it stretches to the side column and the flash spans it */
+    /* Hug the cells, so the copy flash doesn't span the column */
     width: fit-content;
     font-family: var(--font-mono);
     font-size: 9.5px;
@@ -43,7 +41,7 @@ const cells: { label: string; key: keyof DevMetrics; initial: string; unit: stri
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
     user-select: none;
-    /* Padding offset by margin: room for the copy flash without moving the text */
+    /* Room for the copy flash without moving the text */
     margin: -4px -6px;
     padding: 4px 6px;
     border: 0;

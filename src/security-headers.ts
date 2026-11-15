@@ -1,8 +1,4 @@
-/**
- * Security headers, single source. Used by src/middleware.ts for server-rendered
- * responses and written into dist/client/_headers for static pages by
- * astro-headers.ts.
- */
+/** Set by middleware.ts on Worker responses; written to _headers by astro-headers.ts. */
 export const SECURITY_HEADERS: Record<string, string> = {
   "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
   "X-Content-Type-Options": "nosniff",

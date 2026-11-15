@@ -1,36 +1,30 @@
 :root {
-  /* COLOR — paper */
   --color-bg: #fafaf9;
   --color-fg: #111111;
-  --color-soft: #3a3a38; /* emphasised secondary text */
-  --color-muted: #62625f; /* 5.9:1 on bg */
-  --color-subtle: #72726f; /* labels; 4.6:1 on bg, the AA minimum */
-  --color-faint: #e4e4e1; /* decorative only (separators); fails text contrast */
-  --color-logotype: #ededea; /* background logotype; decorative only */
+  --color-soft: #3a3a38;
+  --color-muted: #62625f;
+  --color-subtle: #72726f;
+  --color-faint: #e4e4e1;
+  --color-logotype: #ededea;
 
-  /* TYPE — About and Privacy use these two sizes only */
-  --text-sm: 16px; /* nav, meta, body copy, small headings, copyright */
-  --text-lg: clamp(20px, 1.8vw, 26px); /* story, page titles, lead */
-  --weight-medium: 500; /* emphasis in the text, page titles */
-  --weight-bold: 500; /* role, small headings */
+  --text-sm: 16px;
+  --text-lg: clamp(20px, 1.8vw, 26px);
+  --weight-medium: 500;
+  --weight-bold: 500;
   --font-primary: var(--font-inter);
   --font-mono: var(--font-geist-mono);
 
-  /* LAYOUT */
   --hit-target: 44px;
-  /* Page frame: content is at most --page-max wide, with at least --page-x either side;
-     --page-edge is the resulting inset from the viewport edge (content, copyright, logotype) */
+
   --page-max: 1200px;
   --page-x: clamp(20px, 6vw, 96px);
   --page-edge: calc(max(0px, (100vw - var(--page-max)) / 2) + var(--page-x));
-  /* Background logotype spans the content width (its box is 1787.5 x 254); a fifth sinks below the fold */
+
   --logotype-h: calc((100vw - 2 * var(--page-edge)) * 254 / 1787.5);
   --logotype-vis: calc(var(--logotype-h) * 0.8);
-  /* Eased ramp above the logotype where the text fades out */
   --fade-ramp: clamp(72px, 11vh, 120px);
 }
 
-/* Phones keep the narrow gutter */
 @media (max-width: 767px) {
   :root {
     --page-x: 20px;

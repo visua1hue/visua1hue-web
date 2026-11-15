@@ -5,7 +5,7 @@ import { execSync } from 'node:child_process';
 import securityHeaders from './astro-headers.ts';
 import sitemap from '@astrojs/sitemap';
 
-// Short commit for the BUILD link. Workers Builds exposes the SHA; local builds read git.
+// Workers Builds exposes the SHA; local builds read git
 const buildSha = (() => {
   const ci = process.env.WORKERS_CI_COMMIT_SHA;
   if (ci) return ci.slice(0, 7);
@@ -16,12 +16,9 @@ const buildSha = (() => {
   }
 })();
 
-// https://astro.build/config
 export default defineConfig({
-  // Site Metadata
   site: 'https://visua1hue.dev',
 
-  // Build & Output Configuration
   output: 'server',
   adapter: cloudflare({
     imageService: 'compile',
@@ -29,7 +26,7 @@ export default defineConfig({
     configPath: 'wrangler.jsonc',
   }),
 
-  // Fonts — self-hosted, vendored from rsms/inter releases (see .github/workflows/sync-inter-font.yml)
+  // Inter is synced by .github/workflows/sync-inter-font.yml
   fonts: [
     {
       provider: fontProviders.local(),
@@ -38,7 +35,7 @@ export default defineConfig({
       options: {
         variants: [
           {
-            // Glyph subset by .github/scripts/subset-inter.sh; axes untouched
+            // Subset by .github/scripts/subset-inter.sh; axes untouched
             weight: '100 900',
             style: 'normal',
             src: ['./src/assets/fonts/InterVariable.woff2'],
@@ -47,7 +44,7 @@ export default defineConfig({
       },
     },
     {
-      // Vendored from the `geist` npm package (OFL), subset by .github/scripts/subset-geist-mono.sh; only 400 is used
+      // From the `geist` package (OFL), subset by .github/scripts/subset-geist-mono.sh; only 400 is used
       provider: fontProviders.local(),
       name: 'Geist Mono',
       cssVariable: '--font-geist-mono',
@@ -64,7 +61,6 @@ export default defineConfig({
     },
   ],
 
-  // Integrations
   // Page text (src/content/*.md) renders as typed: no automatic curly quotes or dashes
   markdown: { smartypants: false },
 
@@ -75,10 +71,8 @@ export default defineConfig({
     inlineStylesheets: 'always',
   },
 
-  // Dev Toolbar
   devToolbar: { enabled: false },
 
-  // Vite Configuration
   vite: {
     define: {
       __BUILD_SHA__: JSON.stringify(buildSha),

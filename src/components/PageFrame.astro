@@ -11,25 +11,22 @@ interface Props {
 const { current } = Astro.props;
 const page = (p: Props["current"]) => (p === current ? "page" : undefined);
 
-// The deployed commit (astro.config.mjs), linked under the copyright
+// Defined in astro.config.mjs
 const sha = __BUILD_SHA__;
 const commitHref = `https://github.com/visua1hue/visua1hue-web/commit/${sha}`;
 
-// Build year as a fallback; scripts/Copyright.ts swaps in the current one
+// Build year; copyright-glitch.ts sets the current one at runtime
 const year = new Date().getFullYear();
 const yearHex = `0x${year.toString(16).toUpperCase()}`;
 ---
 
-{/* Page frame shared by About and Privacy. Nav, meta and logotype persist across page swaps
-   (Layout's ClientRouter); only <main> changes. Wide: nav and meta pinned top left, text fading
-   out at both viewport edges. Narrow: nav in a fixed top bar, meta after the text */}
 <Logotype />
-{/* The page-swap tear (scripts/PageGlitch.ts animates its seed and scale); monochrome */}
+{/* Page-swap tear; page-glitch.ts animates seed and scale */}
 <svg class="glitch-defs" width="0" height="0" aria-hidden="true" transition:persist="glitch-defs">
   <filter id="page-glitch" x="-4%" y="-2%" width="108%" height="104%" color-interpolation-filters="sRGB">
-    {/* Noise stretched sideways into horizontal bands */}
+    {/* Low x frequency: noise stretched into horizontal bands */}
     <feTurbulence type="fractalNoise" baseFrequency="0.0008 0.1" numOctaves="1" seed="1" result="noise"></feTurbulence>
-    {/* Green pinned at mid grey, so the text only tears sideways, never up or down */}
+    {/* G fixed at 0.5, so text only shifts sideways */}
     <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0  0 0 0 0 0.5  0 0 0 0 0  0 0 0 0 1" result="bands"></feColorMatrix>
     <feDisplacementMap in="SourceGraphic" in2="bands" scale="0" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
   </filter>
@@ -78,10 +75,9 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
 <style>
   .frame {
     --pad-top: clamp(24px, 4vw, 36px);
-    /* At the end of the page the last line rests this far above the logotype, level with the copyright */
+    /* Last line rests this far above the logotype, level with the copyright */
     --end-gap: clamp(40px, 7vh, 80px);
     --pad-bottom: calc(var(--logotype-vis) + var(--end-gap));
-    /* Text and meta start this far below the nav */
     --below-nav: calc(var(--hit-target) + clamp(48px, 7vw, 88px));
     position: relative;
     z-index: 1;
@@ -97,7 +93,6 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     letter-spacing: -0.011em;
   }
 
-  /* Holds the page-swap filter only; takes no space */
   .glitch-defs {
     position: absolute;
     width: 0;
@@ -105,7 +100,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     overflow: hidden;
   }
 
-  /* Text fades out at both viewport edges; nav and meta sit above the bands, the logotype above all */
+  /* Over the text, under nav, meta and logotype */
   .fade {
     position: fixed;
     z-index: 1;
@@ -113,11 +108,11 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     pointer-events: none;
   }
 
-  /* Eased ramps (a scrim curve, not a straight line), so the text dissolves instead of being cut */
+  /* Eased stops, not a linear ramp, so text dissolves instead of being cut off */
   .fade-top {
     top: 0;
     height: calc(var(--pad-top) + var(--below-nav));
-    /* Plain gradient first; browsers with interpolation spaces take the OKLab one below */
+    /* Fallback for browsers without gradient interpolation spaces */
     background: linear-gradient(var(--color-bg) 22%, transparent);
     background: linear-gradient(
       in oklab,
@@ -132,14 +127,14 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     );
   }
 
-  /* Solid from the logotype up to the copyright line: no text shows beside or below the copyright */
+  /* Solid from the logotype up to the copyright line */
   .fade-bottom {
     bottom: 0;
     height: calc(var(--logotype-vis) + var(--end-gap));
     background: var(--color-bg);
   }
 
-  /* The ramp above it; it clears once the text's end is in view, so the last lines read in full */
+  /* Clears at the end of the text (.at-end) so the last lines read in full */
   .fade-ramp {
     bottom: calc(var(--logotype-vis) + var(--end-gap));
     height: var(--fade-ramp);
@@ -161,13 +156,12 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     opacity: 0;
   }
 
-  /* Nav and aside share the left column; both pin, the nav above the meta */
   .head {
     grid-area: side;
     align-self: start;
     position: sticky;
     top: var(--pad-top);
-    /* Above .side, which shares this grid area and would otherwise take the clicks */
+    /* Above .side, which shares the grid area and would take the clicks */
     z-index: 3;
   }
 
@@ -181,7 +175,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     display: inline-flex;
     align-items: center;
     color: var(--color-subtle);
-    /* On the base state, so leaving a link fades it back too; out is slower than in */
+    /* On the base state so leaving fades too; out is slower than in */
     transition: color 0.45s var(--ease-out);
   }
 
@@ -194,8 +188,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     color: var(--color-fg);
   }
 
-  /* Becoming current is instant; only the link losing it fades out, so the two never cross-fade
-     through the same grey while the page swaps */
+  /* Instant, so the old and new current links don't cross-fade during a swap */
   .nav a[aria-current="page"] {
     transition: none;
   }
@@ -206,10 +199,8 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     padding-top: var(--below-nav);
   }
 
-  /* First load only: the text fades in as one block after the nav and meta (global.css: cascade).
-     The text itself is never hidden: it paints at once (so it, not the sidebar, is the LCP) and a
-     paper cover over it fades off on the cascade's timing. A page swap marks the new main .settled,
-     so switching pages doesn't replay it */
+  /* First load only (swaps add .settled). The text paints at once so it stays the LCP; a paper
+     cover fades off it instead */
   @media (prefers-reduced-motion: no-preference) {
     .main:not(.settled) {
       position: relative;
@@ -230,15 +221,13 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     position: relative;
     z-index: 2;
     padding-top: var(--below-nav);
-    /* Reach the page foot, through the frame's bottom pad: the pinned meta is held inside this box,
-       and ending it at the text's last line pushed the meta up at the end of the page */
+    /* Reach the page foot: ending at the text's last line pushes the pinned meta up at the end */
     margin-bottom: calc(-1 * var(--pad-bottom));
   }
 
-  /* Meta (and the dev HUD under it) holds still while the text scrolls */
   .pin {
     position: sticky;
-    /* Its resting offset, so it pins the moment the page scrolls */
+    /* Equals its resting offset, so it pins without a jump */
     top: calc(var(--pad-top) + var(--below-nav));
     display: flex;
     flex-direction: column;
@@ -252,13 +241,11 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     gap: 18px;
   }
 
-  /* Labels: plain words in grey, same size as the values */
   .meta dt,
   .label {
     color: var(--color-subtle);
   }
 
-  /* Label over value, like the meta above */
   .label {
     display: block;
   }
@@ -276,7 +263,6 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     color: var(--color-fg);
   }
 
-  /* Rests on the background logotype's top edge, in line with the meta above */
   .copy {
     position: fixed;
     left: var(--page-edge);
@@ -307,7 +293,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     font-variant-numeric: tabular-nums;
   }
 
-  /* Entrance on first load only; persisted nodes keep .entered across page swaps */
+  /* Persisted nodes keep .entered, so swaps don't replay this */
   @media (prefers-reduced-motion: no-preference) {
     [data-enter]:not(.entered) {
       animation: fade-in var(--enter-dur) var(--enter-ease) both var(--lead);
@@ -322,8 +308,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     }
   }
 
-  /* Short windows: no room to pin both the meta and the copyright without them meeting, so both
-     scroll with the page, the copyright under the meta */
+  /* Short windows: pinned meta and copyright would overlap, so both scroll */
   @media (min-width: 768px) and (max-height: 720px) {
     .pin,
     .copy {
@@ -335,11 +320,10 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     }
   }
 
-  /* Narrow: nav in a fixed bar, then text, then meta and copyright */
   @media (max-width: 767px) {
     .frame {
       --below-nav: calc(var(--hit-target) + 32px);
-      /* The logotype sits after the page here, not over it */
+      /* The logotype follows the page here instead of overlapping it */
       --pad-bottom: 48px;
       grid-template-columns: minmax(0, 1fr);
       grid-template-areas:
@@ -385,8 +369,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
   import { createPageGlitch } from "@scripts/page-glitch";
   import { TransitionBeforePreparationEvent } from "astro:transitions/client";
 
-  /** Page swap: the old text glitches out while the next page loads, the new one glitches in
-      (timings and look: GLITCH in scripts/PageGlitch.ts) */
+  // Glitch out while the next page loads, glitch in after the swap
   if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
     const glitch = createPageGlitch(() => document.querySelector<HTMLElement>(".main"));
     document.addEventListener("astro:before-preparation", (e) => {
@@ -396,21 +379,19 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
         await Promise.all([load(), glitch.out()]);
       };
     });
-    // The new page shows at once (dimmed), decodes and settles
     document.addEventListener("astro:after-swap", () => void glitch.in());
   }
 
-  // Persisted nodes: wire once
+  // Persisted nodes: wire once, not per page
   for (const el of document.querySelectorAll<HTMLElement>("[data-year]")) initCopyright(el);
   document.querySelectorAll<HTMLElement>("[data-enter]").forEach((el) =>
     el.addEventListener("animationend", () => el.classList.add("entered"), { once: true }),
   );
 
-  // Height of the solid band above the logotype (0 on phones, where it's hidden)
   const solidBand = () => document.querySelector<HTMLElement>("[data-fade-solid]")?.offsetHeight ?? 0;
 
-  // Clear the bottom ramp while the end of the text is in view. A little slack: at the very end the
-  // text stops exactly on the band's edge. Rebuilt after a resize, since the band's height changes
+  // 8px slack: at the very end the text stops exactly on the band's edge. Rebuilt on resize because
+  // the band's height changes
   function watchEnd(): () => void {
     const frame = document.querySelector<HTMLElement>(".frame");
     const end = document.querySelector<HTMLElement>("[data-end]");
@@ -438,7 +419,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     };
   }
 
-  /** The persisted nav's current link. Set as soon as a navigation starts, not after the swap */
+  // Set when navigation starts, not after the swap, so the nav doesn't flicker
   const markCurrent = (path: string) =>
     document.querySelectorAll<HTMLAnchorElement>(".nav a").forEach((a) => {
       if (a.pathname === path) a.setAttribute("aria-current", "page");
@@ -448,9 +429,8 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     if (e instanceof TransitionBeforePreparationEvent) markCurrent(e.to.pathname);
   });
 
-  // The current page's link doesn't reload it (the router would swap and glitch the same page); it
-  // takes you back to the top instead. The router skips clicks already handled. Modified clicks
-  // (new tab, new window) pass through. The nav is persisted, so this is wired once
+  // Current page's link scrolls to the top instead of swapping the same page. The router skips
+  // prevented clicks; modified clicks (new tab) pass through
   document.querySelector(".nav")?.addEventListener("click", (e) => {
     if (!(e instanceof MouseEvent) || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     const link = e.target instanceof Element ? e.target.closest<HTMLAnchorElement>("a[href]") : null;
@@ -460,7 +440,6 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     scrollTo({ top: 0, behavior: smooth ? "smooth" : "instant" });
   });
 
-  // Per page, including the first: the persisted nav needs its current link, the bottom fade its end
   let stopEnd = () => {};
   document.addEventListener("astro:after-swap", () => document.querySelector(".main")?.classList.add("settled"));
 

@@ -3,13 +3,12 @@ import { subscribeDevMetrics, type DevMetrics } from "@scripts/lib/dev-metrics";
 const KEY = "visua1hue-debugger";
 type Key = keyof DevMetrics;
 
-/** How a value reads. Null keeps the placeholder: not measured yet (heap: unsupported, so "NA") */
+/** Null keeps the placeholder; heap null means unsupported */
 function format(key: Key, v: number | null): string | null {
   if (v === null) return key === "mem" ? "NA" : null;
   return key === "cls" ? v.toFixed(3) : String(v);
 }
 
-/** Hidden until switched on with the backtick key. */
 const load = () => {
   try {
     return localStorage.getItem(KEY) === "1";
@@ -26,7 +25,6 @@ const save = (on: boolean) => {
   }
 };
 
-/** Plain-text snapshot of the HUD for pasting, e.g. "LCP 840 ms". */
 const snapshot = (root: HTMLElement) =>
   [
     `Dev metrics ${location.pathname} ${innerWidth}x${innerHeight}`,
@@ -35,9 +33,8 @@ const snapshot = (root: HTMLElement) =>
     ),
   ].join("\n");
 
-/** Brief background fade confirming the copy. */
 const flash = (el: HTMLElement) => {
-  // Resolve the token here: var() support inside WAAPI keyframes is uneven across engines
+  // var() inside WAAPI keyframes is unreliable across engines
   const soft = getComputedStyle(el).getPropertyValue("--color-soft").trim() || "currentColor";
   el.animate(
     [{ backgroundColor: `color-mix(in oklab, ${soft} 14%, transparent)` }, { backgroundColor: "transparent" }],
@@ -45,13 +42,13 @@ const flash = (el: HTMLElement) => {
   );
 };
 
-/** Dev metrics HUD. Backtick toggles it, persisted; while hidden, collection is unsubscribed. Click copies. */
+/** Backtick toggles it (persisted); hidden means unsubscribed. Click copies. */
 export function initDebugger(root: HTMLElement): () => void {
   const out = new Map(
     [...root.querySelectorAll<HTMLElement>("[data-m]")].map((el) => [el.dataset.m as Key, el] as const),
   );
 
-  // Write only changed values; this runs on every frame-rate sample
+  // Runs on every frame-rate sample: write only changes
   const shown = new Map<Key, string>();
   const render = (m: Readonly<DevMetrics>) => {
     for (const [key, el] of out) {

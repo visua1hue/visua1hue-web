@@ -1,31 +1,26 @@
 /**
- * Metrics for the dev HUD (DevHud.ts): web vitals, frame rate, jank, heap, event-loop delay, recent
- * requests and CSS rules. Kept in memory, never sent anywhere; dev only.
- *
- * The performance observers start with the first subscriber and stay: they're passive, and starting
- * them again would replay buffered entries (CLS would count twice). The rAF loop and the sampling
- * timer run only while someone is subscribed.
+ * Debugger metrics, kept in memory only. Observers start with the first subscriber and never stop:
+ * restarting them would replay buffered entries and count CLS twice. The rAF loop and the timer run
+ * only while subscribed.
  */
 
 export interface DevMetrics {
-  /** Frames per second, smoothed. */
   fps: number | null;
-  /** First and largest contentful paint, ms. LCP stops at the first input, as browsers report it. */
+  /** ms. LCP stops at the first input, as browsers report it. */
   fcp: number | null;
   lcp: number | null;
-  /** Cumulative layout shift, ignoring shifts right after input. */
+  /** Ignores shifts right after input. */
   cls: number;
   /** Slowest interaction so far, ms. */
   inp: number | null;
-  /** Used JS heap in MB; null where `performance.memory` is missing (non-Chromium). */
+  /** Used JS heap, MB; null outside Chromium. */
   mem: number | null;
-  /** Worst timer lateness in the last second, ms: main-thread blockage. */
+  /** Worst timer lateness in the last second, ms. */
   delay: number;
   /** Share of frames over JANK_MS in the last second, %. */
   jank: number;
-  /** Resource requests finished in the last NET_WINDOW_MS. */
+  /** Requests finished in the last NET_WINDOW_MS. */
   net: number;
-  /** Rules across all readable stylesheets. */
   css: number;
 }
 
@@ -54,7 +49,7 @@ const emit = () => {
   for (const fn of listeners) fn(metrics);
 };
 
-/** Finish times of recent requests, oldest first */
+/** Finish times, oldest first */
 const requests: number[] = [];
 const dropOldRequests = (now: number) => {
   while (requests.length && (requests[0] ?? 0) < now - NET_WINDOW_MS) requests.shift();
@@ -113,7 +108,7 @@ function startObservers() {
 
   observe("resource", (entries) => {
     for (const e of entries as PerformanceResourceTiming[]) requests.push(e.responseEnd);
-    // Keeps observing after the HUD is hidden; don't let the list grow meanwhile
+    // Observes while the debugger is hidden too; keep the list bounded
     dropOldRequests(performance.now());
   });
 }
@@ -139,7 +134,7 @@ let timer = 0;
 let raf = 0;
 let onVisibility: (() => void) | null = null;
 
-/** One rAF loop for frame rate (EMA over short buckets) and jank (per second) */
+/** Frame rate (EMA over short buckets) and jank (per second) from one rAF loop */
 function startSampling() {
   let fps = 0;
   let bucketStart = 0;
@@ -184,13 +179,12 @@ function startSampling() {
   };
   raf = requestAnimationFrame(frame);
 
-  // Timer lateness against the expected tick; the worst over each second
   let expected = performance.now() + TICK_MS;
   let ticks = 0;
   let worst = 0;
   timer = window.setInterval(() => {
     const now = performance.now();
-    // Hidden tabs throttle timers; that lateness is the browser's, not the page's
+    // Hidden tabs throttle timers; that lateness isn't the page's
     if (document.hidden) {
       expected = now + TICK_MS;
       return;
@@ -208,8 +202,7 @@ function startSampling() {
     emit();
   }, TICK_MS);
 
-  // Hidden tabs pause rAF and throttle timers: start the windows over when the tab comes back, or
-  // the gap would read as one long janky frame and a huge delay
+  // Restart the windows when the tab returns, or the paused gap reads as jank and delay
   onVisibility = () => {
     last = 0;
     frames = janky = bucketFrames = 0;
@@ -226,7 +219,6 @@ function stopSampling() {
   cancelAnimationFrame(raf);
 }
 
-/** Subscribe to updates. The first subscriber starts collection; sampling stops after the last leaves. */
 export function subscribeDevMetrics(fn: Listener): () => void {
   listeners.add(fn);
   if (!observing) startObservers();

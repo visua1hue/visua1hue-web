@@ -8,7 +8,7 @@ interface Props {
   description?: string;
   /** Keep the page out of search results (e.g. 404). */
   noindex?: boolean;
-  /** Soft navigation between pages that share the page frame: only the text column swaps. */
+  /** Soft navigation between PageFrame pages. */
   router?: boolean;
 }
 
@@ -22,8 +22,7 @@ const {
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL("/og.png", Astro.site).href;
 const ogImageAlt = "Dithered grid pattern from the VISUA1HUE site";
-// transition:animate="none" on <html>: no cross-fade on page swaps; the text column
-// glitches instead (PageFrame.astro)
+// transition:animate="none": no cross-fade; PageFrame glitches the text instead
 const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
 ---
 
@@ -43,7 +42,6 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
 
-    {/* Open Graph */}
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL.href} />
     <meta property="og:title" content={title} />
@@ -54,7 +52,6 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={ogImageAlt} />
 
-    {/* Twitter Card */}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@visua1hue" />
     <meta name="twitter:title" content={title} />
@@ -62,10 +59,9 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={ogImageAlt} />
 
-    {/* Theme color */}
     <meta name="theme-color" content="#FAFAF9" />
 
-    {/* No preloads: Chrome holds first paint for a preloaded font (~115ms measured); swap metrics cover it */}
+    {/* No preload: Chrome holds first paint for a preloaded font (~115ms measured) */}
     <Font cssVariable="--font-inter" />
     <Font cssVariable="--font-geist-mono" />
     {router && <ClientRouter />}

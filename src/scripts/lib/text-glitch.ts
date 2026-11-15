@@ -1,23 +1,18 @@
-/**
- * Shared pieces of the text glitch (page swaps: scripts/PageGlitch.ts; the copyright year:
- * scripts/Copyright.ts): the tear (an SVG filter, #page-glitch in PageFrame.astro, that slips
- * horizontal bands of text sideways) and the jumble (a word's own characters in random order).
- */
+/** Shared by page-glitch.ts and copyright-glitch.ts. The tear is #page-glitch in PageFrame.astro */
 
-/** The look, as chosen. */
 export const GLITCH = {
-  /** Page swap: out and in durations, ms. */
+  /** Page swap durations, ms. */
   outMs: 220,
   inMs: 460,
-  /** Characters re-jumble and the tear pattern changes this often, ms; strength eases every frame. */
+  /** Re-jumble and tear pattern interval, ms; strength still eases every frame. */
   rate: 50,
-  /** Peak sideways tear (how far a band slips), CSS px. */
+  /** Peak band slip, px. */
   tear: 12,
-  /** Opacity the text dims to while it glitches. */
+  /** Opacity while glitching. */
   dim: 0.55,
 } as const;
 
-/** Vertical noise frequency range for the tear bands (higher means thinner): a mix of sizes. */
+/** Vertical noise frequency range; higher means thinner bands. */
 const BAND_FREQ: [number, number] = [0.04, 0.16];
 
 export const ease = {
@@ -25,10 +20,7 @@ export const ease = {
   out: (t: number) => 1 - (1 - t) * (1 - t),
 };
 
-/**
- * The word's own letters and digits in random order. Everything else (apostrophes, punctuation)
- * keeps its place, and so does the case pattern, so "You've" can read "Ouy'ev" but never "you'Ve".
- */
+/** Shuffles letters and digits; punctuation and case pattern stay ("You've" can become "Ouy'ev"). */
 export function jumble(word: string): string {
   const chars = [...word];
   const slots = chars.flatMap((c, i) => (/[\p{L}\p{N}]/u.test(c) ? [i] : []));
@@ -45,10 +37,7 @@ export function jumble(word: string): string {
   return chars.join("");
 }
 
-/**
- * Calls `each(t, now)` every frame for `ms` (t 0..1). Stops early, without a last call, once
- * `alive()` turns false (a newer run took over).
- */
+/** `each(t, now)` per frame for `ms`, t from 0 to 1. Stops without a last call once `alive()` is false. */
 export function frames(ms: number, each: (t: number, now: number) => void, alive: () => boolean = () => true) {
   return new Promise<void>((resolve) => {
     const start = performance.now();
@@ -64,13 +53,13 @@ export function frames(ms: number, each: (t: number, now: number) => void, alive
 }
 
 export interface Tear {
-  /** Tear strength 0..1; the band pattern changes every GLITCH.rate ms. */
+  /** Strength 0..1; the band pattern changes every GLITCH.rate ms. */
   set(k: number, now: number): void;
   on(els: HTMLElement[]): void;
   off(els: HTMLElement[]): void;
 }
 
-/** The tear filter's controls. Without the filter on the page (the 404), every call is a no-op. */
+/** No-op where the filter is absent (404). */
 export function createTear(): Tear {
   const noise = document.querySelector<SVGFETurbulenceElement>("#page-glitch feTurbulence");
   const map = document.querySelector<SVGFEDisplacementMapElement>("#page-glitch feDisplacementMap");

@@ -1,6 +1,5 @@
 ---
-// Background logotype. Glyph paths copied from the master file src/assets/logotype.svg;
-// change the logo there first
+// Paths copied from src/assets/logotype.svg; change the logo there first
 ---
 
 <div class="logotype" aria-hidden="true" transition:persist="logotype">
@@ -29,7 +28,7 @@
 <style>
   .logotype {
     position: fixed;
-    /* Over the text: the fade band in PageFrame.astro clears the text beneath it */
+    /* Over the text; the fade band in PageFrame.astro clears the text beneath it */
     z-index: 3;
     left: var(--page-edge);
     right: var(--page-edge);
@@ -44,7 +43,6 @@
     overflow: visible;
   }
 
-  /* Tint at the cap height, gone by the baseline */
   .glyphs {
     fill: url(#logotype-fade);
   }
@@ -57,8 +55,7 @@
     stop-opacity: 0;
   }
 
-  /* Intro, first on the page (the sidebar and text wait --lead). The mark never moves. It waits,
-     hidden, until the script below sees it on screen (.play): on phones it sits at the page's end */
+  /* Paused until on screen (.play): on phones it sits at the page's end */
   @media (prefers-reduced-motion: no-preference) {
     .logotype:not(.entered) svg {
       animation: logotype-in 1.8s cubic-bezier(0.22, 1, 0.36, 1) both paused;
@@ -69,7 +66,7 @@
     }
   }
 
-  /* Phones: too small to pin over the text, so it closes the page as a footer mark, whole */
+  /* Phones: too small to pin over the text, so it ends the page instead */
   @media (max-width: 767px) {
     .logotype {
       position: relative;
@@ -95,14 +92,13 @@
   // Persisted across page swaps, so this runs once
   const logotype = document.querySelector<HTMLElement>(".logotype");
   if (logotype) {
-    // Play the intro once it's on screen: at once on wide screens, at the page's end on phones
     const io = new IntersectionObserver(([e]) => {
       if (!e?.isIntersecting) return;
       logotype.classList.add("play");
       io.disconnect();
     });
     io.observe(logotype);
-    // Done: stop it replaying if the node is re-inserted
+    // Stops a replay if the node is re-inserted
     logotype.addEventListener("animationend", () => logotype.classList.add("entered"), { once: true });
   }
 </script>

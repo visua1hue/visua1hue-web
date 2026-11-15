@@ -25,7 +25,7 @@ body {
   }
 }
 
-/* A page that scrolls and one that doesn't keep the same width, so switching pages doesn't nudge the layout */
+/* Scrolling and non-scrolling pages keep the same width, so swaps don't nudge the layout */
 html {
   scrollbar-gutter: stable;
 }
@@ -51,7 +51,6 @@ a:hover {
   color: var(--color-fg);
 }
 
-/* Link with hover underline on .t and a trailing ↗ arrow */
 .ext {
   display: inline-flex;
   align-items: center;
@@ -71,7 +70,6 @@ a:hover {
   text-decoration-color: currentColor;
 }
 
-/* Rests a touch above the line's centre; on hover it fades in whole while drifting 2px up and right */
 .ext .arw {
   flex: none;
   opacity: 0;
@@ -96,7 +94,7 @@ a:hover {
   }
 }
 
-/* Page heading over the text column (About, Privacy): label size, level with the meta's first line */
+/* Label size, level with the meta's first line */
 .page-title {
   margin: 0;
   font-size: var(--text-sm);
@@ -112,8 +110,6 @@ a:hover {
   }
 }
 
-/* The text is painted from the first frame (LCP counts it then); a paper cover fading off it does
-   the fade */
 @keyframes cover-off {
   to {
     opacity: 0;
