@@ -3,6 +3,7 @@
 import Arrow from "@assets/arrow.svg";
 import Debugger from "@components/Debugger.astro";
 import Logotype from "@components/Logotype.astro";
+import BackToTop from "@components/BackToTop.astro";
 import "@styles/page-transitions.css";
 
 interface Props {
@@ -71,6 +72,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
       <p><span class="label">Build</span><a class="ext" href={commitHref} title="View this build's commit on GitHub"><span class="t">{sha}</span><Arrow class="arw" aria-hidden="true" /></a></p>
     </div>
   </aside>
+  <BackToTop />
 </div>
 
 <style>
@@ -411,6 +413,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
 
 <script>
   import { initCopyright } from "@scripts/copyright-glitch";
+  import { scrollToTop } from "@scripts/lib/scroll-to-top";
 
   for (const el of document.querySelectorAll<HTMLElement>("[data-year]")) initCopyright(el);
 
@@ -451,7 +454,6 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     const link = e.target instanceof Element ? e.target.closest<HTMLAnchorElement>("a[href]") : null;
     if (!link || link.pathname !== location.pathname) return;
     e.preventDefault();
-    const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
-    scrollTo({ top: 0, behavior: smooth ? "smooth" : "instant" });
+    scrollToTop();
   });
 </script>
