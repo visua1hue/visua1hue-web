@@ -21,7 +21,26 @@ const save = (on: boolean) => {
   }
 };
 
-/** Dev metrics HUD. Backtick toggles it, persisted; while hidden, collection is unsubscribed. */
+/** Plain-text snapshot of the HUD for pasting, e.g. "LCP 840 ms". */
+const snapshot = (root: HTMLElement) =>
+  [
+    `Dev metrics ${location.pathname} ${innerWidth}x${innerHeight}`,
+    ...[...root.querySelectorAll<HTMLElement>(".cell")].map((cell) =>
+      [...cell.children].map((el) => el.textContent?.trim()).filter(Boolean).join(" "),
+    ),
+  ].join("\n");
+
+/** Brief background fade confirming the copy. */
+const flash = (el: HTMLElement) => {
+  // Resolve the token here: var() support inside WAAPI keyframes is uneven across engines
+  const soft = getComputedStyle(el).getPropertyValue("--color-soft").trim() || "currentColor";
+  el.animate(
+    [{ backgroundColor: `color-mix(in oklab, ${soft} 14%, transparent)` }, { backgroundColor: "transparent" }],
+    { duration: 500, easing: "ease-out" },
+  );
+};
+
+/** Dev metrics HUD. Backtick toggles it, persisted; while hidden, collection is unsubscribed. Click copies. */
 export function initDevHud(root: HTMLElement): () => void {
   const out = Object.fromEntries(
     [...root.querySelectorAll<HTMLElement>("[data-m]")].map((el) => [el.dataset.m, el]),
@@ -73,6 +92,16 @@ export function initDevHud(root: HTMLElement): () => void {
       set(on);
       save(on);
     },
+    { signal: ac.signal },
+  );
+
+  root.addEventListener(
+    "click",
+    () =>
+      navigator.clipboard
+        .writeText(snapshot(root))
+        .then(() => flash(root))
+        .catch((err) => console.error("DevHud: copy failed", err)),
     { signal: ac.signal },
   );
 

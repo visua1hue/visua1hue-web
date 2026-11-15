@@ -1,6 +1,6 @@
 ---
 // Dev only: render it behind import.meta.env.DEV so it never reaches a production build.
-// Hidden by default; backtick toggles it (scripts/DevHud.ts)
+// Hidden by default; backtick toggles it, click copies the values (scripts/DevHud.ts)
 const cells = [
   { label: "FPS", key: "fps", initial: "—", unit: "" },
   { label: "FCP", key: "fcp", initial: "—", unit: "ms" },
@@ -15,7 +15,7 @@ const cells = [
 ] as const;
 ---
 
-<div class="hud" aria-hidden="true" data-dev-hud hidden>
+<button type="button" class="hud" data-dev-hud hidden>
   {
     cells.map((c) => (
       <span class="cell">
@@ -25,21 +25,30 @@ const cells = [
       </span>
     ))
   }
-</div>
+</button>
 
 <style>
   /* Sits in the Shell's left column, under the meta */
   .hud {
     display: flex;
     flex-direction: column;
+    /* Hug the cells; as a block it stretches to the side column and the flash spans it */
+    width: fit-content;
     font-family: var(--font-mono);
     font-size: 9.5px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
-    pointer-events: none;
     user-select: none;
+    /* Padding offset by margin: room for the copy flash without moving the text */
+    margin: -4px -6px;
+    padding: 4px 6px;
+    border: 0;
+    background: none;
+    color: inherit;
+    text-align: left;
+    cursor: default;
   }
 
   .hud[hidden] {
