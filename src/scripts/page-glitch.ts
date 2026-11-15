@@ -110,7 +110,7 @@ export function createPageGlitch(target: () => HTMLElement | null): PageGlitch {
         paint(texts, words, (at) => t < at);
       });
 
-      texts.forEach(({ node, text }) => (node.data = text));
+      for (const { node, text } of texts) node.data = text;
       fade.cancel();
       tear.off(blocks);
       tear.set(0, performance.now());

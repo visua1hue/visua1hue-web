@@ -80,6 +80,6 @@ const cells: { label: string; key: keyof DevMetrics; initial: string; unit: stri
   import { initDebugger } from "@scripts/debugger";
 
   if (import.meta.env.DEV) {
-    document.querySelectorAll<HTMLElement>("[data-debugger]").forEach((root) => initDebugger(root));
+    for (const root of document.querySelectorAll<HTMLElement>("[data-debugger]")) initDebugger(root);
   }
 </script>

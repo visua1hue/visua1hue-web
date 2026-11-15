@@ -50,7 +50,9 @@ const metrics: DevMetrics = {
   css: 0,
 };
 const listeners = new Set<Listener>();
-const emit = () => listeners.forEach((fn) => fn(metrics));
+const emit = () => {
+  for (const fn of listeners) fn(metrics);
+};
 
 /** Finish times of recent requests, oldest first */
 const requests: number[] = [];

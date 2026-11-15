@@ -90,10 +90,11 @@ export function createTear(): Tear {
       map?.setAttribute("scale", (k * GLITCH.tear * 2).toFixed(1));
     },
     on(els) {
-      if (present) els.forEach((el) => (el.style.filter = "url(#page-glitch)"));
+      if (!present) return;
+      for (const el of els) el.style.filter = "url(#page-glitch)";
     },
     off(els) {
-      els.forEach((el) => el.style.removeProperty("filter"));
+      for (const el of els) el.style.removeProperty("filter");
     },
   };
 }
