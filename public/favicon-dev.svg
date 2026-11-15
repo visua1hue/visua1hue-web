@@ -5,9 +5,16 @@
   viewBox="-2.125 -2.125 21.25 21.25"
   shape-rendering="crispEdges"
 >
+  <!-- Production's icon (favicon.svg) at 25% opacity, so dev tabs read as dev -->
   <style>
     .l5 {
-      fill: oklch(0.6133 0.1011 202.85);
+      fill: #08090a;
+      fill-opacity: 0.25;
+    }
+    @media (prefers-color-scheme: dark) {
+      .l5 {
+        fill: #edf0f2;
+      }
     }
   </style>
   <path
