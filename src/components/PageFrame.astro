@@ -20,9 +20,13 @@ const commitHref = `https://github.com/visua1hue/visua1hue-web/commit/${sha}`;
 // Build year; copyright-glitch.ts sets the current one at runtime
 const year = new Date().getFullYear();
 const yearHex = `0x${year.toString(16).toUpperCase()}`;
+
+// Logotype off for now; true brings it back. Off, it isn't rendered and the room the layout keeps
+// for it at the foot (--logotype-vis) collapses to 0
+const showLogotype = false;
 ---
 
-<Logotype />
+{showLogotype && <Logotype />}
 {/* Copyright tear; copyright-glitch.ts animates seed and scale */}
 <svg class="glitch-defs" width="0" height="0" aria-hidden="true">
   <filter id="page-glitch" x="-4%" y="-2%" width="108%" height="104%" color-interpolation-filters="sRGB">
@@ -33,7 +37,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     <feDisplacementMap in="SourceGraphic" in2="bands" scale="0" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
   </filter>
 </svg>
-<div class="frame">
+<div class="frame" style={showLogotype ? undefined : "--logotype-vis: 0px"}>
   <div class="fade fade-top" aria-hidden="true"></div>
   <div class="fade fade-bottom" aria-hidden="true" data-fade-solid></div>
   <div class="fade fade-ramp" aria-hidden="true" data-fade-ramp></div>
