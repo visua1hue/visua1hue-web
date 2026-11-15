@@ -75,6 +75,25 @@
     animation: fade-in var(--vt-in) var(--ease) var(--vt-out) both;
   }
 
+  /* Phones: .side is page content that scrolls with the text, not a fixed column, so it leaves and
+     arrives with it, unpaired the same way. The back-to-top button fades out with the text instead
+     of blinking off */
+  @media (max-width: 767px) {
+    html[data-leaving] .side {
+      view-transition-name: side-out;
+    }
+
+    ::view-transition-old(side-out),
+    ::view-transition-old(back-to-top) {
+      opacity: 1;
+      animation: cover-off var(--vt-out) var(--ease) both;
+    }
+
+    ::view-transition-new(side) {
+      animation: fade-in var(--vt-in) var(--ease) var(--vt-out) both;
+    }
+  }
+
   /* Nav: a cross-fade, so the current-page color moves from one link to the other. Additive blend
      (the browser's default, lost with its animation) keeps the unchanged links from dimming midway */
   ::view-transition-image-pair(head) {
