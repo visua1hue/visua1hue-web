@@ -1,0 +1,385 @@
+---
+import Arrow from "@components/Arrow.astro";
+import DevHud from "@components/DevHud.astro";
+import Ghost from "@components/Ghost.astro";
+
+interface Props {
+  current: "about" | "privacy";
+}
+
+const { current } = Astro.props;
+const page = (p: Props["current"]) => (p === current ? "page" : undefined);
+
+// The deployed commit (astro.config.mjs), linked under the copyright
+const sha = __BUILD_SHA__;
+const commitHref = `https://github.com/visua1hue/visua1hue-web/commit/${sha}`;
+
+// Build year as a fallback; scripts/Footer.ts swaps in the current one
+const year = new Date().getFullYear();
+const yearHex = `0x${year.toString(16).toUpperCase()}`;
+---
+
+{/* Page frame shared by About and Privacy. Nav, meta and ghost persist across page swaps
+   (Layout's ClientRouter); only <main> changes. Wide: nav and meta pinned top left, text fading
+   out at both viewport edges. Narrow: nav in a fixed top bar, meta after the text */}
+<Ghost />
+<div class="shell">
+  <div class="fade fade-top" aria-hidden="true"></div>
+  <div class="fade fade-bottom" aria-hidden="true" data-fade-solid></div>
+  <div class="fade fade-ramp" aria-hidden="true" data-fade-ramp></div>
+
+  <header class="head" transition:persist="nav" data-enter>
+    <nav class="nav" aria-label="Main">
+      <a href="/" aria-current={page("about")}>About</a>
+      <a href="/privacy/" aria-current={page("privacy")}>Privacy</a>
+    </nav>
+  </header>
+
+  <main class="main">
+    <slot />
+    <div data-end aria-hidden="true"></div>
+  </main>
+
+  <aside class="side" transition:persist="side">
+    <div class="pin">
+      <dl class="meta" data-enter>
+        <div>
+          <dt>Currently</dt>
+          <dd class="role">Technical Consultant – Innovation</dd>
+          <dd class="org"><a class="ext" href="https://www.centricsoftware.com/"><span class="t">Centric Software</span><Arrow /></a></dd>
+        </div>
+        <div>
+          <dt>Socials</dt>
+          <dd><a class="ext" href="https://www.linkedin.com/in/michaelhuebel/"><span class="t">LinkedIn</span><Arrow /></a></dd>
+          <dd><a class="ext" href="https://github.com/visua1hue"><span class="t">GitHub</span><Arrow /></a></dd>
+        </div>
+      </dl>
+      {import.meta.env.DEV && <DevHud />}
+    </div>
+    <div class="copy" data-enter>
+      {/* role=img: screen readers read the decimal label, not the scrambling glyphs */}
+      <p><span class="label">Copyright</span><span class="year" data-year tabindex="0" role="img" aria-label={String(year)}>{yearHex}</span></p>
+      <p><span class="label">Build</span><a class="ext" href={commitHref} title="View this build's commit on GitHub"><span class="t">{sha}</span><Arrow /></a></p>
+    </div>
+  </aside>
+</div>
+
+<style>
+  .shell {
+    --pad-top: clamp(24px, 4vw, 36px);
+    /* At the end of the page the last line rests this far above the ghost, level with the copyright */
+    --end-gap: clamp(40px, 7vh, 80px);
+    --pad-bottom: calc(var(--ghost-vis) + var(--end-gap));
+    /* Text and meta start this far below the nav */
+    --below-nav: calc(var(--hit-target) + clamp(48px, 7vw, 88px));
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    width: 100%;
+    padding: var(--pad-top) var(--page-edge) var(--pad-bottom);
+    display: grid;
+    grid-template-columns: minmax(200px, 300px) minmax(0, 1fr);
+    grid-template-areas: "side main";
+    column-gap: clamp(40px, 6vw, 96px);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    letter-spacing: -0.011em;
+  }
+
+  /* Text fades out at both viewport edges; nav and meta sit above the bands, the ghost above all */
+  .fade {
+    position: fixed;
+    z-index: 1;
+    inset-inline: 0;
+    pointer-events: none;
+  }
+
+  /* Eased ramps (a scrim curve, not a straight line), so the text dissolves instead of being cut */
+  .fade-top {
+    top: 0;
+    height: calc(var(--pad-top) + var(--below-nav));
+    background: linear-gradient(
+      var(--color-bg) 0%,
+      var(--color-bg) 22%,
+      color-mix(in srgb, var(--color-bg) 74%, transparent) 37%,
+      color-mix(in srgb, var(--color-bg) 54%, transparent) 49%,
+      color-mix(in srgb, var(--color-bg) 38%, transparent) 59%,
+      color-mix(in srgb, var(--color-bg) 19%, transparent) 73%,
+      color-mix(in srgb, var(--color-bg) 8%, transparent) 85%,
+      transparent 100%
+    );
+  }
+
+  /* Solid from the ghost up to the copyright line: no text shows beside or below the copyright */
+  .fade-bottom {
+    bottom: 0;
+    height: calc(var(--ghost-vis) + var(--end-gap));
+    background: var(--color-bg);
+  }
+
+  /* The ramp above it; it clears once the text's end is in view, so the last lines read in full */
+  .fade-ramp {
+    bottom: calc(var(--ghost-vis) + var(--end-gap));
+    height: var(--fade-ramp);
+    background: linear-gradient(
+      to top,
+      var(--color-bg) 0%,
+      color-mix(in srgb, var(--color-bg) 74%, transparent) 19%,
+      color-mix(in srgb, var(--color-bg) 54%, transparent) 34%,
+      color-mix(in srgb, var(--color-bg) 38%, transparent) 47%,
+      color-mix(in srgb, var(--color-bg) 19%, transparent) 65%,
+      color-mix(in srgb, var(--color-bg) 8%, transparent) 80%,
+      transparent 100%
+    );
+    transition: opacity 0.5s ease;
+  }
+
+  .shell.at-end .fade-ramp {
+    opacity: 0;
+  }
+
+  /* Nav and aside share the left column; both pin, the nav above the meta */
+  .head {
+    grid-area: side;
+    align-self: start;
+    position: sticky;
+    top: var(--pad-top);
+    /* Above .side, which shares this grid area and would otherwise take the clicks */
+    z-index: 3;
+  }
+
+  .nav {
+    display: flex;
+    gap: 28px;
+  }
+
+  .nav a {
+    min-height: var(--hit-target);
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-subtle);
+    transition: color 0.2s ease;
+  }
+
+  .nav a:hover,
+  .nav a[aria-current="page"] {
+    color: var(--color-fg);
+  }
+
+  .main {
+    grid-area: main;
+    min-width: 0;
+    padding-top: var(--below-nav);
+  }
+
+  .side {
+    grid-area: side;
+    position: relative;
+    z-index: 2;
+    padding-top: var(--below-nav);
+    /* Reach the page foot, through the shell's bottom pad: the pinned meta is held inside this box,
+       and ending it at the text's last line pushed the meta up at the end of the page */
+    margin-bottom: calc(-1 * var(--pad-bottom));
+  }
+
+  /* Meta (and the dev HUD under it) holds still while the text scrolls */
+  .pin {
+    position: sticky;
+    /* Its resting offset, so it pins the moment the page scrolls */
+    top: calc(var(--pad-top) + var(--below-nav));
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .meta {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  /* Labels: plain words in grey, same size as the values */
+  .meta dt,
+  .label {
+    color: var(--color-subtle);
+  }
+
+  /* Label over value, like the meta above */
+  .label {
+    display: block;
+  }
+
+  .meta dd {
+    margin: 0;
+  }
+
+  .meta .role {
+    font-weight: var(--weight-bold);
+    color: var(--color-fg);
+  }
+
+  .meta .ext {
+    color: var(--color-fg);
+  }
+
+  /* Rests on the ghost logotype's top edge, in line with the meta above */
+  .copy {
+    position: fixed;
+    left: var(--page-edge);
+    bottom: calc(var(--ghost-vis) + var(--end-gap));
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: var(--color-subtle);
+  }
+
+  .copy p {
+    margin: 0;
+  }
+
+  .copy a {
+    color: inherit;
+  }
+
+  .copy a:hover {
+    color: var(--color-fg);
+  }
+
+  .year {
+    display: inline-block;
+    min-width: 6ch;
+    white-space: pre;
+    cursor: default;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Entrance on first load only; persisted nodes keep .entered across page swaps */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-enter]:not(.entered) {
+      animation: enter 0.9s var(--ease-out) both;
+    }
+
+    .meta:not(.entered) {
+      animation-delay: 0.1s;
+    }
+
+    .copy:not(.entered) {
+      animation-delay: 0.6s;
+    }
+  }
+
+  /* Short windows: no room to pin both the meta and the copyright without them meeting, so both
+     scroll with the page, the copyright under the meta */
+  @media (min-width: 768px) and (max-height: 720px) {
+    .pin,
+    .copy {
+      position: static;
+    }
+
+    .copy {
+      margin-top: 40px;
+    }
+  }
+
+  /* Narrow: nav in a fixed bar, then text, then meta and copyright */
+  @media (max-width: 767px) {
+    .shell {
+      --below-nav: calc(var(--hit-target) + 32px);
+      /* The ghost sits after the page here, not over it */
+      --pad-bottom: 48px;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        "main"
+        "side";
+      row-gap: 64px;
+    }
+
+    .fade-top,
+    .fade-bottom {
+      display: none;
+    }
+
+    .fade-ramp {
+      bottom: 0;
+    }
+
+    .head {
+      position: fixed;
+      inset: 0 0 auto;
+      padding: 6px var(--page-x);
+      background: color-mix(in srgb, var(--color-bg) 82%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .side {
+      padding-top: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    .pin,
+    .copy {
+      position: static;
+    }
+  }
+</style>
+
+<script>
+  import { initYear } from "@scripts/Footer";
+  import { initReveal } from "@scripts/Reveal";
+
+  // Persisted nodes: wire once
+  document.querySelectorAll<HTMLElement>("[data-year]").forEach((el) => initYear(el));
+  document.querySelectorAll<HTMLElement>("[data-enter]").forEach((el) =>
+    el.addEventListener("animationend", () => el.classList.add("entered"), { once: true }),
+  );
+
+  // Text counts as in view once it clears the solid band above the ghost (hidden on phones: 0)
+  const solidBand = () => document.querySelector<HTMLElement>("[data-fade-solid]")?.offsetHeight ?? 0;
+
+  // Clear the bottom ramp while the end of the text is in view. A little slack: at the very end the
+  // text stops exactly on the band's edge. Rebuilt after a resize, since the band's height changes
+  function watchEnd(): () => void {
+    const shell = document.querySelector<HTMLElement>(".shell");
+    const end = document.querySelector<HTMLElement>("[data-end]");
+    if (!shell || !end) return () => {};
+    let io: IntersectionObserver | null = null;
+    const observe = () => {
+      io?.disconnect();
+      const inset = Math.max(0, solidBand() - 8);
+      io = new IntersectionObserver(([e]) => shell.classList.toggle("at-end", e?.isIntersecting ?? false), {
+        rootMargin: `0px 0px -${inset}px 0px`,
+      });
+      io.observe(end);
+    };
+    let timer = 0;
+    const onResize = () => {
+      clearTimeout(timer);
+      timer = window.setTimeout(observe, 150);
+    };
+    observe();
+    addEventListener("resize", onResize, { passive: true });
+    return () => {
+      clearTimeout(timer);
+      removeEventListener("resize", onResize);
+      io?.disconnect();
+    };
+  }
+
+  // Per page, including the first: the persisted nav needs its current link, the new text its reveal
+  let stopReveal = () => {};
+  let stopEnd = () => {};
+  document.addEventListener("astro:page-load", () => {
+    document.querySelectorAll<HTMLAnchorElement>(".nav a").forEach((a) => {
+      if (a.pathname === location.pathname) a.setAttribute("aria-current", "page");
+      else a.removeAttribute("aria-current");
+    });
+    stopReveal();
+    stopEnd();
+    stopReveal = initReveal(document, solidBand);
+    stopEnd = watchEnd();
+  });
+</script>
