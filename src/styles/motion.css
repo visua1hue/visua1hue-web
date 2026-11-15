@@ -14,15 +14,8 @@
   --enter-dur: 500ms;
   --enter-ease: var(--ease-out-expo);
 
-  /* Page change (page-transitions.css): out, then in */
-  --vt-out: 200ms;
-  --vt-in: 350ms;
-}
-
-/* Phones: a page change is a tap away from the next one, so it is quicker */
-@media (max-width: 767px) {
-  :root {
-    --vt-out: 120ms;
-    --vt-in: 200ms;
-  }
+  /* Page change (page-transitions.css): out, then in. The whole page is a frozen snapshot until both
+     finish (no hover, no clicks), so the sum stays short */
+  --vt-out: 120ms;
+  --vt-in: 220ms;
 }
