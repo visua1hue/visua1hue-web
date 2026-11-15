@@ -415,6 +415,17 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     :global(.logotype) {
       display: none;
     }
+
+    /* The nav bar already names the page. Hidden from view only: the h1 still heads the page and
+       labels its section for screen readers */
+    .main :global(.page-title) {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
   }
 </style>
 
