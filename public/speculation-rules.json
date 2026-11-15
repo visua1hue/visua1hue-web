@@ -1,8 +1,14 @@
 {
-  "prefetch": [
+  "prerender": [
     {
-      "where": { "and": [{ "href_matches": "/*" }, { "not": { "href_matches": "/cdn-cgi/*" } }] },
-      "eagerness": "moderate"
+      "where": {
+        "and": [
+          { "href_matches": "/*" },
+          { "not": { "href_matches": "/cdn-cgi/*" } },
+          { "not": { "selector_matches": "[aria-current=page]" } }
+        ]
+      },
+      "eagerness": "immediate"
     }
   ]
 }
