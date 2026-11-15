@@ -127,8 +127,10 @@ a:active {
 }
 
 /* Page moves on wide screens: the browser's own cross-document view transition. Only the text
-   (.main) fades; everything else swaps in place. The overlays get names so they stay drawn above
-   the text meanwhile. Phones and reduced motion: no transition, the prerendered page shows at once */
+   (.main) fades; everything else swaps in place. Named elements keep their page stacking during the
+   transition (main, then the fades, then side, then nav and logotype); an unnamed one drops below
+   every named one, so .side is named to stay above the fades. Phones and reduced motion: no
+   transition, the prerendered page shows at once */
 @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;
@@ -152,6 +154,10 @@ a:active {
 
   .fade-ramp {
     view-transition-name: fade-ramp;
+  }
+
+  .side {
+    view-transition-name: side;
   }
 
   .logotype {
