@@ -50,10 +50,6 @@ a:hover {
   color: var(--color-fg);
 }
 
-.dim {
-  color: var(--color-subtle);
-}
-
 /* Link with hover underline on .t and a trailing ↗ arrow */
 .ext {
   display: inline-flex;

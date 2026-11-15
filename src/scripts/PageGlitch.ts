@@ -7,10 +7,13 @@ export interface PageGlitch {
   in(): Promise<void>;
 }
 
-/** Text blocks of the column on screen. */
+/** Text blocks of the column on screen. The privacy header counts as its title and date, never as
+    a block of its own as well: nested, a block would tear twice and its text jumble twice */
+const BLOCKS = ":is(.about, .policy) > :not(.policy-head), .policy-head > *";
+
 function visibleBlocks(main: HTMLElement): HTMLElement[] {
   const h = innerHeight;
-  return [...main.querySelectorAll<HTMLElement>(":is(.about, .policy) > *, .policy-head > *")].filter((el) => {
+  return [...main.querySelectorAll<HTMLElement>(BLOCKS)].filter((el) => {
     const r = el.getBoundingClientRect();
     return r.bottom > 0 && r.top < h && r.height > 0;
   });
