@@ -435,6 +435,13 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
 
   for (const el of document.querySelectorAll<HTMLElement>("[data-year]")) initCopyright(el);
 
+  // Fires just before the browser snapshots this page for a transition (page-transitions.css). A page
+  // restored from the back/forward cache must not keep the mark
+  addEventListener("pageswap", (e) => {
+    if (e.viewTransition) document.documentElement.setAttribute("data-leaving", "");
+  });
+  addEventListener("pageshow", () => document.documentElement.removeAttribute("data-leaving"));
+
   // Scroll indicator back on touch screens (global.css)
   addEventListener("scroll", () => document.documentElement.setAttribute("data-scrolled", ""), {
     once: true,

@@ -15,6 +15,13 @@
     view-transition-name: main;
   }
 
+  /* The leaving page's text gets its own name (html[data-leaving], set in PageFrame.astro), so it
+     isn't paired with the arriving text. A shared group would take the new page's position at once
+     and pull scrolled-away text back to the top while it fades */
+  html[data-leaving] .main {
+    view-transition-name: main-out;
+  }
+
   .head {
     view-transition-name: head;
   }
@@ -59,7 +66,7 @@
 
   /* Fade-through: the old text fades out, then the new one fades in. Long enough to read as a
      move; a short overlap dipped to nothing and back, which read as a flicker */
-  ::view-transition-old(main) {
+  ::view-transition-old(main-out) {
     opacity: 1;
     animation: cover-off var(--vt-out) var(--ease) both;
   }
