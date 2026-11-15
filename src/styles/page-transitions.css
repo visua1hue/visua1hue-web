@@ -1,0 +1,83 @@
+/* Loaded by PageFrame.astro only, so both sides of a transition are PageFrame pages: the 404 has its
+   own .head/.main/.side, and pairing those with a page's morphed and flickered.
+
+   Page moves on wide screens: the browser's own cross-document view transition. Only the text
+   (.main) fades; everything else swaps in place. Named elements keep their page stacking during the
+   transition (main, then the fades, then side, then nav and logotype); an unnamed one drops below
+   every named one, so .side is named to stay above the fades. Phones and reduced motion: no
+   transition, the prerendered page shows at once */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  .main {
+    view-transition-name: main;
+  }
+
+  .head {
+    view-transition-name: head;
+  }
+
+  .fade-top {
+    view-transition-name: fade-top;
+  }
+
+  .fade-bottom {
+    view-transition-name: fade-bottom;
+  }
+
+  .fade-ramp {
+    view-transition-name: fade-ramp;
+  }
+
+  .side {
+    view-transition-name: side;
+  }
+
+  .logotype {
+    view-transition-name: logotype;
+  }
+
+  /* Swap in place: no morph, and the old copy hidden so see-through layers don't double up */
+  ::view-transition-group(*) {
+    animation: none;
+  }
+
+  ::view-transition-old(*) {
+    animation: none;
+    opacity: 0;
+  }
+
+  ::view-transition-new(*) {
+    animation: none;
+  }
+
+  /* Fade-through: the old text fades out, then the new one fades in. Long enough to read as a
+     move; a short overlap dipped to nothing and back, which read as a flicker */
+  ::view-transition-old(main) {
+    opacity: 1;
+    animation: cover-off var(--vt-out) var(--ease) both;
+  }
+
+  ::view-transition-new(main) {
+    animation: fade-in var(--vt-in) var(--ease) var(--vt-out) both;
+  }
+
+  /* Nav: a cross-fade, so the current-page color moves from one link to the other. Additive blend
+     (the browser's default, lost with its animation) keeps the unchanged links from dimming midway */
+  ::view-transition-image-pair(head) {
+    isolation: isolate;
+  }
+
+  ::view-transition-old(head) {
+    opacity: 1;
+    mix-blend-mode: plus-lighter;
+    animation: cover-off var(--vt-out) var(--ease) both;
+  }
+
+  ::view-transition-new(head) {
+    mix-blend-mode: plus-lighter;
+    animation: fade-in var(--vt-out) var(--ease) both;
+  }
+}
