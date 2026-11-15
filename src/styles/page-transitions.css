@@ -15,13 +15,6 @@
     view-transition-name: main;
   }
 
-  /* The leaving page's text gets its own name (html[data-leaving], set in PageFrame.astro), so it
-     isn't paired with the arriving text. A shared group would take the new page's position at once
-     and pull scrolled-away text back to the top while it fades */
-  html[data-leaving] .main {
-    view-transition-name: main-out;
-  }
-
   .head {
     view-transition-name: head;
   }
@@ -66,7 +59,7 @@
 
   /* Fade-through: the old text fades out, then the new one fades in. Long enough to read as a
      move; a short overlap dipped to nothing and back, which read as a flicker */
-  ::view-transition-old(main-out) {
+  ::view-transition-old(main) {
     opacity: 1;
     animation: cover-off var(--vt-out) var(--ease) both;
   }
@@ -75,15 +68,28 @@
     animation: fade-in var(--vt-in) var(--ease) var(--vt-out) both;
   }
 
+  /* One group for old and new text. It holds the old page's position (scrolled text stays where it
+     was) while the old text fades, then steps to the new position as the new text starts. revert
+     brings back the browser's own position keyframes; steps(1, end) makes that move one jump.
+     Unpaired names would keep positions too, but a name only the new page has is drawn above every
+     other layer, and the text bled over the fades and the logotype */
+  ::view-transition-group(main) {
+    animation: revert;
+    animation-duration: var(--vt-out);
+    animation-timing-function: steps(1, end);
+  }
+
   /* Phones: .side is page content that scrolls with the text, not a fixed column, so it leaves and
-     arrives with it, unpaired the same way. The back-to-top button fades out with the text instead
-     of blinking off */
+     arrives with it, held and stepped the same way. The back-to-top button fades out with the text
+     instead of blinking off */
   @media (max-width: 767px) {
-    html[data-leaving] .side {
-      view-transition-name: side-out;
+    ::view-transition-group(side) {
+      animation: revert;
+      animation-duration: var(--vt-out);
+      animation-timing-function: steps(1, end);
     }
 
-    ::view-transition-old(side-out),
+    ::view-transition-old(side),
     ::view-transition-old(back-to-top) {
       opacity: 1;
       animation: cover-off var(--vt-out) var(--ease) both;
