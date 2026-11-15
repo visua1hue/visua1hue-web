@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+# Contact details live here; noindex alone still lets crawlers fetch the page
+Disallow: /privacy/
+
+Sitemap: https://visua1hue.dev/sitemap-index.xml

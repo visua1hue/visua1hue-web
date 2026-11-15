@@ -1,0 +1,179 @@
+---
+export const prerender = true;
+import Layout from "@layouts/Layout.astro";
+import Shell from "@components/Shell.astro";
+---
+
+<Layout title="Privacy Policy – VISUA1HUE" description="What this site does and doesn't do with your data." noindex router>
+  <Shell current="privacy">
+    <article class="policy" aria-labelledby="privacy-title">
+      <header class="policy-head">
+        <h1 class="page-title" id="privacy-title">Privacy Policy</h1>
+        <p class="updated">Last updated: <time datetime="2026-11-15">15 November 2026</time></p>
+      </header>
+      {/* TODO before launch: "No cookies" holds only while no Cloudflare bot feature sets one (Security → Bots) */}
+      {/* Links start on the text's line ("See <a"): compressHTML drops a line break before an inline element */}
+
+      <p class="lead">
+        <strong>No cookies, no analytics, no tracking.</strong> This site doesn't load anything from third parties: fonts
+        and scripts are served from this domain.
+      </p>
+
+      <h2>Get in touch</h2>
+      <address>Michael Hübel<br />privacy [at] visua1hue.dev</address>
+
+      <h2>Hosting</h2>
+      <p>
+        The site runs on Cloudflare. To deliver and protect it, Cloudflare processes technical data for every request:
+        IP address, browser, requested page and time.
+      </p>
+      <ul>
+        <li><strong>Why:</strong> to deliver the site and keep it secure, including blocking attack traffic.</li>
+        <li>
+          <strong>Legal basis:</strong> Art. 6(1)(f) GDPR. My legitimate interest is a site that loads and is protected
+          against misuse.
+        </li>
+        <li>
+          <strong>Who receives it:</strong> Cloudflare, Inc., 101 Townsend St., San Francisco, CA 94107, USA. Cloudflare
+          processes this data on my behalf under a data processing agreement. For some data, such as data used to secure
+          its own network, Cloudflare acts on its own responsibility. See <a
+            href="https://www.cloudflare.com/privacypolicy/">Cloudflare's privacy policy</a
+          >.
+        </li>
+        <li>
+          <strong>Outside the EU:</strong> Cloudflare may process the data in the USA and other countries. Cloudflare is
+          certified under the EU–US Data Privacy Framework, which the European Commission has found adequate (Art. 45
+          GDPR). Its <a href="https://www.cloudflare.com/cloudflare-customer-dpa/">data processing agreement</a> also
+          includes the EU Standard Contractual Clauses (Art. 46 GDPR).
+        </li>
+        <li>
+          <strong>Error logs:</strong> Cloudflare keeps request logs for this site in my account. I use them only to find
+          and fix errors. They are deleted after 3 days.
+        </li>
+        <li>
+          <strong>How long:</strong> apart from those logs, I keep no logs of my own. Cloudflare shows me aggregated
+          traffic and security statistics for about a month. Cloudflare deletes its own records once it no longer needs
+          them for delivery and security; it doesn't publish fixed periods.
+        </li>
+      </ul>
+
+      <h2 data-reveal>Page preloading</h2>
+      <p data-reveal>
+        To make page changes faster, your browser may load the other page of this site in advance. These requests only go
+        to this domain and are handled as described under Hosting.
+      </p>
+
+      <h2 data-reveal>Fonts</h2>
+      <p data-reveal>Fonts are hosted on this domain. Your browser doesn't contact Google or any other font provider.</p>
+
+      <h2 data-reveal>Email</h2>
+      <p data-reveal>
+        If you email an address at visua1hue.dev, Cloudflare forwards your message to my private inbox at my email
+        provider. I use your address and message only to reply, and delete them once the conversation is finished. Legal
+        basis: Art. 6(1)(f) GDPR, my interest in answering your message.
+      </p>
+
+      <h2 data-reveal>External links</h2>
+      <p data-reveal>
+        Links to LinkedIn, GitHub and Centric Software are plain links. Nothing is sent to them until you click. After
+        that, their privacy policies apply.
+      </p>
+
+      <h2 data-reveal>Do you have to provide data?</h2>
+      <p data-reveal>
+        No law or contract requires it. Without your IP address and request data, your browser can't load the site. There
+        is no automated decision-making or profiling (Art. 22 GDPR).
+      </p>
+
+      <h2 data-reveal>Your rights</h2>
+      <p data-reveal>
+        You can ask for access to your data (Art. 15 GDPR), correction (Art. 16), deletion (Art. 17) and restriction of
+        processing (Art. 18). Write to privacy [at] visua1hue.dev. I usually can't link request data to a person, so I may
+        ask for details that help me find yours (Art. 11 GDPR).
+      </p>
+
+      <h2 data-reveal>Right to object</h2>
+      <p data-reveal>
+        You can object at any time, on grounds relating to your situation, to processing based on Art. 6(1)(f) GDPR (Art.
+        21 GDPR). I will then stop unless I can show compelling legitimate grounds that override your interests, or the
+        processing is needed for legal claims.
+      </p>
+
+      <h2 data-reveal>Right to complain</h2>
+      <p data-reveal>
+        You can complain to a data protection supervisory authority (Art. 77 GDPR), in particular in the EU country where
+        you live or work or where you think the violation happened. German authorities are listed by the <a
+          href="https://www.datenschutzkonferenz-online.de/datenschutzaufsichtsbehoerden.html">Datenschutzkonferenz</a
+        >.
+      </p>
+    </article>
+  </Shell>
+</Layout>
+
+<style>
+  .policy {
+    max-width: 680px;
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    letter-spacing: -0.012em;
+  }
+
+  /* Date sits right of the title, baseline-aligned; wraps under it when the row is too narrow */
+  .policy-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 4px 24px;
+    margin-bottom: 24px;
+  }
+
+  .lead {
+    font-size: var(--text-lg);
+    line-height: 1.32;
+    letter-spacing: -0.028em;
+    color: var(--color-subtle);
+  }
+
+  h2 {
+    margin: 48px 0 10px;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    color: var(--color-fg);
+  }
+
+  p {
+    margin: 0;
+  }
+
+  address {
+    font-style: normal;
+  }
+
+  .updated {
+    color: var(--color-subtle);
+  }
+
+  ul {
+    margin: 10px 0 0;
+    padding-left: 18px;
+  }
+
+  li + li {
+    margin-top: 6px;
+  }
+
+  strong {
+    font-weight: var(--weight-medium);
+    color: var(--color-fg);
+  }
+
+  p a,
+  li a {
+    color: var(--color-fg);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+</style>
