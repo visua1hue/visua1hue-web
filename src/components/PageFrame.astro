@@ -447,6 +447,18 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     if (e instanceof TransitionBeforePreparationEvent) markCurrent(e.to.pathname);
   });
 
+  // The current page's link doesn't reload it (the router would swap and glitch the same page); it
+  // takes you back to the top instead. The router skips clicks already handled. Modified clicks
+  // (new tab, new window) pass through. The nav is persisted, so this is wired once
+  document.querySelector(".nav")?.addEventListener("click", (e) => {
+    if (!(e instanceof MouseEvent) || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const link = e.target instanceof Element ? e.target.closest<HTMLAnchorElement>("a[href]") : null;
+    if (!link || link.pathname !== location.pathname) return;
+    e.preventDefault();
+    const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    scrollTo({ top: 0, behavior: smooth ? "smooth" : "instant" });
+  });
+
   // Per page, including the first: the persisted nav needs its current link, the bottom fade its end
   let stopEnd = () => {};
   document.addEventListener("astro:after-swap", () => document.querySelector(".main")?.classList.add("settled"));
