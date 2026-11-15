@@ -47,6 +47,12 @@ a {
   text-decoration: none;
 }
 
+/* No tap box over hit-target-sized links; hover color is the feedback */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
 a:hover {
   color: var(--color-fg);
 }
