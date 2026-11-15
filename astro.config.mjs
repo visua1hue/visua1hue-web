@@ -3,7 +3,6 @@ import { defineConfig, fontProviders } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import { execSync } from 'node:child_process';
 import securityHeaders from './integrations/security-headers.ts';
-import modulePreload from './integrations/module-preload.ts';
 import sitemap from '@astrojs/sitemap';
 
 // Short commit for the BUILD link. Workers Builds exposes the SHA; local builds read git.
@@ -66,7 +65,7 @@ export default defineConfig({
   ],
 
   // Integrations
-  integrations: [securityHeaders(), modulePreload(), sitemap({ filter: (page) => !page.endsWith('/privacy/') })],
+  integrations: [securityHeaders(), sitemap({ filter: (page) => !page.endsWith('/privacy/') })],
 
   // CSS is small (~12KB); inlining saves a render-blocking request per page
   build: {
