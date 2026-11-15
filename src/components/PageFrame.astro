@@ -435,6 +435,12 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
 
   for (const el of document.querySelectorAll<HTMLElement>("[data-year]")) initCopyright(el);
 
+  // Scroll indicator back on touch screens (global.css)
+  addEventListener("scroll", () => document.documentElement.setAttribute("data-scrolled", ""), {
+    once: true,
+    passive: true,
+  });
+
   const solidBand = () => document.querySelector<HTMLElement>("[data-fade-solid]")?.offsetHeight ?? 0;
 
   // Fallback for the ramp's scroll timeline. 8px slack: at the very end the text stops exactly on the

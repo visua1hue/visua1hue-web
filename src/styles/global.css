@@ -30,6 +30,15 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* Touch screens: no scroll indicator until the visitor scrolls (data-scrolled, PageFrame.astro).
+   Chrome flashes it on every page load, and each page change is one. Touch scrollbars overlay the
+   page, so it can come back without moving anything */
+@media (pointer: coarse) {
+  html:not([data-scrolled]) {
+    scrollbar-width: none;
+  }
+}
+
 body {
   font-family: var(--font-primary);
   -webkit-font-smoothing: antialiased;
