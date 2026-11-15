@@ -65,6 +65,9 @@ export default defineConfig({
   ],
 
   // Integrations
+  // Page text (src/content/*.md) renders as typed: no automatic curly quotes or dashes
+  markdown: { smartypants: false },
+
   integrations: [securityHeaders(), sitemap({ filter: (page) => !page.endsWith('/privacy/') })],
 
   // CSS is small (~12KB); inlining saves a render-blocking request per page

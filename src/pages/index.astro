@@ -2,7 +2,7 @@
 export const prerender = true;
 import Layout from "@layouts/Layout.astro";
 import PageFrame from "@components/PageFrame.astro";
-import About from "@components/About.astro";
+import { Content } from "@content/about.md";
 ---
 
 <Layout
@@ -11,6 +11,33 @@ import About from "@components/About.astro";
   description="Technical Consultant – Innovation at Centric Software. Curious by default: what I build, what I learn and what I'm curious about."
 >
   <PageFrame current="about">
-    <About />
+    {/* TODO: the lorem paragraphs in about.md test scrolling; remove before launch */}
+    <section class="about" aria-labelledby="about-title">
+      <h1 class="page-title" id="about-title">About</h1>
+      <Content />
+    </section>
   </PageFrame>
 </Layout>
+
+<style>
+  .about {
+    max-width: 880px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9em;
+    font-size: var(--text-lg);
+    line-height: 1.32;
+    letter-spacing: -0.028em;
+    color: var(--color-subtle);
+  }
+
+  /* The text comes from about.md, so it doesn't carry this page's scope */
+  .about :global(p) {
+    margin: 0;
+  }
+
+  .about :global(strong) {
+    font-weight: var(--weight-medium);
+    color: var(--color-fg);
+  }
+</style>
