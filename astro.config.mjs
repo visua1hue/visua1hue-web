@@ -39,7 +39,7 @@ export default defineConfig({
       options: {
         variants: [
           {
-            // Glyph subset by tools/subset-inter.sh; axes untouched
+            // Glyph subset by .github/scripts/subset-inter.sh; axes untouched
             weight: '100 900',
             style: 'normal',
             src: ['./src/assets/fonts/InterVariable.woff2'],
@@ -48,7 +48,7 @@ export default defineConfig({
       },
     },
     {
-      // Vendored from the `geist` npm package (OFL), subset by tools/subset-geist-mono.sh; only 400 is used
+      // Vendored from the `geist` npm package (OFL), subset by .github/scripts/subset-geist-mono.sh; only 400 is used
       provider: fontProviders.local(),
       name: 'Geist Mono',
       cssVariable: '--font-geist-mono',

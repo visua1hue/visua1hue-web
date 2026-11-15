@@ -29,7 +29,7 @@ jobs:
           mkdir -p src/assets/fonts
           unzip -j -o inter.zip "web/InterVariable.woff2" -d /tmp/inter
           unzip -p inter.zip "LICENSE.txt" > src/assets/fonts/LICENSE-Inter.txt
-          tools/subset-inter.sh /tmp/inter/InterVariable.woff2
+          .github/scripts/subset-inter.sh /tmp/inter/InterVariable.woff2
 
       - name: Commit if changed
         run: |

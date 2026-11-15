@@ -3,7 +3,7 @@
 # axes stay intact: narrowing wght to the used 400-500 shifts glyph advances at
 # weight 500 for larger optical sizes, which changes line breaks. Pinning static 400/500
 # instances (-6KB) still moves advances by ~0.02px and changes antialiasing.
-# Usage: tools/subset-inter.sh path/to/InterVariable.woff2   (full file from rsms/inter releases)
+# Usage: .github/scripts/subset-inter.sh path/to/InterVariable.woff2   (full file from rsms/inter releases)
 set -eu
 src="${1:?path to full InterVariable.woff2}"
 uvx --from 'fonttools[woff]' pyftsubset "$src" \
