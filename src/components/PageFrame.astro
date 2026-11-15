@@ -21,8 +21,8 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
 ---
 
 <Logotype />
-{/* Page-swap tear; page-glitch.ts animates seed and scale */}
-<svg class="glitch-defs" width="0" height="0" aria-hidden="true" transition:persist="glitch-defs">
+{/* Copyright tear; copyright-glitch.ts animates seed and scale */}
+<svg class="glitch-defs" width="0" height="0" aria-hidden="true">
   <filter id="page-glitch" x="-4%" y="-2%" width="108%" height="104%" color-interpolation-filters="sRGB">
     {/* Low x frequency: noise stretched into horizontal bands */}
     <feTurbulence type="fractalNoise" baseFrequency="0.0008 0.1" numOctaves="1" seed="1" result="noise"></feTurbulence>
@@ -36,7 +36,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
   <div class="fade fade-bottom" aria-hidden="true" data-fade-solid></div>
   <div class="fade fade-ramp" aria-hidden="true" data-fade-ramp></div>
 
-  <header class="head" transition:persist="nav" data-enter>
+  <header class="head" data-enter>
     <nav class="nav" aria-label="Main">
       <a href="/" aria-current={page("about")}>About</a>
       <a href="/privacy/" aria-current={page("privacy")}>Privacy</a>
@@ -48,7 +48,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     <div data-end aria-hidden="true"></div>
   </main>
 
-  <aside class="side" transition:persist="side">
+  <aside class="side">
     <div class="pin">
       <dl class="meta" data-enter>
         <div>
@@ -188,25 +188,20 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     color: var(--color-fg);
   }
 
-  /* Instant, so the old and new current links don't cross-fade during a swap */
-  .nav a[aria-current="page"] {
-    transition: none;
-  }
-
   .main {
     grid-area: main;
     min-width: 0;
     padding-top: var(--below-nav);
   }
 
-  /* First load only (swaps add .settled). The text paints at once so it stays the LCP; a paper
-     cover fades off it instead */
+  /* First visit only: html[data-nav] (nav-flag.js) skips it on moves between pages. The text paints
+     at once so it stays the LCP; a paper cover fades off it instead */
   @media (prefers-reduced-motion: no-preference) {
-    .main:not(.settled) {
+    :global(:root:not([data-nav])) .main {
       position: relative;
     }
 
-    .main:not(.settled)::after {
+    :global(:root:not([data-nav])) .main::after {
       content: "";
       position: absolute;
       inset: 0;
@@ -293,9 +288,9 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     font-variant-numeric: tabular-nums;
   }
 
-  /* Persisted nodes keep .entered, so swaps don't replay this */
+  /* First visit only, as the cover above */
   @media (prefers-reduced-motion: no-preference) {
-    [data-enter]:not(.entered) {
+    :global(:root:not([data-nav])) [data-enter] {
       animation: fade-in var(--enter-dur) var(--enter-ease) both;
     }
   }
@@ -382,36 +377,17 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
 
 <script>
   import { initCopyright } from "@scripts/copyright-glitch";
-  import { createPageGlitch } from "@scripts/page-glitch";
-  import { TransitionBeforePreparationEvent } from "astro:transitions/client";
 
-  // Glitch out while the next page loads, glitch in after the swap
-  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    const glitch = createPageGlitch(() => document.querySelector<HTMLElement>(".main"));
-    document.addEventListener("astro:before-preparation", (e) => {
-      if (!(e instanceof TransitionBeforePreparationEvent)) return;
-      const load = e.loader;
-      e.loader = async () => {
-        await Promise.all([load(), glitch.out()]);
-      };
-    });
-    document.addEventListener("astro:after-swap", () => void glitch.in());
-  }
-
-  // Persisted nodes: wire once, not per page
   for (const el of document.querySelectorAll<HTMLElement>("[data-year]")) initCopyright(el);
-  document.querySelectorAll<HTMLElement>("[data-enter]").forEach((el) =>
-    el.addEventListener("animationend", () => el.classList.add("entered"), { once: true }),
-  );
 
   const solidBand = () => document.querySelector<HTMLElement>("[data-fade-solid]")?.offsetHeight ?? 0;
 
   // 8px slack: at the very end the text stops exactly on the band's edge. Rebuilt on resize because
   // the band's height changes
-  function watchEnd(): () => void {
+  function watchEnd() {
     const frame = document.querySelector<HTMLElement>(".frame");
     const end = document.querySelector<HTMLElement>("[data-end]");
-    if (!frame || !end) return () => {};
+    if (!frame || !end) return;
     let io: IntersectionObserver | null = null;
     const observe = () => {
       io?.disconnect();
@@ -422,31 +398,20 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
       io.observe(end);
     };
     let timer = 0;
-    const onResize = () => {
-      clearTimeout(timer);
-      timer = window.setTimeout(observe, 150);
-    };
     observe();
-    addEventListener("resize", onResize, { passive: true });
-    return () => {
-      clearTimeout(timer);
-      removeEventListener("resize", onResize);
-      io?.disconnect();
-    };
+    addEventListener(
+      "resize",
+      () => {
+        clearTimeout(timer);
+        timer = window.setTimeout(observe, 150);
+      },
+      { passive: true },
+    );
   }
+  watchEnd();
 
-  // Set when navigation starts, not after the swap, so the nav doesn't flicker
-  const markCurrent = (path: string) =>
-    document.querySelectorAll<HTMLAnchorElement>(".nav a").forEach((a) => {
-      if (a.pathname === path) a.setAttribute("aria-current", "page");
-      else a.removeAttribute("aria-current");
-    });
-  document.addEventListener("astro:before-preparation", (e) => {
-    if (e instanceof TransitionBeforePreparationEvent) markCurrent(e.to.pathname);
-  });
-
-  // Current page's link scrolls to the top instead of swapping the same page. The router skips
-  // prevented clicks; modified clicks (new tab) pass through
+  // Current page's link scrolls to the top instead of reloading the page; modified clicks (new tab)
+  // pass through
   document.querySelector(".nav")?.addEventListener("click", (e) => {
     if (!(e instanceof MouseEvent) || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     const link = e.target instanceof Element ? e.target.closest<HTMLAnchorElement>("a[href]") : null;
@@ -454,14 +419,5 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     e.preventDefault();
     const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
     scrollTo({ top: 0, behavior: smooth ? "smooth" : "instant" });
-  });
-
-  let stopEnd = () => {};
-  document.addEventListener("astro:after-swap", () => document.querySelector(".main")?.classList.add("settled"));
-
-  document.addEventListener("astro:page-load", () => {
-    markCurrent(location.pathname);
-    stopEnd();
-    stopEnd = watchEnd();
   });
 </script>

@@ -1,6 +1,6 @@
 ---
 import { Font } from "astro:assets";
-import { ClientRouter } from "astro:transitions";
+import navFlagUrl from "@scripts/nav-flag.js?url";
 import "@styles/global.css";
 
 interface Props {
@@ -8,26 +8,24 @@ interface Props {
   description?: string;
   /** Keep the page out of search results (e.g. 404). */
   noindex?: boolean;
-  /** Soft navigation between PageFrame pages. */
-  router?: boolean;
 }
 
 const {
   title,
   description = "Technical Consultant – Innovation at Centric Software. Curious by default.",
   noindex = false,
-  router = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-// transition:animate="none": no cross-fade; PageFrame glitches the text instead
 const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
 ---
 
 <!doctype html>
-<html lang="en" transition:animate="none">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
+    {/* Blocking on purpose: html[data-nav] must be set before the first paint. Hashed, so cached for good */}
+    <script is:inline src={navFlagUrl}></script>
     <meta name="description" content={description} />
     <meta
       name="viewport"
@@ -56,7 +54,6 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
     {/* No preload: Chrome holds first paint for a preloaded font (~115ms measured) */}
     <Font cssVariable="--font-inter" />
     <Font cssVariable="--font-geist-mono" />
-    {router && <ClientRouter />}
   </head>
   <body>
     <slot />

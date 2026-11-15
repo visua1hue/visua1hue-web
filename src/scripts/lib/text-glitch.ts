@@ -1,9 +1,6 @@
-/** Shared by page-glitch.ts and copyright-glitch.ts. The tear is #page-glitch in PageFrame.astro */
+/** Used by copyright-glitch.ts. The tear is #page-glitch in PageFrame.astro */
 
 export const GLITCH = {
-  /** Page swap durations, ms. */
-  outMs: 220,
-  inMs: 460,
   /** Re-jumble and tear pattern interval, ms; strength still eases every frame. */
   rate: 50,
   /** Peak band slip, px. */
