@@ -47,13 +47,20 @@ a {
   text-decoration: none;
 }
 
-/* No tap box over hit-target-sized links; hover color is the feedback */
+/* No tap box over hit-target-sized links; the press color below is the feedback */
 a,
 button {
   -webkit-tap-highlight-color: transparent;
 }
 
-a:hover {
+/* Hover only with a real pointer: on touch, :hover sticks after a tap */
+@media (hover: hover) {
+  a:hover {
+    color: var(--color-fg);
+  }
+}
+
+a:active {
   color: var(--color-fg);
 }
 
@@ -71,7 +78,6 @@ a:hover {
   transition: text-decoration-color var(--dur-base) var(--ease);
 }
 
-.ext:hover .t,
 .ext:focus-visible .t {
   text-decoration-color: currentColor;
 }
@@ -85,10 +91,20 @@ a:hover {
     opacity var(--dur-fast) var(--ease);
 }
 
-.ext:hover .arw,
 .ext:focus-visible .arw {
   opacity: 0.6;
   transform: translate(0, -2px);
+}
+
+@media (hover: hover) {
+  .ext:hover .t {
+    text-decoration-color: currentColor;
+  }
+
+  .ext:hover .arw {
+    opacity: 0.6;
+    transform: translate(0, -2px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

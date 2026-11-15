@@ -77,8 +77,10 @@ import Layout from "@layouts/Layout.astro";
     transition: color var(--dur-base) var(--ease);
   }
 
-  .nav a:hover {
-    color: var(--color-fg);
+  @media (hover: hover) {
+    .nav a:hover {
+      color: var(--color-fg);
+    }
   }
 
   .main,
@@ -124,9 +126,14 @@ import Layout from "@layouts/Layout.astro";
     transition: text-decoration-color var(--dur-base) var(--ease);
   }
 
-  .back a:hover,
   .back a:focus-visible {
     text-decoration-color: currentColor;
+  }
+
+  @media (hover: hover) {
+    .back a:hover {
+      text-decoration-color: currentColor;
+    }
   }
 
   .side {

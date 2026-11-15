@@ -178,9 +178,14 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     transition: color var(--dur-base) var(--ease);
   }
 
-  .nav a:hover,
   .nav a[aria-current="page"] {
     color: var(--color-fg);
+  }
+
+  @media (hover: hover) {
+    .nav a:hover {
+      color: var(--color-fg);
+    }
   }
 
   .main {
@@ -271,8 +276,10 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     color: inherit;
   }
 
-  .copy a:hover {
-    color: var(--color-fg);
+  @media (hover: hover) {
+    .copy a:hover {
+      color: var(--color-fg);
+    }
   }
 
   .year {
