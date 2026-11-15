@@ -345,8 +345,9 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
   @media (max-width: 767px) {
     .frame {
       --below-nav: calc(var(--hit-target) + 32px);
-      /* The logotype follows the page here instead of overlapping it */
-      --pad-bottom: 48px;
+      /* No logotype here. The last row ends level with the back-to-top button's bottom (BackToTop.astro:
+         32px up); they don't collide, the text is left and the button right */
+      --pad-bottom: 32px;
       --end-band: 0px;
       grid-template-columns: minmax(0, 1fr);
       grid-template-areas:
@@ -399,6 +400,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
 
     .side {
       padding-top: 0;
+      margin-bottom: 0;
       display: flex;
       flex-direction: column;
       gap: 48px;
@@ -407,6 +409,11 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     .pin,
     .copy {
       position: static;
+    }
+
+    /* Phones: no logotype */
+    :global(.logotype) {
+      display: none;
     }
   }
 </style>
