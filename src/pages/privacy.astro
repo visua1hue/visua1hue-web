@@ -64,9 +64,23 @@ import { Content } from "@content/privacy.md";
     color: var(--color-subtle);
   }
 
+  /* Dash sits on the paragraph edge, text hangs at a fixed indent; ::marker width varies by font */
   .policy :global(ul) {
     margin: 10px 0 0;
-    padding-left: 18px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .policy :global(li) {
+    position: relative;
+    padding-left: 1.25em;
+  }
+
+  .policy :global(li)::before {
+    content: "–" / "";
+    position: absolute;
+    left: 0;
+    color: var(--color-subtle);
   }
 
   .policy :global(li + li) {
