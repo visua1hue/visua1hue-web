@@ -3,11 +3,11 @@
 // change the logo there first
 ---
 
-<div class="ghost" aria-hidden="true" transition:persist="ghost">
+<div class="logotype" aria-hidden="true" transition:persist="logotype">
   <svg viewBox="346.5 747 1787.5 254" preserveAspectRatio="xMidYMax meet">
     <defs>
       {/* Glyph space (y 362..611), so the fade spans the word, not each letter */}
-      <linearGradient id="ghost-fade" gradientUnits="userSpaceOnUse" x1="0" y1="362" x2="0" y2="611">
+      <linearGradient id="logotype-fade" gradientUnits="userSpaceOnUse" x1="0" y1="362" x2="0" y2="611">
         <stop offset="0"></stop>
         <stop offset="1"></stop>
       </linearGradient>
@@ -27,13 +27,13 @@
 </div>
 
 <style>
-  .ghost {
+  .logotype {
     position: fixed;
-    /* Over the text: the fade band in Shell.astro clears the text beneath it */
+    /* Over the text: the fade band in PageFrame.astro clears the text beneath it */
     z-index: 3;
     left: var(--page-edge);
     right: var(--page-edge);
-    bottom: calc(var(--ghost-h) * -0.2);
+    bottom: calc(var(--logotype-h) * -0.2);
     pointer-events: none;
   }
 
@@ -42,38 +42,36 @@
     width: 100%;
     height: auto;
     overflow: visible;
-    animation: ghost-in 1.8s cubic-bezier(0.22, 1, 0.36, 1) both 0.2s;
   }
 
   /* Tint at the cap height, gone by the baseline */
   .glyphs {
-    fill: url(#ghost-fade);
+    fill: url(#logotype-fade);
   }
 
   stop {
-    stop-color: var(--color-ghost);
+    stop-color: var(--color-logotype);
   }
 
   stop:last-child {
     stop-opacity: 0;
   }
 
-  .entered svg {
-    animation: none;
-  }
+  /* Intro, first on the page (the sidebar and text wait --lead). The mark never moves. It waits,
+     hidden, until the script below sees it on screen (.play): on phones it sits at the page's end */
+  @media (prefers-reduced-motion: no-preference) {
+    .logotype:not(.entered) svg {
+      animation: logotype-in 1.8s cubic-bezier(0.22, 1, 0.36, 1) both paused;
+    }
 
-  /* Breathes gently, a hint to scroll, until the reader does (script below lets it settle) */
-  .ghost {
-    animation: breathe 3.6s ease-in-out 2s infinite;
-  }
-
-  .ghost.still {
-    animation: none;
+    .logotype.play:not(.entered) svg {
+      animation-play-state: running;
+    }
   }
 
   /* Phones: too small to pin over the text, so it closes the page as a footer mark, whole */
   @media (max-width: 767px) {
-    .ghost {
+    .logotype {
       position: relative;
       order: 1;
       inset: auto;
@@ -86,48 +84,25 @@
     }
   }
 
-  @keyframes breathe {
-    50% {
-      transform: translateY(-6px);
-    }
-  }
-
-  @keyframes ghost-in {
+  @keyframes logotype-in {
     from {
       opacity: 0;
-      transform: translateY(12%);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .ghost,
-    svg {
-      animation: none;
     }
   }
 </style>
 
 <script>
   // Persisted across page swaps, so this runs once
-  const ghost = document.querySelector<HTMLElement>(".ghost");
-  if (ghost) {
-    // Play the entrance once, not again if the node is re-inserted (it ends on the svg, bubbling up)
-    ghost.addEventListener(
-      "animationend",
-      (e) => {
-        if (e.animationName.includes("ghost-in")) ghost.classList.add("entered");
-      },
-    );
-
-    // First scroll: let the breathing finish its current cycle and stop at rest, instead of snapping
-    const settle = () => {
-      const breath = ghost.getAnimations().find((a) => a instanceof CSSAnimation && a.animationName.includes("breathe"));
-      const t = breath?.effect?.getComputedTiming();
-      if (!breath || !t || t.currentIteration == null) return ghost.classList.add("still");
-      breath.effect?.updateTiming({ iterations: t.currentIteration + 1 });
-      breath.addEventListener("finish", () => ghost.classList.add("still"), { once: true });
-    };
-    if (scrollY > 0) ghost.classList.add("still");
-    else addEventListener("scroll", settle, { once: true, passive: true });
+  const logotype = document.querySelector<HTMLElement>(".logotype");
+  if (logotype) {
+    // Play the intro once it's on screen: at once on wide screens, at the page's end on phones
+    const io = new IntersectionObserver(([e]) => {
+      if (!e?.isIntersecting) return;
+      logotype.classList.add("play");
+      io.disconnect();
+    });
+    io.observe(logotype);
+    // Done: stop it replaying if the node is re-inserted
+    logotype.addEventListener("animationend", () => logotype.classList.add("entered"), { once: true });
   }
 </script>

@@ -1,7 +1,7 @@
 ---
 import Arrow from "@components/Arrow.astro";
 import DevHud from "@components/DevHud.astro";
-import Ghost from "@components/Ghost.astro";
+import Logotype from "@components/Logotype.astro";
 
 interface Props {
   current: "about" | "privacy";
@@ -14,16 +14,26 @@ const page = (p: Props["current"]) => (p === current ? "page" : undefined);
 const sha = __BUILD_SHA__;
 const commitHref = `https://github.com/visua1hue/visua1hue-web/commit/${sha}`;
 
-// Build year as a fallback; scripts/Footer.ts swaps in the current one
+// Build year as a fallback; scripts/Copyright.ts swaps in the current one
 const year = new Date().getFullYear();
 const yearHex = `0x${year.toString(16).toUpperCase()}`;
 ---
 
-{/* Page frame shared by About and Privacy. Nav, meta and ghost persist across page swaps
+{/* Page frame shared by About and Privacy. Nav, meta and logotype persist across page swaps
    (Layout's ClientRouter); only <main> changes. Wide: nav and meta pinned top left, text fading
    out at both viewport edges. Narrow: nav in a fixed top bar, meta after the text */}
-<Ghost />
-<div class="shell">
+<Logotype />
+{/* The page-swap tear (scripts/PageGlitch.ts animates its seed and scale); monochrome */}
+<svg class="glitch-defs" width="0" height="0" aria-hidden="true" transition:persist="glitch-defs">
+  <filter id="page-glitch" x="-4%" y="-2%" width="108%" height="104%" color-interpolation-filters="sRGB">
+    {/* Noise stretched sideways into horizontal bands */}
+    <feTurbulence type="fractalNoise" baseFrequency="0.0008 0.1" numOctaves="1" seed="1" result="noise"></feTurbulence>
+    {/* Green pinned at mid grey, so the text only tears sideways, never up or down */}
+    <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0  0 0 0 0 0.5  0 0 0 0 0  0 0 0 0 1" result="bands"></feColorMatrix>
+    <feDisplacementMap in="SourceGraphic" in2="bands" scale="0" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+  </filter>
+</svg>
+<div class="frame">
   <div class="fade fade-top" aria-hidden="true"></div>
   <div class="fade fade-bottom" aria-hidden="true" data-fade-solid></div>
   <div class="fade fade-ramp" aria-hidden="true" data-fade-ramp></div>
@@ -65,11 +75,11 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
 </div>
 
 <style>
-  .shell {
+  .frame {
     --pad-top: clamp(24px, 4vw, 36px);
-    /* At the end of the page the last line rests this far above the ghost, level with the copyright */
+    /* At the end of the page the last line rests this far above the logotype, level with the copyright */
     --end-gap: clamp(40px, 7vh, 80px);
-    --pad-bottom: calc(var(--ghost-vis) + var(--end-gap));
+    --pad-bottom: calc(var(--logotype-vis) + var(--end-gap));
     /* Text and meta start this far below the nav */
     --below-nav: calc(var(--hit-target) + clamp(48px, 7vw, 88px));
     position: relative;
@@ -86,7 +96,15 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     letter-spacing: -0.011em;
   }
 
-  /* Text fades out at both viewport edges; nav and meta sit above the bands, the ghost above all */
+  /* Holds the page-swap filter only; takes no space */
+  .glitch-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+
+  /* Text fades out at both viewport edges; nav and meta sit above the bands, the logotype above all */
   .fade {
     position: fixed;
     z-index: 1;
@@ -98,43 +116,47 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
   .fade-top {
     top: 0;
     height: calc(var(--pad-top) + var(--below-nav));
+    /* Plain gradient first; browsers with interpolation spaces take the OKLab one below */
+    background: linear-gradient(var(--color-bg) 22%, transparent);
     background: linear-gradient(
+      in oklab,
       var(--color-bg) 0%,
       var(--color-bg) 22%,
-      color-mix(in srgb, var(--color-bg) 74%, transparent) 37%,
-      color-mix(in srgb, var(--color-bg) 54%, transparent) 49%,
-      color-mix(in srgb, var(--color-bg) 38%, transparent) 59%,
-      color-mix(in srgb, var(--color-bg) 19%, transparent) 73%,
-      color-mix(in srgb, var(--color-bg) 8%, transparent) 85%,
+      color-mix(in oklab, var(--color-bg) 74%, transparent) 37%,
+      color-mix(in oklab, var(--color-bg) 54%, transparent) 49%,
+      color-mix(in oklab, var(--color-bg) 38%, transparent) 59%,
+      color-mix(in oklab, var(--color-bg) 19%, transparent) 73%,
+      color-mix(in oklab, var(--color-bg) 8%, transparent) 85%,
       transparent 100%
     );
   }
 
-  /* Solid from the ghost up to the copyright line: no text shows beside or below the copyright */
+  /* Solid from the logotype up to the copyright line: no text shows beside or below the copyright */
   .fade-bottom {
     bottom: 0;
-    height: calc(var(--ghost-vis) + var(--end-gap));
+    height: calc(var(--logotype-vis) + var(--end-gap));
     background: var(--color-bg);
   }
 
   /* The ramp above it; it clears once the text's end is in view, so the last lines read in full */
   .fade-ramp {
-    bottom: calc(var(--ghost-vis) + var(--end-gap));
+    bottom: calc(var(--logotype-vis) + var(--end-gap));
     height: var(--fade-ramp);
+    background: linear-gradient(to top, var(--color-bg), transparent);
     background: linear-gradient(
-      to top,
+      to top in oklab,
       var(--color-bg) 0%,
-      color-mix(in srgb, var(--color-bg) 74%, transparent) 19%,
-      color-mix(in srgb, var(--color-bg) 54%, transparent) 34%,
-      color-mix(in srgb, var(--color-bg) 38%, transparent) 47%,
-      color-mix(in srgb, var(--color-bg) 19%, transparent) 65%,
-      color-mix(in srgb, var(--color-bg) 8%, transparent) 80%,
+      color-mix(in oklab, var(--color-bg) 74%, transparent) 19%,
+      color-mix(in oklab, var(--color-bg) 54%, transparent) 34%,
+      color-mix(in oklab, var(--color-bg) 38%, transparent) 47%,
+      color-mix(in oklab, var(--color-bg) 19%, transparent) 65%,
+      color-mix(in oklab, var(--color-bg) 8%, transparent) 80%,
       transparent 100%
     );
     transition: opacity 0.5s ease;
   }
 
-  .shell.at-end .fade-ramp {
+  .frame.at-end .fade-ramp {
     opacity: 0;
   }
 
@@ -158,12 +180,23 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     display: inline-flex;
     align-items: center;
     color: var(--color-subtle);
-    transition: color 0.2s ease;
+    /* On the base state, so leaving a link fades it back too; out is slower than in */
+    transition: color 0.45s var(--ease-out);
+  }
+
+  .nav a:hover {
+    transition-duration: 0.15s;
   }
 
   .nav a:hover,
   .nav a[aria-current="page"] {
     color: var(--color-fg);
+  }
+
+  /* Becoming current is instant; only the link losing it fades out, so the two never cross-fade
+     through the same grey while the page swaps */
+  .nav a[aria-current="page"] {
+    transition: none;
   }
 
   .main {
@@ -172,12 +205,31 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     padding-top: var(--below-nav);
   }
 
+  /* First load only: the text fades in as one block after the nav and meta (global.css: cascade).
+     The text itself is never hidden: it paints at once (so it, not the sidebar, is the LCP) and a
+     paper cover over it fades off on the cascade's timing. A page swap marks the new main .settled,
+     so switching pages doesn't replay it */
+  @media (prefers-reduced-motion: no-preference) {
+    .main:not(.settled) {
+      position: relative;
+    }
+
+    .main:not(.settled)::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--color-bg);
+      pointer-events: none;
+      animation: cover-off var(--enter-dur) var(--enter-ease) both var(--cascade-delay);
+    }
+  }
+
   .side {
     grid-area: side;
     position: relative;
     z-index: 2;
     padding-top: var(--below-nav);
-    /* Reach the page foot, through the shell's bottom pad: the pinned meta is held inside this box,
+    /* Reach the page foot, through the frame's bottom pad: the pinned meta is held inside this box,
        and ending it at the text's last line pushed the meta up at the end of the page */
     margin-bottom: calc(-1 * var(--pad-bottom));
   }
@@ -223,11 +275,11 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     color: var(--color-fg);
   }
 
-  /* Rests on the ghost logotype's top edge, in line with the meta above */
+  /* Rests on the background logotype's top edge, in line with the meta above */
   .copy {
     position: fixed;
     left: var(--page-edge);
-    bottom: calc(var(--ghost-vis) + var(--end-gap));
+    bottom: calc(var(--logotype-vis) + var(--end-gap));
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -257,15 +309,15 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
   /* Entrance on first load only; persisted nodes keep .entered across page swaps */
   @media (prefers-reduced-motion: no-preference) {
     [data-enter]:not(.entered) {
-      animation: enter 0.9s var(--ease-out) both;
+      animation: fade-in var(--enter-dur) var(--enter-ease) both var(--lead);
     }
 
     .meta:not(.entered) {
-      animation-delay: 0.1s;
+      animation-delay: calc(var(--lead) + 0.15s);
     }
 
     .copy:not(.entered) {
-      animation-delay: 0.6s;
+      animation-delay: calc(var(--lead) + 0.15s);
     }
   }
 
@@ -284,9 +336,9 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
 
   /* Narrow: nav in a fixed bar, then text, then meta and copyright */
   @media (max-width: 767px) {
-    .shell {
+    .frame {
       --below-nav: calc(var(--hit-target) + 32px);
-      /* The ghost sits after the page here, not over it */
+      /* The logotype sits after the page here, not over it */
       --pad-bottom: 48px;
       grid-template-columns: minmax(0, 1fr);
       grid-template-areas:
@@ -328,29 +380,45 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
 </style>
 
 <script>
-  import { initYear } from "@scripts/Footer";
-  import { initReveal } from "@scripts/Reveal";
+  import { initCopyright } from "@scripts/Copyright";
+  import { createPageGlitch } from "@scripts/PageGlitch";
+  import { TransitionBeforePreparationEvent } from "astro:transitions/client";
+
+  /** Page swap: the old text glitches out while the next page loads, the new one glitches in
+      (timings and look: GLITCH in scripts/PageGlitch.ts) */
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const glitch = createPageGlitch(() => document.querySelector<HTMLElement>(".main"));
+    document.addEventListener("astro:before-preparation", (e) => {
+      if (!(e instanceof TransitionBeforePreparationEvent)) return;
+      const load = e.loader;
+      e.loader = async () => {
+        await Promise.all([load(), glitch.out()]);
+      };
+    });
+    // The new page shows at once (dimmed), decodes and settles
+    document.addEventListener("astro:after-swap", () => void glitch.in());
+  }
 
   // Persisted nodes: wire once
-  document.querySelectorAll<HTMLElement>("[data-year]").forEach((el) => initYear(el));
+  document.querySelectorAll<HTMLElement>("[data-year]").forEach((el) => initCopyright(el));
   document.querySelectorAll<HTMLElement>("[data-enter]").forEach((el) =>
     el.addEventListener("animationend", () => el.classList.add("entered"), { once: true }),
   );
 
-  // Text counts as in view once it clears the solid band above the ghost (hidden on phones: 0)
+  // Height of the solid band above the logotype (0 on phones, where it's hidden)
   const solidBand = () => document.querySelector<HTMLElement>("[data-fade-solid]")?.offsetHeight ?? 0;
 
   // Clear the bottom ramp while the end of the text is in view. A little slack: at the very end the
   // text stops exactly on the band's edge. Rebuilt after a resize, since the band's height changes
   function watchEnd(): () => void {
-    const shell = document.querySelector<HTMLElement>(".shell");
+    const frame = document.querySelector<HTMLElement>(".frame");
     const end = document.querySelector<HTMLElement>("[data-end]");
-    if (!shell || !end) return () => {};
+    if (!frame || !end) return () => {};
     let io: IntersectionObserver | null = null;
     const observe = () => {
       io?.disconnect();
       const inset = Math.max(0, solidBand() - 8);
-      io = new IntersectionObserver(([e]) => shell.classList.toggle("at-end", e?.isIntersecting ?? false), {
+      io = new IntersectionObserver(([e]) => frame.classList.toggle("at-end", e?.isIntersecting ?? false), {
         rootMargin: `0px 0px -${inset}px 0px`,
       });
       io.observe(end);
@@ -369,17 +437,23 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     };
   }
 
-  // Per page, including the first: the persisted nav needs its current link, the new text its reveal
-  let stopReveal = () => {};
-  let stopEnd = () => {};
-  document.addEventListener("astro:page-load", () => {
+  /** The persisted nav's current link. Set as soon as a navigation starts, not after the swap */
+  const markCurrent = (path: string) =>
     document.querySelectorAll<HTMLAnchorElement>(".nav a").forEach((a) => {
-      if (a.pathname === location.pathname) a.setAttribute("aria-current", "page");
+      if (a.pathname === path) a.setAttribute("aria-current", "page");
       else a.removeAttribute("aria-current");
     });
-    stopReveal();
+  document.addEventListener("astro:before-preparation", (e) => {
+    if (e instanceof TransitionBeforePreparationEvent) markCurrent(e.to.pathname);
+  });
+
+  // Per page, including the first: the persisted nav needs its current link, the bottom fade its end
+  let stopEnd = () => {};
+  document.addEventListener("astro:after-swap", () => document.querySelector(".main")?.classList.add("settled"));
+
+  document.addEventListener("astro:page-load", () => {
+    markCurrent(location.pathname);
     stopEnd();
-    stopReveal = initReveal(document, solidBand);
     stopEnd = watchEnd();
   });
 </script>

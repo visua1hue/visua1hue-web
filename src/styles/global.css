@@ -99,36 +99,6 @@ a:hover {
   }
 }
 
-/* One-row mono block locked to the hero grid. Size here is the pre-layout default;
-   scripts/lib/hero-layout.ts sets position and size after measuring. */
-.grid-cell {
-  width: calc(var(--grid-block-span) * var(--grid-size) - 1px);
-  height: calc(var(--grid-size) - 1px);
-  position: absolute;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding-left: 10px;
-  background: var(--color-bg);
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-/* Page body under a hero: 5 empty grid rows above it */
-.page-main {
-  position: relative;
-  z-index: 1;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 120px;
-}
-
 /* Page heading over the text column (About, Privacy): label size, level with the meta's first line */
 .page-title {
   margin: 0;
@@ -139,66 +109,28 @@ a:hover {
   color: var(--color-fg);
 }
 
-/* Entrances: the sidebar (nav, meta, copyright) rises softly on first load; text blocks below the
-   fold fade in from 99% scale as they scroll in (scripts/Reveal.ts adds .pending, then .in). Text in
-   view on load is never hidden, so it paints with the page */
-@keyframes enter {
+/* Entrances, first load only: the logo fades in, then the sidebar (nav, meta, copyright), then the
+   text as one block (--cascade-* time it, PageFrame.astro). Scrolling has no per-block reveal: the
+   fixed fades at the viewport's edges (PageFrame.astro) soften text the same way at any position */
+:root {
+  /* The logo leads; the sidebar and text wait this long */
+  --lead: 0.6s;
+  --cascade-delay: calc(var(--lead) + 0.45s);
+  /* Sidebar and text share one fade: opacity only, no movement */
+  --enter-dur: 0.85s;
+  --enter-ease: cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+@keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(6px);
-    filter: blur(3px);
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  [data-reveal].pending {
-    opacity: 0;
-    transform: scale(0.99);
-    transform-origin: 0 0;
-  }
-
-  /* Peek: the next hidden block shows its first two lines, faintly, as a hint that there's more */
-  [data-reveal].pending.next:not(.in) {
-    opacity: 0.16;
-    clip-path: inset(0 0 calc(100% - 2lh) 0);
-  }
-
-  [data-reveal].pending.in {
-    opacity: 1;
-    transform: none;
-    transition:
-      opacity 1.1s cubic-bezier(0.25, 0.1, 0.25, 1) var(--d, 0ms),
-      transform 1.3s var(--ease-out-expo) var(--d, 0ms);
-  }
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-    filter: blur(6px);
-  }
+/* The text is painted from the first frame (LCP counts it then); a paper cover fading off it does
+   the fade */
+@keyframes cover-off {
   to {
-    opacity: 1;
-    transform: none;
-    filter: none;
-  }
-}
-
-/* Hero logo: hidden until scripts/Hero.ts reveals it under the intro's covers; shown after a delay if it never does */
-@keyframes hold {
-  from {
     opacity: 0;
   }
-}
-
-@keyframes flick {
-  0% { opacity: 1; }
-  4% { opacity: 0.25; }
-  7% { opacity: 1; }
-  52% { opacity: 1; }
-  54% { opacity: 0.4; }
-  55% { opacity: 1; }
-  78% { opacity: 0.7; }
-  80% { opacity: 1; }
 }

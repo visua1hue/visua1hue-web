@@ -1,133 +1,217 @@
 ---
 export const prerender = true;
-import type { HeroPart } from "@scripts/lib/hero-parts";
 import Layout from "@layouts/Layout.astro";
-import Hero from "@components/Hero.astro";
-import GlitchCode from "@components/GlitchCode.astro";
-import BuildBadge from "@components/BuildBadge.astro";
-import Footer from "@components/Footer.astro";
 ---
 
-<Layout title="404 – VISUA1HUE" description="Nothing lives at this address." noindex theme="dark">
-  <main class="page-main">
-    <Hero glitch="storm">
-      <BuildBadge />
-      <GlitchCode text="404" label="404: page not found" />
-      <div class="copy" data-hero={"copy" satisfies HeroPart}>
-        <p class="tag">Signal lost.</p>
-        <p class="line">
-          <span class="path">Nothing at <code data-path>this address</code></span>
-          <span class="sep" aria-hidden="true">/</span>
-          <a class="home" href="/">Back to VISUA1HUE</a>
-        </p>
-      </div>
-    </Hero>
-  </main>
-  <Footer />
+{/* Same frame language as About and Privacy (nav, label over value, text column), standalone so it
+   doesn't take the page router */}
+<Layout title="404 Not Found" description="Nothing lives at this address." noindex>
+  <div class="nf">
+    <header class="head">
+      <nav class="nav" aria-label="Main">
+        <a href="/">About</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+    </header>
+
+    <main class="main">
+      <h1 class="page-title">Page not found</h1>
+      <p class="lead">
+        This page dissolved before anyone wrote it. <strong>Nothing lives here, maybe nothing ever did.</strong>
+      </p>
+      <p class="back"><a href="/">Back to About</a></p>
+    </main>
+
+    <aside class="side">
+      <dl class="meta">
+        <div>
+          <dt>Status</dt>
+          <dd class="value">404 Not Found</dd>
+        </div>
+        <div>
+          <dt>Requested</dt>
+          <dd><code data-path>this address</code></dd>
+        </div>
+      </dl>
+    </aside>
+  </div>
 </Layout>
 
 <style>
-  .copy {
-    position: relative;
-    z-index: 2;
-    isolation: isolate;
+  /* One viewport tall, never more (body's 100vh outgrows the visible area on phones) */
+  :global(body) {
+    min-height: 100dvh;
+  }
+
+  .nf {
+    --pad-top: clamp(24px, 4vw, 36px);
+    --below-nav: calc(var(--hit-target) + clamp(48px, 7vw, 88px));
+    flex: 1;
+    width: 100%;
+    padding: var(--pad-top) var(--page-edge) clamp(40px, 7vh, 80px);
+    display: grid;
+    grid-template-columns: minmax(200px, 300px) minmax(0, 1fr);
+    grid-template-areas:
+      "head ."
+      "side main";
+    column-gap: clamp(40px, 6vw, 96px);
+    /* Rows keep their height; the spare room stays below the text */
+    align-content: start;
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    letter-spacing: -0.011em;
+  }
+
+  .head {
+    grid-area: head;
+  }
+
+  .nav {
+    display: flex;
+    gap: 28px;
+  }
+
+  .nav a {
+    min-height: var(--hit-target);
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-subtle);
+    transition: color 0.2s ease;
+  }
+
+  .nav a:hover {
+    color: var(--color-fg);
+  }
+
+  .main,
+  .side {
+    padding-top: calc(var(--below-nav) - var(--hit-target));
+  }
+
+  .main {
+    grid-area: main;
+    min-width: 0;
+    max-width: 880px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    animation: rise 1.2s ease both 0.9s;
+    gap: 0.9em;
   }
 
-  /* Same halo as the homepage copy, keeps text legible over the dither */
-  .copy::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    inset: -56px -140px;
-    background: radial-gradient(
-      closest-side,
-      color-mix(in srgb, var(--color-bg) 92%, transparent),
-      color-mix(in srgb, var(--color-bg) 75%, transparent) 45%,
-      transparent
-    );
-    pointer-events: none;
-  }
-
-  .tag {
+  .lead {
     margin: 0;
-    font-size: 19px;
-    font-weight: 500;
-    line-height: 1.4;
-    letter-spacing: -0.015em;
+    font-size: var(--text-lg);
+    line-height: 1.32;
+    letter-spacing: -0.028em;
+    color: var(--color-subtle);
   }
 
-  .line {
+  .lead strong {
+    font-weight: var(--weight-medium);
+    color: var(--color-fg);
+  }
+
+  .back {
+    margin: 0;
+  }
+
+  .back a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--hit-target);
+    color: var(--color-fg);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--color-faint);
+    transition: text-decoration-color 0.2s ease;
+  }
+
+  .back a:hover,
+  .back a:focus-visible {
+    text-decoration-color: currentColor;
+  }
+
+  .side {
+    grid-area: side;
+    min-width: 0;
+  }
+
+  .meta {
     margin: 0;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    column-gap: 10px;
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--color-muted);
+    flex-direction: column;
+    gap: 18px;
   }
 
-  .path {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.5ch;
-    max-width: min(60vw, 420px);
-    /* Keeps "Nothing at" on one line; only the path truncates */
-    white-space: nowrap;
+  .meta dt {
+    color: var(--color-subtle);
+  }
+
+  .meta dd {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .value {
+    font-weight: var(--weight-bold);
+    color: var(--color-fg);
   }
 
   code {
+    display: block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--color-soft);
-  }
-
-  .sep {
-    color: var(--color-faint);
-  }
-
-  .home {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--hit-target);
-    color: var(--color-soft);
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 4px;
-    transition: text-decoration-color 0.2s ease;
-  }
-
-  .home:hover,
-  .home:focus-visible {
+    font-size: 14px;
     color: var(--color-fg);
-    text-decoration-color: currentColor;
   }
 
-  @media (max-width: 560px) {
-    .sep {
-      display: none;
+  /* Same fade and order as About and Privacy (nav, side, then text), without the logotype's lead.
+     The text is painted at once and a paper cover fades off it, so it stays the LCP */
+  @media (prefers-reduced-motion: no-preference) {
+    .head,
+    .side {
+      animation: fade-in var(--enter-dur) var(--enter-ease) both 0.1s;
+    }
+
+    .side {
+      animation-delay: 0.25s;
+    }
+
+    .main {
+      position: relative;
+    }
+
+    .main::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--color-bg);
+      pointer-events: none;
+      animation: cover-off var(--enter-dur) var(--enter-ease) both 0.55s;
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .copy {
-      animation: none;
+  @media (max-width: 767px) {
+    .nf {
+      --below-nav: calc(var(--hit-target) + 32px);
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        "head"
+        "main"
+        "side";
+      row-gap: 0;
+    }
+
+    .side {
+      padding-top: 48px;
     }
   }
 </style>
 
 <script>
-  // The page is static; show the path that was actually requested. textContent, never HTML.
+  // The page is static; show the path that was actually requested. textContent, never HTML
   document.querySelectorAll<HTMLElement>("[data-path]").forEach((el) => {
     let path = location.pathname;
     try {

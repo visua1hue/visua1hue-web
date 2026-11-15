@@ -1,10 +1,3 @@
-/* Registered so getComputedStyle resolves it to px for scripts/lib/hero-layout.ts */
-@property --hero-margin {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 0px;
-}
-
 :root {
   /* COLOR — paper */
   --color-bg: #fafaf9;
@@ -13,7 +6,7 @@
   --color-muted: #62625f; /* 5.9:1 on bg */
   --color-subtle: #72726f; /* labels; 4.6:1 on bg, the AA minimum */
   --color-faint: #e4e4e1; /* decorative only (separators); fails text contrast */
-  --color-ghost: #ededea; /* background logotype; decorative only */
+  --color-logotype: #ededea; /* background logotype; decorative only */
 
   /* TYPE — About and Privacy use these two sizes only */
   --text-sm: 16px; /* nav, meta, body copy, small headings, copyright */
@@ -23,43 +16,22 @@
   --font-primary: var(--font-inter);
   --font-mono: var(--font-geist-mono);
 
-  /* HERO GRID — single source; scripts/lib/hero-layout.ts reads these at runtime */
-  --grid-size: 24px; /* one grid square */
-  --grid-dither-rows: 14; /* minimum dithered rows */
-  --grid-block-span: 5; /* squares spanned by BUILD/DEBUG/metric blocks */
-  --dither-cell: 2px; /* one dither dot, hero field and quote mark */
-  --hero-margin: clamp(10px, 2vw, 24px); /* min side gap; hero width snaps inside it */
-
-  /* Pre-layout block positions derived from the above (meta row = last dithered row) */
-  --grid-meta-row: calc((var(--grid-dither-rows) - 1) * var(--grid-size) + 1px);
-  --grid-meta-inset: calc(var(--grid-size) + 1px);
-
   /* LAYOUT */
   --hit-target: 44px;
   /* Page frame: content is at most --page-max wide, with at least --page-x either side;
-     --page-edge is the resulting inset from the viewport edge (content, copyright, ghost) */
+     --page-edge is the resulting inset from the viewport edge (content, copyright, logotype) */
   --page-max: 1200px;
   --page-x: clamp(20px, 6vw, 96px);
   --page-edge: calc(max(0px, (100vw - var(--page-max)) / 2) + var(--page-x));
-  /* Ghost logotype spans the content width (its box is 1787.5 x 254); a fifth sinks below the fold */
-  --ghost-h: calc((100vw - 2 * var(--page-edge)) * 254 / 1787.5);
-  --ghost-vis: calc(var(--ghost-h) * 0.8);
-  /* Eased ramp above the ghost where the text fades out */
+  /* Background logotype spans the content width (its box is 1787.5 x 254); a fifth sinks below the fold */
+  --logotype-h: calc((100vw - 2 * var(--page-edge)) * 254 / 1787.5);
+  --logotype-vis: calc(var(--logotype-h) * 0.8);
+  /* Eased ramp above the logotype where the text fades out */
   --fade-ramp: clamp(72px, 11vh, 120px);
 
   /* MOTION */
   --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* Dark scope for pages still built on the dark-tuned hero and dither (404) */
-[data-theme="dark"] {
-  --color-bg: #08090a;
-  --color-fg: #f7f8f8;
-  --color-soft: #c9cdd3;
-  --color-muted: #8a8f98;
-  --color-subtle: #747881; /* 4.5:1 on bg, the AA minimum */
-  --color-faint: #3e4147;
 }
 
 /* Phones keep the narrow gutter */

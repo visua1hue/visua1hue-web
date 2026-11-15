@@ -1,7 +1,7 @@
 ---
 export const prerender = true;
 import Layout from "@layouts/Layout.astro";
-import Shell from "@components/Shell.astro";
+import PageFrame from "@components/PageFrame.astro";
 import About from "@components/About.astro";
 ---
 
@@ -10,7 +10,7 @@ import About from "@components/About.astro";
   title="About – VISUA1HUE"
   description="Technical Consultant – Innovation at Centric Software. Curious by default: what I build, what I learn and what I'm curious about."
 >
-  <Shell current="about">
+  <PageFrame current="about">
     <About />
-  </Shell>
+  </PageFrame>
 </Layout>

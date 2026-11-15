@@ -8,9 +8,7 @@ interface Props {
   description?: string;
   /** Keep the page out of search results (e.g. 404). */
   noindex?: boolean;
-  /** Dark for pages built on the dark-tuned hero (404). */
-  theme?: "light" | "dark";
-  /** Soft navigation between pages that share the Shell frame: only the text column swaps. */
+  /** Soft navigation between pages that share the page frame: only the text column swaps. */
   router?: boolean;
 }
 
@@ -18,18 +16,19 @@ const {
   title,
   description = "Technical Consultant – Innovation at Centric Software. Curious by default.",
   noindex = false,
-  theme = "light",
   router = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL("/og.png", Astro.site).href;
 const ogImageAlt = "Dithered grid pattern from the VISUA1HUE site";
+// transition:animate="none" on <html>: no cross-fade on page swaps; the text column
+// glitches instead (PageFrame.astro)
 const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
 ---
 
 <!doctype html>
-<html lang="en" data-theme={theme}>
+<html lang="en" transition:animate="none">
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
@@ -64,7 +63,7 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
     <meta name="twitter:image:alt" content={ogImageAlt} />
 
     {/* Theme color */}
-    <meta name="theme-color" content={theme === "dark" ? "#08090A" : "#FAFAF9"} />
+    <meta name="theme-color" content="#FAFAF9" />
 
     {/* No preloads: Chrome holds first paint for a preloaded font (~115ms measured); swap metrics cover it */}
     <Font cssVariable="--font-inter" />
