@@ -13,4 +13,8 @@
   --cascade-delay: 120ms;
   --enter-dur: 500ms;
   --enter-ease: var(--ease-out-expo);
+
+  /* Desktop page change (global.css): out, then in */
+  --vt-out: 200ms;
+  --vt-in: 350ms;
 }
