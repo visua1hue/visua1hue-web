@@ -2,7 +2,7 @@
 import { defineConfig, fontProviders } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import { execSync } from 'node:child_process';
-import securityHeaders from './integrations/security-headers.ts';
+import securityHeaders from './astro-headers.ts';
 import sitemap from '@astrojs/sitemap';
 
 // Short commit for the BUILD link. Workers Builds exposes the SHA; local builds read git.
