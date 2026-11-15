@@ -1,0 +1,10 @@
+:root {
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* First-load order: logo, then sidebar, then text */
+  --lead: 0.6s;
+  --cascade-delay: calc(var(--lead) + 0.45s);
+  --enter-dur: 0.85s;
+  --enter-ease: cubic-bezier(0.42, 0, 0.58, 1);
+}

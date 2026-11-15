@@ -1,4 +1,5 @@
 @import "./variables.css";
+@import "./motion.css";
 
 *,
 *::before,
@@ -103,18 +104,6 @@ a:hover {
   line-height: 1.5;
   letter-spacing: -0.011em;
   color: var(--color-fg);
-}
-
-/* Entrances, first load only: the logo fades in, then the sidebar (nav, meta, copyright), then the
-   text as one block (--cascade-* time it, PageFrame.astro). Scrolling has no per-block reveal: the
-   fixed fades at the viewport's edges (PageFrame.astro) soften text the same way at any position */
-:root {
-  /* The logo leads; the sidebar and text wait this long */
-  --lead: 0.6s;
-  --cascade-delay: calc(var(--lead) + 0.45s);
-  /* Sidebar and text share one fade: opacity only, no movement */
-  --enter-dur: 0.85s;
-  --enter-ease: cubic-bezier(0.42, 0, 0.58, 1);
 }
 
 @keyframes fade-in {
