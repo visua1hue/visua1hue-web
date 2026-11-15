@@ -17,7 +17,7 @@ const cells: { label: string; key: keyof DevMetrics; initial: string; unit: stri
 ];
 ---
 
-<button type="button" class="hud" data-dev-hud hidden>
+<button type="button" class="debugger" data-debugger hidden>
   {
     cells.map((c) => (
       <span class="cell">
@@ -31,7 +31,7 @@ const cells: { label: string; key: keyof DevMetrics; initial: string; unit: stri
 
 <style>
   /* Sits in the page frame's left column, under the meta */
-  .hud {
+  .debugger {
     display: flex;
     flex-direction: column;
     /* Hug the cells; as a block it stretches to the side column and the flash spans it */
@@ -53,7 +53,7 @@ const cells: { label: string; key: keyof DevMetrics; initial: string; unit: stri
     cursor: default;
   }
 
-  .hud[hidden] {
+  .debugger[hidden] {
     display: none;
   }
 
@@ -77,9 +77,9 @@ const cells: { label: string; key: keyof DevMetrics; initial: string; unit: stri
 </style>
 
 <script>
-  import { initDevHud } from "@scripts/DevHud";
+  import { initDebugger } from "@scripts/debugger";
 
   if (import.meta.env.DEV) {
-    document.querySelectorAll<HTMLElement>("[data-dev-hud]").forEach((root) => initDevHud(root));
+    document.querySelectorAll<HTMLElement>("[data-debugger]").forEach((root) => initDebugger(root));
   }
 </script>

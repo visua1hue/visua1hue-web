@@ -1,7 +1,7 @@
 ---
 // Round caps and join in arrow.svg: square caps notch the tip
 import Arrow from "@assets/arrow.svg";
-import DevHud from "@components/DevHud.astro";
+import Debugger from "@components/Debugger.astro";
 import Logotype from "@components/Logotype.astro";
 
 interface Props {
@@ -65,7 +65,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
           <dd><a class="ext" href="https://github.com/visua1hue"><span class="t">GitHub</span><Arrow class="arw" aria-hidden="true" /></a></dd>
         </div>
       </dl>
-      {import.meta.env.DEV && <DevHud />}
+      {import.meta.env.DEV && <Debugger />}
     </div>
     <div class="copy" data-enter>
       {/* role=img: screen readers read the decimal label, not the scrambling glyphs */}
@@ -381,8 +381,8 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
 </style>
 
 <script>
-  import { initCopyright } from "@scripts/Copyright";
-  import { createPageGlitch } from "@scripts/PageGlitch";
+  import { initCopyright } from "@scripts/copyright-glitch";
+  import { createPageGlitch } from "@scripts/page-glitch";
   import { TransitionBeforePreparationEvent } from "astro:transitions/client";
 
   /** Page swap: the old text glitches out while the next page loads, the new one glitches in

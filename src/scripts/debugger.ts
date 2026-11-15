@@ -1,6 +1,6 @@
 import { subscribeDevMetrics, type DevMetrics } from "@scripts/lib/dev-metrics";
 
-const KEY = "visua1hue-hud";
+const KEY = "visua1hue-debugger";
 type Key = keyof DevMetrics;
 
 /** How a value reads. Null keeps the placeholder: not measured yet (heap: unsupported, so "NA") */
@@ -46,7 +46,7 @@ const flash = (el: HTMLElement) => {
 };
 
 /** Dev metrics HUD. Backtick toggles it, persisted; while hidden, collection is unsubscribed. Click copies. */
-export function initDevHud(root: HTMLElement): () => void {
+export function initDebugger(root: HTMLElement): () => void {
   const out = new Map(
     [...root.querySelectorAll<HTMLElement>("[data-m]")].map((el) => [el.dataset.m as Key, el] as const),
   );
@@ -91,7 +91,7 @@ export function initDevHud(root: HTMLElement): () => void {
       navigator.clipboard
         .writeText(snapshot(root))
         .then(() => flash(root))
-        .catch((err) => console.error("DevHud: copy failed", err)),
+        .catch((err) => console.error("Debugger: copy failed", err)),
     { signal: ac.signal },
   );
 
