@@ -296,15 +296,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
   /* Persisted nodes keep .entered, so swaps don't replay this */
   @media (prefers-reduced-motion: no-preference) {
     [data-enter]:not(.entered) {
-      animation: fade-in var(--enter-dur) var(--enter-ease) both var(--lead);
-    }
-
-    .meta:not(.entered) {
-      animation-delay: calc(var(--lead) + 0.15s);
-    }
-
-    .copy:not(.entered) {
-      animation-delay: calc(var(--lead) + 0.15s);
+      animation: fade-in var(--enter-dur) var(--enter-ease) both;
     }
   }
 

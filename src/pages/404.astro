@@ -165,15 +165,11 @@ import Layout from "@layouts/Layout.astro";
     color: var(--color-fg);
   }
 
-  /* As PageFrame, minus the logotype's lead. A cover fades off the text so it stays the LCP */
+  /* As PageFrame. A cover fades off the text so it stays the LCP */
   @media (prefers-reduced-motion: no-preference) {
     .head,
     .side {
-      animation: fade-in var(--enter-dur) var(--enter-ease) both 0.1s;
-    }
-
-    .side {
-      animation-delay: 0.25s;
+      animation: fade-in var(--enter-dur) var(--enter-ease) both;
     }
 
     .main {
@@ -186,7 +182,7 @@ import Layout from "@layouts/Layout.astro";
       inset: 0;
       background: var(--color-bg);
       pointer-events: none;
-      animation: cover-off var(--enter-dur) var(--enter-ease) both 0.55s;
+      animation: cover-off var(--enter-dur) var(--enter-ease) both var(--cascade-delay);
     }
   }
 
