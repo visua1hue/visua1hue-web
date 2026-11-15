@@ -138,6 +138,7 @@ a:active {
   }
 }
 
+/* Also the end-of-text ramp */
 @keyframes cover-off {
   to {
     opacity: 0;

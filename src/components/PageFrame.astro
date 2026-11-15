@@ -78,6 +78,8 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     /* Last line rests this far above the logotype, level with the copyright */
     --end-gap: clamp(40px, 7vh, 80px);
     --pad-bottom: calc(var(--logotype-vis) + var(--end-gap));
+    /* Solid band at the bottom: .fade-bottom's height */
+    --end-band: calc(var(--logotype-vis) + var(--end-gap));
     --below-nav: calc(var(--hit-target) + clamp(48px, 7vw, 88px));
     position: relative;
     z-index: 1;
@@ -134,7 +136,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     background: var(--color-bg);
   }
 
-  /* Clears at the end of the text (.at-end) so the last lines read in full */
+  /* Clears as the last lines scroll in, so they read in full (see [data-end]) */
   .fade-ramp {
     bottom: calc(var(--logotype-vis) + var(--end-gap));
     height: var(--fade-ramp);
@@ -149,11 +151,39 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
       color-mix(in oklab, var(--color-bg) 8%, transparent) 80%,
       transparent 100%
     );
-    transition: opacity 0.5s ease;
   }
 
-  .frame.at-end .fade-ramp {
-    opacity: 0;
+  /* Spans the last ramp's height of text without adding height. Its view timeline drives the ramp,
+     on the compositor: the ramp clears exactly as those lines move above the solid band */
+  [data-end] {
+    height: var(--fade-ramp);
+    margin-top: calc(-1 * var(--fade-ramp));
+    pointer-events: none;
+    view-timeline: --text-end block;
+    view-timeline-inset: 0 var(--end-band);
+  }
+
+  .frame {
+    timeline-scope: --text-end;
+  }
+
+  @supports (animation-timeline: view()) {
+    .fade-ramp {
+      animation: cover-off linear both;
+      animation-timeline: --text-end;
+      animation-range: entry 0% entry 100%;
+    }
+  }
+
+  /* No scroll timelines (Firefox): the script toggles .at-end instead */
+  @supports not (animation-timeline: view()) {
+    .fade-ramp {
+      transition: opacity var(--dur-slow) var(--ease);
+    }
+
+    .frame.at-end .fade-ramp {
+      opacity: 0;
+    }
   }
 
   .head {
@@ -314,6 +344,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
       --below-nav: calc(var(--hit-target) + 32px);
       /* The logotype follows the page here instead of overlapping it */
       --pad-bottom: 48px;
+      --end-band: 0px;
       grid-template-columns: minmax(0, 1fr);
       grid-template-areas:
         "main"
@@ -384,8 +415,8 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
 
   const solidBand = () => document.querySelector<HTMLElement>("[data-fade-solid]")?.offsetHeight ?? 0;
 
-  // 8px slack: at the very end the text stops exactly on the band's edge. Rebuilt on resize because
-  // the band's height changes
+  // Fallback for the ramp's scroll timeline. 8px slack: at the very end the text stops exactly on the
+  // band's edge. Rebuilt on resize because the band's height changes
   function watchEnd() {
     const frame = document.querySelector<HTMLElement>(".frame");
     const end = document.querySelector<HTMLElement>("[data-end]");
@@ -410,7 +441,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
       { passive: true },
     );
   }
-  watchEnd();
+  if (!CSS.supports("animation-timeline: view()")) watchEnd();
 
   // Current page's link scrolls to the top instead of reloading the page; modified clicks (new tab)
   // pass through
