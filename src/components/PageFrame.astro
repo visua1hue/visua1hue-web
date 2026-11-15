@@ -376,6 +376,25 @@ const showLogotype = false;
       background: var(--color-bg);
     }
 
+    /* Press feedback as on the back-to-top button, without its face: the link darkens and shrinks
+       on touch, settles on release. data-pressed, not :active: iOS skips :active on most taps */
+    .nav a {
+      transition:
+        color var(--dur-base) var(--ease),
+        transform var(--dur-base) var(--ease-out-expo);
+    }
+
+    .nav a[data-pressed] {
+      color: var(--color-fg);
+      transition-duration: var(--dur-fast);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .nav a[data-pressed] {
+        transform: scale(0.97);
+      }
+    }
+
     /* Text fades out under the bar. Smoothstep: flat at both ends, so neither the bar's edge nor the
        fade's end shows as a line */
     .head::after {
@@ -474,6 +493,13 @@ const showLogotype = false;
     );
   }
   if (!CSS.supports("animation-timeline: view()")) watchEnd();
+
+  // Press state for the phone nav's press feedback (styles above)
+  for (const link of document.querySelectorAll<HTMLAnchorElement>(".nav a")) {
+    const release = () => link.removeAttribute("data-pressed");
+    link.addEventListener("pointerdown", () => link.setAttribute("data-pressed", ""));
+    for (const type of ["pointerup", "pointercancel", "pointerleave"]) link.addEventListener(type, release);
+  }
 
   // Current page's link scrolls to the top instead of reloading the page; modified clicks (new tab)
   // pass through
