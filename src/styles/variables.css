@@ -1,62 +1,70 @@
+/* Registered so getComputedStyle resolves it to px for scripts/lib/hero-layout.ts */
+@property --hero-margin {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
 :root {
-  /* LAYER 1: COLOR PALETTE - PRIMARY */
-  --color-primary-100: oklch(0.1449 0.0031 247.37);
-  --color-primary-500: oklch(0.982 0.005 95.099);
-  --color-primary-700: oklch(0.8764 0.0154 261.5);
-  --color-neutral-0: oklch(0.982 0.005 95.099);
+  /* COLOR — paper */
+  --color-bg: #fafaf9;
+  --color-fg: #111111;
+  --color-soft: #3a3a38; /* emphasised secondary text */
+  --color-muted: #62625f; /* 5.9:1 on bg */
+  --color-subtle: #72726f; /* labels; 4.6:1 on bg, the AA minimum */
+  --color-faint: #e4e4e1; /* decorative only (separators); fails text contrast */
+  --color-ghost: #ededea; /* background logotype; decorative only */
 
-  --color-neutral-100: oklch(0.8764 0.0154 261.5);
-  --color-neutral-300: oklch(0.3677 0.0111 248.13);
-  --color-neutral-500: oklch(0.2674 0.009 248.17);
-  --color-neutral-700: oklch(0.1916 0.0058 248.13);
-  --color-neutral-900: oklch(0.1449 0.0031 247.37);
-
-  /* LAYER 2: COLOR PALETTE - SEMANTIC TOKENS */
-  --color-bg-body: var(--color-primary-100);
-  --color-bg-surface: var(--color-neutral-700);
-  --color-text-default: var(--color-primary-500);
-  --color-text-muted: oklch(0.619 0.01 100.088);
-  --color-text-highlight: var(--color-primary-500);
-  --color-interactive-default: var(--color-primary-500);
-  --color-interactive-hover: var(--color-primary-700);
-  --color-border-default: var(--color-primary-500);
-
+  /* TYPE — About and Privacy use these two sizes only */
+  --text-sm: 16px; /* nav, meta, body copy, small headings, copyright */
+  --text-lg: clamp(20px, 1.8vw, 26px); /* story, page titles, lead */
+  --weight-medium: 500; /* emphasis in the text, page titles */
+  --weight-bold: 500; /* role, small headings */
   --font-primary: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
 
-  --font-size-sm: 0.875rem; /* 14px */
-  --font-size-base: 1rem; /* 16px */
-  --font-size-md: 1.125rem; /* 18px */
-  --font-size-lg: 1.25rem; /* 20px */
-  --font-size-xl: 1.5rem; /* 24px */
-  --font-size-xxl: 2.25rem; /* 36px */
+  /* HERO GRID — single source; scripts/lib/hero-layout.ts reads these at runtime */
+  --grid-size: 24px; /* one grid square */
+  --grid-dither-rows: 14; /* minimum dithered rows */
+  --grid-block-span: 5; /* squares spanned by BUILD/DEBUG/metric blocks */
+  --dither-cell: 2px; /* one dither dot, hero field and quote mark */
+  --hero-margin: clamp(10px, 2vw, 24px); /* min side gap; hero width snaps inside it */
 
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-bold: 700;
+  /* Pre-layout block positions derived from the above (meta row = last dithered row) */
+  --grid-meta-row: calc((var(--grid-dither-rows) - 1) * var(--grid-size) + 1px);
+  --grid-meta-inset: calc(var(--grid-size) + 1px);
 
-  --spacing-xs: 0.25rem; /* 4px */
-  --spacing-sm: 0.5rem; /* 8px */
-  --spacing-md: 1rem; /* 16px */
-  --spacing-lg: 2rem; /* 32px */
-  --spacing-xl: 4rem; /* 64px */
-  --spacing-xxl: 8rem; /* 128px */
+  /* LAYOUT */
+  --hit-target: 44px;
+  /* Page frame: content is at most --page-max wide, with at least --page-x either side;
+     --page-edge is the resulting inset from the viewport edge (content, copyright, ghost) */
+  --page-max: 1200px;
+  --page-x: clamp(20px, 6vw, 96px);
+  --page-edge: calc(max(0px, (100vw - var(--page-max)) / 2) + var(--page-x));
+  /* Ghost logotype spans the content width (its box is 1787.5 x 254); a fifth sinks below the fold */
+  --ghost-h: calc((100vw - 2 * var(--page-edge)) * 254 / 1787.5);
+  --ghost-vis: calc(var(--ghost-h) * 0.8);
+  /* Eased ramp above the ghost where the text fades out */
+  --fade-ramp: clamp(72px, 11vh, 120px);
 
-  --container-width: 1240px;
-  --container-padding: var(--spacing-lg);
+  /* MOTION */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-  --line-height-base: 1.5;
+/* Dark scope for pages still built on the dark-tuned hero and dither (404) */
+[data-theme="dark"] {
+  --color-bg: #08090a;
+  --color-fg: #f7f8f8;
+  --color-soft: #c9cdd3;
+  --color-muted: #8a8f98;
+  --color-subtle: #747881; /* 4.5:1 on bg, the AA minimum */
+  --color-faint: #3e4147;
+}
 
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-
-  --border-radius-sm: var(--radius-sm);
-  --border-radius-md: var(--radius-md);
-  --border-radius-lg: var(--radius-lg);
-
-  --border-width: 1px;
-
-  --shadow-sm: 0 1px 2px oklch(from var(--color-neutral-900) l c h / 0.05);
-  --shadow-md: 0 4px 6px -1px oklch(from var(--color-neutral-900) l c h / 0.1),
-    0 2px 4px -2px oklch(from var(--color-neutral-900) l c h / 0.1);
+/* Phones keep the narrow gutter */
+@media (max-width: 767px) {
+  :root {
+    --page-x: 20px;
+  }
 }

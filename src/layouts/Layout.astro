@@ -1,23 +1,35 @@
 ---
-import { ClientRouter } from "astro:transitions";
 import { Font } from "astro:assets";
+import { ClientRouter } from "astro:transitions";
 import "@styles/global.css";
 
 interface Props {
   title: string;
   description?: string;
+  /** Keep the page out of search results (e.g. 404). */
+  noindex?: boolean;
+  /** Dark for pages built on the dark-tuned hero (404). */
+  theme?: "light" | "dark";
+  /** Soft navigation between pages that share the Shell frame: only the text column swaps. */
+  router?: boolean;
 }
 
 const {
-  title = "Consultant and Developer",
-  description = "Engineering solutions built to perform and designed to scale.",
+  title,
+  description = "Technical Consultant – Innovation at Centric Software. Curious by default.",
+  noindex = false,
+  theme = "light",
+  router = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL("/og.png", Astro.site).href;
+const ogImageAlt = "Dithered grid pattern from the VISUA1HUE site";
+const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme={theme}>
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
@@ -25,42 +37,41 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
-    <meta name="robots" content="index, follow" />
-    <link rel="icon" type="image/x-icon" href="/favicon.svg" />
+    <meta name="robots" content={noindex ? "noindex, follow" : "index, follow"} />
+    <link rel="icon" type="image/svg+xml" href={faviconHref} />
     <link rel="canonical" href={canonicalURL.href} />
 
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
 
-    <Font
-      cssVariable="--font-inter"
-      preload={[
-        { weight: "400", subset: "latin" },
-        { weight: "500", subset: "latin" },
-      ]}
-    />
+    {/* Open Graph */}
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL.href} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content="VISUA1HUE" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
 
-    <ClientRouter />
+    {/* Twitter Card */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@visua1hue" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
+
+    {/* Theme color */}
+    <meta name="theme-color" content={theme === "dark" ? "#08090A" : "#FAFAF9"} />
+
+    {/* No preloads: Chrome holds first paint for a preloaded font (~115ms measured); swap metrics cover it */}
+    <Font cssVariable="--font-inter" />
+    <Font cssVariable="--font-geist-mono" />
+    {router && <ClientRouter />}
   </head>
   <body>
-    <main>
-      <slot />
-    </main>
-    <script>
-      import { initAnimations } from "@scripts/animation/motion";
-
-      // Initialize on load
-      initAnimations();
-
-      // Re-initialize on View Transitions (Astro View Transitions)
-      document.addEventListener('astro:page-load', () => {
-          initAnimations();
-      });
-
-      // Dev-only metrics HUD (stripped from production)
-      if (import.meta.env.DEV) {
-        import("@scripts/dev/metrics").then((m) => m.initDevMetrics());
-      }
-    </script>
+    <slot />
   </body>
 </html>

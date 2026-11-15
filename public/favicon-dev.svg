@@ -1,0 +1,17 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="32"
+  height="32"
+  viewBox="-2.125 -2.125 21.25 21.25"
+  shape-rendering="crispEdges"
+>
+  <style>
+    .l5 {
+      fill: oklch(0.6133 0.1011 202.85);
+    }
+  </style>
+  <path
+    class="l5"
+    d="M0 0h6v1H0zM9 0h2v1H9zM13 0h4v1H13zM0 1h6v1H0zM9 1h2v1H9zM13 1h4v1H13zM0 2h6v1H0zM11 2h2v1H11zM15 2h2v1H15zM0 3h6v1H0zM11 3h2v1H11zM15 3h2v1H15zM0 4h6v1H0zM9 4h6v1H9zM0 5h6v1H0zM9 5h6v1H9zM11 6h2v1H11zM15 6h2v1H15zM11 7h2v1H11zM15 7h2v1H15zM0 9h2v1H0zM4 9h2v1H4zM0 10h2v1H0zM4 10h2v1H4zM2 11h6v1H2zM11 11h2v1H11zM15 11h2v1H15zM2 12h6v1H2zM11 12h2v1H11zM15 12h2v1H15zM0 13h2v1H0zM4 13h2v1H4zM0 14h2v1H0zM4 14h2v1H4zM0 15h4v1H0zM6 15h2v1H6zM11 15h2v1H11zM15 15h2v1H15zM0 16h4v1H0zM6 16h2v1H6zM11 16h2v1H11zM15 16h2v1H15z"
+  />
+</svg>

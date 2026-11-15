@@ -1,38 +1,204 @@
 @import "./variables.css";
-@import "./motion.css";
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
-html {
-  font-family: var(--font-primary);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  scroll-behavior: smooth;
-  line-height: 1.6;
+[hidden] {
+  display: none !important;
 }
 
 html,
 body {
-  overscroll-behavior: none;
-  touch-action: manipulation;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom, 0);
-  background-color: var(--color-bg-body);
-  color: var(--color-text-default);
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-fg);
 }
 
-img {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  pointer-events: none;
+/* No rubber-band bounce with a mouse or trackpad; touch keeps pull-to-refresh */
+@media (pointer: fine) {
+  html {
+    overscroll-behavior: none;
+  }
+}
+
+/* A page that scrolls and one that doesn't keep the same width, so switching pages doesn't nudge the layout */
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  font-family: var(--font-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  /* clip, not hidden: hidden makes body a scroll container and breaks position: sticky */
+  overflow-x: clip;
+}
+
+a {
+  color: var(--color-muted);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-fg);
+}
+
+.dim {
+  color: var(--color-subtle);
+}
+
+/* Link with hover underline on .t and a trailing ↗ arrow */
+.ext {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.ext .t {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.ext:hover .t,
+.ext:focus-visible .t {
+  text-decoration-color: currentColor;
+}
+
+/* Rests a touch above the line's centre; on hover it fades in whole while drifting 2px up and right */
+.ext .arw {
+  flex: none;
+  opacity: 0;
+  transform: translate(-2px, 0);
+  transition:
+    transform 0.3s var(--ease-out-expo),
+    opacity 0.2s ease;
+}
+
+.ext:hover .arw,
+.ext:focus-visible .arw {
+  opacity: 0.6;
+  transform: translate(0, -2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ext .arw,
+  .ext:hover .arw,
+  .ext:focus-visible .arw {
+    transform: translate(0, -2px);
+    transition: opacity 0.2s ease;
+  }
+}
+
+/* One-row mono block locked to the hero grid. Size here is the pre-layout default;
+   scripts/lib/hero-layout.ts sets position and size after measuring. */
+.grid-cell {
+  width: calc(var(--grid-block-span) * var(--grid-size) - 1px);
+  height: calc(var(--grid-size) - 1px);
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 10px;
+  background: var(--color-bg);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Page body under a hero: 5 empty grid rows above it */
+.page-main {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 120px;
+}
+
+/* Page heading over the text column (About, Privacy): label size, level with the meta's first line */
+.page-title {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: 1.5;
+  letter-spacing: -0.011em;
+  color: var(--color-fg);
+}
+
+/* Entrances: the sidebar (nav, meta, copyright) rises softly on first load; text blocks below the
+   fold fade in from 99% scale as they scroll in (scripts/Reveal.ts adds .pending, then .in). Text in
+   view on load is never hidden, so it paints with the page */
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(3px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal].pending {
+    opacity: 0;
+    transform: scale(0.99);
+    transform-origin: 0 0;
+  }
+
+  /* Peek: the next hidden block shows its first two lines, faintly, as a hint that there's more */
+  [data-reveal].pending.next:not(.in) {
+    opacity: 0.16;
+    clip-path: inset(0 0 calc(100% - 2lh) 0);
+  }
+
+  [data-reveal].pending.in {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 1.1s cubic-bezier(0.25, 0.1, 0.25, 1) var(--d, 0ms),
+      transform 1.3s var(--ease-out-expo) var(--d, 0ms);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* Hero logo: hidden until scripts/Hero.ts reveals it under the intro's covers; shown after a delay if it never does */
+@keyframes hold {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes flick {
+  0% { opacity: 1; }
+  4% { opacity: 0.25; }
+  7% { opacity: 1; }
+  52% { opacity: 1; }
+  54% { opacity: 0.4; }
+  55% { opacity: 1; }
+  78% { opacity: 0.7; }
+  80% { opacity: 1; }
 }
