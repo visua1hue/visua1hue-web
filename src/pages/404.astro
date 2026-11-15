@@ -74,7 +74,7 @@ import Layout from "@layouts/Layout.astro";
     display: inline-flex;
     align-items: center;
     color: var(--color-subtle);
-    transition: color 0.2s ease;
+    transition: color var(--dur-base) var(--ease);
   }
 
   .nav a:hover {
@@ -121,7 +121,7 @@ import Layout from "@layouts/Layout.astro";
     text-decoration-thickness: 1px;
     text-underline-offset: 4px;
     text-decoration-color: var(--color-faint);
-    transition: text-decoration-color 0.2s ease;
+    transition: text-decoration-color var(--dur-base) var(--ease);
   }
 
   .back a:hover,

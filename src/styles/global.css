@@ -68,7 +68,7 @@ a:hover {
   text-decoration-color: transparent;
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
-  transition: text-decoration-color 0.2s ease;
+  transition: text-decoration-color var(--dur-base) var(--ease);
 }
 
 .ext:hover .t,
@@ -81,8 +81,8 @@ a:hover {
   opacity: 0;
   transform: translate(-2px, 0);
   transition:
-    transform 0.3s var(--ease-out-expo),
-    opacity 0.2s ease;
+    transform var(--dur-base) var(--ease-out-expo),
+    opacity var(--dur-fast) var(--ease);
 }
 
 .ext:hover .arw,
@@ -96,7 +96,7 @@ a:hover {
   .ext:hover .arw,
   .ext:focus-visible .arw {
     transform: translate(0, -2px);
-    transition: opacity 0.2s ease;
+    transition: opacity var(--dur-fast) var(--ease);
   }
 }
 

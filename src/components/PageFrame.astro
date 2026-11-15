@@ -175,12 +175,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     display: inline-flex;
     align-items: center;
     color: var(--color-subtle);
-    /* On the base state so leaving fades too; out is slower than in */
-    transition: color 0.45s var(--ease-out);
-  }
-
-  .nav a:hover {
-    transition-duration: 0.15s;
+    transition: color var(--dur-base) var(--ease);
   }
 
   .nav a:hover,

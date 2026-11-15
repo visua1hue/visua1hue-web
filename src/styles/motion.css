@@ -1,9 +1,16 @@
 :root {
-  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  /* Hover and color */
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  /* Entrances and small moves: fast start, long soft landing */
   --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* First load: the frame fades in at once, the text this much later */
-  --cascade-delay: 0.25s;
-  --enter-dur: 0.6s;
-  --enter-ease: cubic-bezier(0.42, 0, 0.58, 1);
+  --dur-fast: 120ms;
+  --dur-base: 180ms;
+  --dur-slow: 300ms;
+
+  /* First load: the frame fades in at once, the text this much later. Longer than UI motion: it
+     plays once per visit */
+  --cascade-delay: 120ms;
+  --enter-dur: 500ms;
+  --enter-ease: var(--ease-out-expo);
 }
