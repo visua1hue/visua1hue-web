@@ -1,5 +1,6 @@
 ---
-import Arrow from "@components/Arrow.astro";
+// Round caps and join in arrow.svg: square caps notch the tip
+import Arrow from "@assets/arrow.svg";
 import DevHud from "@components/DevHud.astro";
 import Logotype from "@components/Logotype.astro";
 
@@ -56,12 +57,12 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
         <div>
           <dt>Currently</dt>
           <dd class="role">Technical Consultant – Innovation</dd>
-          <dd class="org"><a class="ext" href="https://www.centricsoftware.com/"><span class="t">Centric Software</span><Arrow /></a></dd>
+          <dd class="org"><a class="ext" href="https://www.centricsoftware.com/"><span class="t">Centric Software</span><Arrow class="arw" aria-hidden="true" /></a></dd>
         </div>
         <div>
           <dt>Socials</dt>
-          <dd><a class="ext" href="https://www.linkedin.com/in/michaelhuebel/"><span class="t">LinkedIn</span><Arrow /></a></dd>
-          <dd><a class="ext" href="https://github.com/visua1hue"><span class="t">GitHub</span><Arrow /></a></dd>
+          <dd><a class="ext" href="https://www.linkedin.com/in/michaelhuebel/"><span class="t">LinkedIn</span><Arrow class="arw" aria-hidden="true" /></a></dd>
+          <dd><a class="ext" href="https://github.com/visua1hue"><span class="t">GitHub</span><Arrow class="arw" aria-hidden="true" /></a></dd>
         </div>
       </dl>
       {import.meta.env.DEV && <DevHud />}
@@ -69,7 +70,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     <div class="copy" data-enter>
       {/* role=img: screen readers read the decimal label, not the scrambling glyphs */}
       <p><span class="label">Copyright</span><span class="year" data-year tabindex="0" role="img" aria-label={String(year)}>{yearHex}</span></p>
-      <p><span class="label">Build</span><a class="ext" href={commitHref} title="View this build's commit on GitHub"><span class="t">{sha}</span><Arrow /></a></p>
+      <p><span class="label">Build</span><a class="ext" href={commitHref} title="View this build's commit on GitHub"><span class="t">{sha}</span><Arrow class="arw" aria-hidden="true" /></a></p>
     </div>
   </aside>
 </div>
