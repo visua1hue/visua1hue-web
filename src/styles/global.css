@@ -128,7 +128,7 @@ a:active {
 
 /* The logotype's fade-in is first-visit only too. !important: Logotype.astro's scoped rules have the
    same specificity and their order against this file isn't fixed */
-:root[data-nav] .logotype svg {
+:root[data-internal-nav] .logotype svg {
   animation: none !important;
 }
 

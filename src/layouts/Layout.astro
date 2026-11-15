@@ -1,6 +1,6 @@
 ---
 import { Font } from "astro:assets";
-import navFlagUrl from "@scripts/nav-flag.js?url";
+import internalNavUrl from "@scripts/internal-nav.js?url";
 import "@styles/global.css";
 
 interface Props {
@@ -24,8 +24,8 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    {/* Blocking on purpose: html[data-nav] must be set before the first paint. Hashed, so cached for good */}
-    <script is:inline src={navFlagUrl}></script>
+    {/* Blocking on purpose: html[data-internal-nav] must be set before the first paint. Hashed, so cached for good */}
+    <script is:inline src={internalNavUrl}></script>
     <meta name="description" content={description} />
     <meta
       name="viewport"

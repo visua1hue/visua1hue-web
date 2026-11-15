@@ -225,14 +225,14 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
     padding-top: var(--below-nav);
   }
 
-  /* First visit only: html[data-nav] (nav-flag.js) skips it on moves between pages. The text paints
-     at once so it stays the LCP; a paper cover fades off it instead */
+  /* First visit only: html[data-internal-nav] (internal-nav.js) skips it on moves between pages.
+     The text paints at once so it stays the LCP; a paper cover fades off it instead */
   @media (prefers-reduced-motion: no-preference) {
-    :global(:root:not([data-nav])) .main {
+    :global(:root:not([data-internal-nav])) .main {
       position: relative;
     }
 
-    :global(:root:not([data-nav])) .main::after {
+    :global(:root:not([data-internal-nav])) .main::after {
       content: "";
       position: absolute;
       inset: 0;
@@ -323,7 +323,7 @@ const yearHex = `0x${year.toString(16).toUpperCase()}`;
 
   /* First visit only, as the cover above */
   @media (prefers-reduced-motion: no-preference) {
-    :global(:root:not([data-nav])) [data-enter] {
+    :global(:root:not([data-internal-nav])) [data-enter] {
       animation: fade-in var(--enter-dur) var(--enter-ease) both;
     }
   }
