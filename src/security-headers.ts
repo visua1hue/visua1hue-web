@@ -20,6 +20,7 @@ export const SECURITY_HEADERS: Record<string, string> = {
     "xr-spatial-tracking=()",
   ].join(", "),
   "Cross-Origin-Opener-Policy": "same-origin",
+  "Cross-Origin-Resource-Policy": "same-origin",
   "X-Frame-Options": "DENY",
   "Content-Security-Policy": [
     "default-src 'self'",
