@@ -7,8 +7,9 @@
   --color-faint: #e4e4e1;
   --color-logotype: #ededea;
 
-  --text-sm: 16px;
-  --text-lg: clamp(20px, 1.8vw, 26px);
+  /* rem, so a larger browser font size scales the text. The vw middle keeps the default-size curve */
+  --text-sm: 1rem;
+  --text-lg: clamp(1.25rem, 1.8vw, 1.625rem);
   --weight-medium: 500;
   --weight-bold: 500;
   --font-primary: var(--font-inter);
