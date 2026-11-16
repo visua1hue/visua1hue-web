@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
+import { satteri } from '@astrojs/markdown-satteri';
 import { execSync } from 'node:child_process';
 import securityHeaders from './astro-headers.ts';
 import sitemap from '@astrojs/sitemap';
@@ -62,7 +63,10 @@ export default defineConfig({
   ],
 
   // Page text (src/content/*.md) renders as typed: no automatic curly quotes or dashes
-  markdown: { smartypants: false },
+  markdown: { processor: satteri({ features: { smartPunctuation: false } }) },
+
+  // No sessions used; on, the adapter adds a SESSION KV binding to every deploy
+  session: false,
 
   integrations: [securityHeaders(), sitemap({ filter: (page) => !page.endsWith('/privacy/') })],
 
