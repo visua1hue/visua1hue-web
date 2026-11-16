@@ -105,6 +105,11 @@ const showLogotype = false;
     --logotype-vis: 0px;
   }
 
+  /* Focus, anchors and find-in-page stop clear of the top fade and the bottom band and ramp */
+  .frame :global(*) {
+    scroll-margin-block: calc(var(--pad-top) + var(--below-nav)) calc(var(--end-band) + var(--fade-ramp));
+  }
+
   .glitch-defs {
     position: absolute;
     width: 0;
@@ -308,6 +313,8 @@ const showLogotype = false;
 
   @media (max-width: 767px) {
     .frame {
+      /* Under the fixed nav bar (.head) and its fade (.head::after) */
+      --head-fade: 57px;
       /* No logotype here. The last row ends level with the back-to-top button's bottom (BackToTop.astro:
          32px up); they don't collide, the text is left and the button right */
       --pad-bottom: 32px;
@@ -317,6 +324,11 @@ const showLogotype = false;
         "main"
         "side";
       row-gap: 64px;
+    }
+
+    /* The bar is the nav plus 6px padding above and below */
+    .frame :global(*) {
+      scroll-margin-top: calc(var(--hit-target) + 12px + var(--head-fade));
     }
 
     .fade-top,
@@ -361,7 +373,7 @@ const showLogotype = false;
       position: absolute;
       /* 1px into the bar: a fractional bar height leaves a hairline seam otherwise */
       inset: calc(100% - 1px) 0 auto;
-      height: 57px;
+      height: var(--head-fade);
       pointer-events: none;
       background: linear-gradient(var(--color-bg), transparent);
       background: linear-gradient(
