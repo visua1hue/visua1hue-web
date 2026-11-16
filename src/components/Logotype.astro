@@ -2,7 +2,7 @@
 // Paths copied from src/assets/logotype.svg; change the logo there first
 ---
 
-<div class="logotype" aria-hidden="true" transition:persist="logotype">
+<div class="logotype" aria-hidden="true">
   <svg viewBox="346.5 747 1787.5 254" preserveAspectRatio="xMidYMax meet">
     <defs>
       {/* Glyph space (y 362..611), so the fade spans the word, not each letter */}
@@ -89,7 +89,7 @@
 </style>
 
 <script>
-  // Persisted across page swaps, so this runs once
+  // Plays once, when the logotype first scrolls into view
   const logotype = document.querySelector<HTMLElement>(".logotype");
   if (logotype) {
     const io = new IntersectionObserver(([e]) => {
