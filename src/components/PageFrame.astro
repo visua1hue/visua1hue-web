@@ -72,7 +72,7 @@ const showLogotype = false;
     </div>
     <div class="copy" data-enter>
       {/* role=img: screen readers read the decimal label, not the scrambling glyphs */}
-      <p><span class="label">Copyright</span><span class="year" data-year tabindex="0" role="img" aria-label={String(year)}>{yearHex}</span></p>
+      <p><span class="label">Copyright</span><span class="year" data-year role="img" aria-label={String(year)}>{yearHex}</span></p>
       <p><span class="label">Build</span><a class="ext" href={commitHref} title="View this build's commit on GitHub"><span class="t">{sha}</span><Arrow class="arw" aria-hidden="true" /></a></p>
     </div>
   </aside>

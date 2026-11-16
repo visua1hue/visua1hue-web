@@ -6,8 +6,9 @@ const IN_MS = 300;
 const SETTLE_AT = 0.7;
 
 /**
- * Hex year, decimal on hover or focus. A newer swap cancels the running one, so quick hovers end
- * on the right value. Screen readers get the decimal year throughout.
+ * Hex year, decimal on hover, or while pressed on touch (pointerleave follows the finger's lift). A
+ * newer swap cancels the running one, so quick hovers end on the right value. Screen readers get the
+ * decimal year throughout.
  */
 export function initCopyright(el: HTMLElement): () => void {
   const year = new Date().getFullYear();
@@ -16,7 +17,8 @@ export function initCopyright(el: HTMLElement): () => void {
   el.textContent = hex;
   el.setAttribute("aria-label", dec);
 
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Read per swap: the setting can change while the page is open
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)");
   const tear = createTear();
   let run = 0;
   let fade: Animation | null = null;
@@ -30,7 +32,9 @@ export function initCopyright(el: HTMLElement): () => void {
   async function swap(to: string) {
     const id = ++run;
     const alive = () => id === run;
-    if (reduce) {
+    if (reduce.matches) {
+      fade?.cancel();
+      tear.off([el]);
       el.textContent = to;
       return;
     }
@@ -67,8 +71,8 @@ export function initCopyright(el: HTMLElement): () => void {
   }
 
   const ac = new AbortController();
-  for (const e of ["mouseenter", "focus"]) el.addEventListener(e, () => void swap(dec), { signal: ac.signal });
-  for (const e of ["mouseleave", "blur"]) el.addEventListener(e, () => void swap(hex), { signal: ac.signal });
+  el.addEventListener("pointerenter", () => void swap(dec), { signal: ac.signal });
+  for (const e of ["pointerleave", "pointercancel"]) el.addEventListener(e, () => void swap(hex), { signal: ac.signal });
   return () => {
     ac.abort();
     run++;
