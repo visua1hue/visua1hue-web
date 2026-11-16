@@ -3,11 +3,12 @@ export const prerender = true;
 import Layout from "@layouts/Layout.astro";
 import PageFrame from "@components/PageFrame.astro";
 import { Content } from "@content/about.md";
+import { POSITION } from "@content/position";
 ---
 
 <Layout
   title="About – VISUA1HUE"
-  description="Technical Consultant – Innovation at Centric Software. Curious by default: what I build, what I learn and what I'm curious about."
+  description={`${POSITION.title} at ${POSITION.org}. Curious by default: what I build, what I learn and what I'm curious about.`}
 >
   <PageFrame current="about">
     {/* TODO: the lorem paragraphs in about.md test scrolling; remove before launch */}

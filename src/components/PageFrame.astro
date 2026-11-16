@@ -4,6 +4,7 @@ import Arrow from "@assets/arrow.svg";
 import Debugger from "@components/Debugger.astro";
 import Logotype from "@components/Logotype.astro";
 import BackToTop from "@components/BackToTop.astro";
+import { POSITION } from "@content/position";
 import "@styles/page-transitions.css";
 
 interface Props {
@@ -59,8 +60,8 @@ const showLogotype = false;
       <dl class="meta" data-enter>
         <div>
           <dt>Currently</dt>
-          <dd class="value">Technical Consultant – Innovation</dd>
-          <dd class="org"><a class="ext" href="https://www.centricsoftware.com/"><span class="t">Centric Software</span><Arrow class="arw" aria-hidden="true" /></a></dd>
+          <dd class="value">{POSITION.title}</dd>
+          <dd class="org"><a class="ext" href={POSITION.orgUrl}><span class="t">{POSITION.org}</span><Arrow class="arw" aria-hidden="true" /></a></dd>
         </div>
         <div>
           <dt>Socials</dt>
