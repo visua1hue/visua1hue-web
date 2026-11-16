@@ -1,6 +1,6 @@
 ---
 import { Font } from "astro:assets";
-import internalNavUrl from "@scripts/internal-nav.js?url";
+import internalNav from "@scripts/internal-nav.js?raw";
 import "@styles/global.css";
 
 interface Props {
@@ -24,8 +24,11 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    {/* Blocking on purpose: html[data-internal-nav] must be set before the first paint. Hashed, so cached for good */}
-    <script is:inline src={internalNavUrl}></script>
+    {/* Sets html[data-internal-nav] when opened from another page of the site (not a reload), so
+        first-visit entrance animations don't replay. Inline and blocking: it must run before the first
+        paint, and a file would hold that paint for a request. The CSP allows it by hash
+        (INTERNAL_NAV_HASH, security-headers.ts); astro-headers.ts fails the build if they drift */}
+    <script is:inline set:html={internalNav}></script>
     <meta name="description" content={description} />
     <meta
       name="viewport"

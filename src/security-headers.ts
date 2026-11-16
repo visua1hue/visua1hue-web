@@ -1,3 +1,6 @@
+/** CSP hash of the inline script in Layout.astro (src/scripts/internal-nav.js). The build fails if it drifts. */
+export const INTERNAL_NAV_HASH = "sha256-hD/1w3NnSkJNk3ClgGcstfWRFk91ahjwYod8NdkQqTM=";
+
 /** Set by middleware.ts on Worker responses; written to _headers by astro-headers.ts. */
 export const SECURITY_HEADERS: Record<string, string> = {
   "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
@@ -20,7 +23,7 @@ export const SECURITY_HEADERS: Record<string, string> = {
   "X-Frame-Options": "DENY",
   "Content-Security-Policy": [
     "default-src 'self'",
-    "script-src 'self'",
+    `script-src 'self' '${INTERNAL_NAV_HASH}'`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self'",
