@@ -37,7 +37,7 @@ const showLogotype = false;
     <feDisplacementMap in="SourceGraphic" in2="bands" scale="0" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
   </filter>
 </svg>
-<div class="frame" style={showLogotype ? undefined : "--logotype-vis: 0px"}>
+<div class:list={["frame", { "no-logotype": !showLogotype }]}>
   <div class="fade fade-top" aria-hidden="true"></div>
   <div class="fade fade-bottom" aria-hidden="true" data-fade-solid></div>
   <div class="fade fade-ramp" aria-hidden="true" data-fade-ramp></div>
@@ -98,6 +98,11 @@ const showLogotype = false;
     font-size: var(--text-sm);
     line-height: 1.5;
     letter-spacing: -0.011em;
+  }
+
+  /* A class, not a style attribute: the CSP can't cover inline style attributes by hash */
+  .frame.no-logotype {
+    --logotype-vis: 0px;
   }
 
   .glitch-defs {
