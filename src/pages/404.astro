@@ -5,6 +5,9 @@ import Layout from "@layouts/Layout.astro";
 
 {/* Standalone: no PageFrame */}
 <Layout title="404 Not Found" description="Nothing lives at this address." noindex>
+  {/* Links from here send no referrer, so the next page counts as a first visit and plays its
+      entrance fade: the 404 has no page-change fade of its own */}
+  <meta slot="head" name="referrer" content="no-referrer" />
   <div class="nf">
     <header class="head">
       <nav class="nav" aria-label="Main">

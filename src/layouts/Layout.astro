@@ -50,6 +50,7 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
 
     {/* No preload: Chrome holds first paint for a preloaded font (~115ms measured) */}
     <Font cssVariable="--font-inter" />
+    <slot name="head" />
     {/* Dev only: the Debugger's face */}
     {import.meta.env.DEV && <Font cssVariable="--font-geist-mono" />}
   </head>
