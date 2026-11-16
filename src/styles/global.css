@@ -125,6 +125,51 @@ a:active {
   }
 }
 
+/* Main nav (PageFrame, 404) */
+.nav {
+  display: flex;
+  gap: 28px;
+}
+
+.nav a {
+  min-height: var(--hit-target);
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-subtle);
+  transition: color var(--dur-base) var(--ease);
+}
+
+.nav a[aria-current="page"] {
+  color: var(--color-fg);
+}
+
+@media (hover: hover) {
+  .nav a:hover {
+    color: var(--color-fg);
+  }
+}
+
+/* Side-column facts (PageFrame, 404) */
+.meta {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.meta dt {
+  color: var(--color-subtle);
+}
+
+.meta dd {
+  margin: 0;
+}
+
+.meta .value {
+  font-weight: var(--weight-bold);
+  color: var(--color-fg);
+}
+
 /* Label size, level with the meta's first line */
 .page-title {
   margin: 0;

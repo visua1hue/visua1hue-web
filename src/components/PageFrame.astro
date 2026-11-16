@@ -59,7 +59,7 @@ const showLogotype = false;
       <dl class="meta" data-enter>
         <div>
           <dt>Currently</dt>
-          <dd class="role">Technical Consultant – Innovation</dd>
+          <dd class="value">Technical Consultant – Innovation</dd>
           <dd class="org"><a class="ext" href="https://www.centricsoftware.com/"><span class="t">Centric Software</span><Arrow class="arw" aria-hidden="true" /></a></dd>
         </div>
         <div>
@@ -81,13 +81,11 @@ const showLogotype = false;
 
 <style>
   .frame {
-    --pad-top: clamp(24px, 4vw, 36px);
     /* Last line rests this far above the logotype, level with the copyright */
     --end-gap: clamp(40px, 7vh, 80px);
     --pad-bottom: calc(var(--logotype-vis) + var(--end-gap));
     /* Solid band at the bottom: .fade-bottom's height */
     --end-band: calc(var(--logotype-vis) + var(--end-gap));
-    --below-nav: calc(var(--hit-target) + clamp(48px, 7vw, 88px));
     position: relative;
     z-index: 1;
     flex: 1;
@@ -202,29 +200,6 @@ const showLogotype = false;
     z-index: 3;
   }
 
-  .nav {
-    display: flex;
-    gap: 28px;
-  }
-
-  .nav a {
-    min-height: var(--hit-target);
-    display: inline-flex;
-    align-items: center;
-    color: var(--color-subtle);
-    transition: color var(--dur-base) var(--ease);
-  }
-
-  .nav a[aria-current="page"] {
-    color: var(--color-fg);
-  }
-
-  @media (hover: hover) {
-    .nav a:hover {
-      color: var(--color-fg);
-    }
-  }
-
   .main {
     grid-area: main;
     min-width: 0;
@@ -266,29 +241,9 @@ const showLogotype = false;
     gap: 32px;
   }
 
-  .meta {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-
-  .meta dt,
-  .label {
-    color: var(--color-subtle);
-  }
-
   .label {
     display: block;
-  }
-
-  .meta dd {
-    margin: 0;
-  }
-
-  .meta .role {
-    font-weight: var(--weight-bold);
-    color: var(--color-fg);
+    color: var(--color-subtle);
   }
 
   .meta .ext {
@@ -348,7 +303,6 @@ const showLogotype = false;
 
   @media (max-width: 767px) {
     .frame {
-      --below-nav: calc(var(--hit-target) + 32px);
       /* No logotype here. The last row ends level with the back-to-top button's bottom (BackToTop.astro:
          32px up); they don't collide, the text is left and the button right */
       --pad-bottom: 32px;

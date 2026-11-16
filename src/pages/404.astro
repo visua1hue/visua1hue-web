@@ -43,8 +43,6 @@ import Layout from "@layouts/Layout.astro";
   }
 
   .nf {
-    --pad-top: clamp(24px, 4vw, 36px);
-    --below-nav: calc(var(--hit-target) + clamp(48px, 7vw, 88px));
     flex: 1;
     width: 100%;
     padding: var(--pad-top) var(--page-edge) clamp(40px, 7vh, 80px);
@@ -62,25 +60,6 @@ import Layout from "@layouts/Layout.astro";
 
   .head {
     grid-area: head;
-  }
-
-  .nav {
-    display: flex;
-    gap: 28px;
-  }
-
-  .nav a {
-    min-height: var(--hit-target);
-    display: inline-flex;
-    align-items: center;
-    color: var(--color-subtle);
-    transition: color var(--dur-base) var(--ease);
-  }
-
-  @media (hover: hover) {
-    .nav a:hover {
-      color: var(--color-fg);
-    }
   }
 
   .main,
@@ -141,25 +120,8 @@ import Layout from "@layouts/Layout.astro";
     min-width: 0;
   }
 
-  .meta {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-
-  .meta dt {
-    color: var(--color-subtle);
-  }
-
   .meta dd {
-    margin: 0;
     min-width: 0;
-  }
-
-  .value {
-    font-weight: var(--weight-bold);
-    color: var(--color-fg);
   }
 
   code {
@@ -195,7 +157,6 @@ import Layout from "@layouts/Layout.astro";
 
   @media (max-width: 767px) {
     .nf {
-      --below-nav: calc(var(--hit-target) + 32px);
       grid-template-columns: minmax(0, 1fr);
       grid-template-areas:
         "head"

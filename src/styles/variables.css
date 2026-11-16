@@ -24,10 +24,16 @@
   --logotype-h: calc((100vw - 2 * var(--page-edge)) * 254 / 1787.5);
   --logotype-vis: calc(var(--logotype-h) * 0.8);
   --fade-ramp: clamp(72px, 11vh, 120px);
+
+  /* Frame rhythm, shared by PageFrame and the 404: space above the nav, and from the nav's top to
+     the text's first line */
+  --pad-top: clamp(24px, 4vw, 36px);
+  --below-nav: calc(var(--hit-target) + clamp(48px, 7vw, 88px));
 }
 
 @media (max-width: 767px) {
   :root {
     --page-x: 20px;
+    --below-nav: calc(var(--hit-target) + 32px);
   }
 }
