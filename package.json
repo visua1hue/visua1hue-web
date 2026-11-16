@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "astro dev --force",
     "build": "astro build",
+    "check": "astro check",
     "preview": "wrangler dev",
     "deploy": "astro build && wrangler deploy"
   },
