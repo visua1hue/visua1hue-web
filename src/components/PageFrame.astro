@@ -83,13 +83,15 @@ const showLogotype = false;
     --end-gap: clamp(40px, 7vh, 80px);
     --pad-bottom: calc(var(--logotype-vis) + var(--end-gap));
     --end-band: calc(var(--logotype-vis) + var(--end-gap));
+    /* Shared with the fixed .pin */
+    --side-w: 300px;
     position: relative;
     z-index: 1;
     flex: 1;
     width: 100%;
     padding: var(--pad-top) var(--page-edge) var(--pad-bottom);
     display: grid;
-    grid-template-columns: minmax(200px, 300px) minmax(0, 1fr);
+    grid-template-columns: minmax(200px, var(--side-w)) minmax(0, 1fr);
     grid-template-areas: "side main";
     column-gap: clamp(40px, 6vw, 96px);
     font-size: var(--text-sm);
@@ -191,10 +193,11 @@ const showLogotype = false;
     }
   }
 
+  /* Fixed, not sticky: sticky jumps in the macOS overscroll bounce. No left: keeps the grid x */
   .head {
     grid-area: side;
     align-self: start;
-    position: sticky;
+    position: fixed;
     top: var(--pad-top);
     /* Above .side: same grid area */
     z-index: 3;
@@ -241,8 +244,9 @@ const showLogotype = false;
   }
 
   .pin {
-    position: sticky;
+    position: fixed;
     top: calc(var(--pad-top) + var(--below-nav));
+    width: var(--side-w);
     display: flex;
     flex-direction: column;
     gap: 32px;
@@ -401,6 +405,10 @@ const showLogotype = false;
     .pin,
     .copy {
       position: static;
+    }
+
+    .pin {
+      width: auto;
     }
 
     :global(.logotype) {
