@@ -1,13 +1,9 @@
-/* PageFrame only (paired with the 404 it flickered). Classes: text fades out then in, still swaps,
-   nav cross-fades. Unnamed parts drop below named ones */
+/* PageFrame only (paired with the 404 it flickered). The text stays unnamed: it is part of the root
+   snapshot, the screen as it was, scroll included, and below every named part. Named parts: still
+   swaps, nav cross-fades */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;
-  }
-
-  .main {
-    view-transition-name: main;
-    view-transition-class: text;
   }
 
   .head {
@@ -40,15 +36,10 @@
     view-transition-class: still;
   }
 
-  .back-to-top {
-    view-transition-name: back-to-top;
-    view-transition-class: still;
-  }
-
+  /* Phones: the side column scrolls under the text, so it cross-fades with it */
   @media (max-width: 767px) {
-    .side,
-    .back-to-top {
-      view-transition-class: text;
+    .side {
+      view-transition-name: none;
     }
   }
 
@@ -66,34 +57,20 @@
     animation: none;
   }
 
-  ::view-transition-group(*.text) {
-    animation: revert;
-    animation-duration: var(--page-fade-out);
-    animation-timing-function: steps(1, end);
-  }
-
-  ::view-transition-old(*.text) {
-    opacity: 1;
-    animation: cover-off var(--page-fade-out) var(--ease-standard) both;
-  }
-
-  ::view-transition-new(*.text) {
-    animation: fade-in var(--page-fade-in) var(--ease-soft) var(--page-fade-out) both;
-  }
-
-  /* Without plus-lighter, unchanged links dim midway */
+  /* Without it the nav's two copies blend with the text below and the bar turns see-through */
   ::view-transition-image-pair(*.nav) {
     isolation: isolate;
   }
 
-  ::view-transition-old(*.nav) {
-    opacity: 1;
-    mix-blend-mode: plus-lighter;
-    animation: cover-off var(--page-fade-out) var(--ease-standard) both;
-  }
-
+  /* The browser's cross-fade: its plus-lighter blend keeps what both copies share steady, which needs
+     the same timing on both */
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(*.nav),
   ::view-transition-new(*.nav) {
-    mix-blend-mode: plus-lighter;
-    animation: fade-in var(--page-fade-out) var(--ease-standard) both;
+    opacity: 1;
+    animation: revert;
+    animation-duration: var(--page-fade);
+    animation-timing-function: var(--ease-soft);
   }
 }

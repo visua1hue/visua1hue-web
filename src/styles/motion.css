@@ -12,14 +12,6 @@
   --reveal-delay: 60ms;
   --reveal-dur: 600ms;
 
-  /* Taps ignored until both finish */
-  --page-fade-out: 120ms;
-  --page-fade-in: 320ms;
-}
-
-@media (max-width: 767px) {
-  :root {
-    --page-fade-out: 100ms;
-    --page-fade-in: 360ms;
-  }
+  /* Page change cross-fade. Taps ignored until done; keep under 400ms */
+  --page-fade: 260ms;
 }
