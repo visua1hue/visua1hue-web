@@ -26,7 +26,7 @@
 
   --logotype-h: calc((100vw - 2 * var(--page-edge)) * 254 / 1787.5);
   --logotype-vis: calc(var(--logotype-h) * 0.8);
-  --fade-ramp: clamp(72px, 11vh, 120px);
+  --fade-ramp: var(--below-nav);
 
   --pad-top: clamp(24px, 4vw, 36px);
   --below-nav: calc(var(--hit-target) + clamp(48px, 7vw, 88px));

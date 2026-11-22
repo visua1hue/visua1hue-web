@@ -80,7 +80,8 @@ const showLogotype = false;
 
 <style>
   .frame {
-    --end-gap: clamp(40px, 7vh, 80px);
+    /* Nav text's top offset: pad-top plus its centering in the hit target */
+    --end-gap: calc(var(--pad-top) + (var(--hit-target) - 1.5 * var(--text-sm)) / 2);
     --pad-bottom: calc(var(--logotype-vis) + var(--end-gap));
     --end-band: calc(var(--logotype-vis) + var(--end-gap));
     /* Shared with the fixed .pin */
@@ -125,16 +126,21 @@ const showLogotype = false;
   .fade-top {
     top: 0;
     height: calc(var(--pad-top) + var(--below-nav));
-    background: linear-gradient(var(--color-bg) 22%, transparent);
+    background: linear-gradient(var(--color-bg) var(--pad-top), transparent);
+    /* Smootherstep: no visible edge at either end. .fade-ramp mirrors it */
     background: linear-gradient(
       in oklab,
-      var(--color-bg) 0%,
-      var(--color-bg) 22%,
-      color-mix(in oklab, var(--color-bg) 74%, transparent) 37%,
-      color-mix(in oklab, var(--color-bg) 54%, transparent) 49%,
-      color-mix(in oklab, var(--color-bg) 38%, transparent) 59%,
-      color-mix(in oklab, var(--color-bg) 19%, transparent) 73%,
-      color-mix(in oklab, var(--color-bg) 8%, transparent) 85%,
+      var(--color-bg) 0,
+      var(--color-bg) var(--pad-top),
+      color-mix(in oklab, var(--color-bg) 99.1%, transparent) calc(var(--pad-top) + var(--below-nav) * 0.1),
+      color-mix(in oklab, var(--color-bg) 94.2%, transparent) calc(var(--pad-top) + var(--below-nav) * 0.2),
+      color-mix(in oklab, var(--color-bg) 83.7%, transparent) calc(var(--pad-top) + var(--below-nav) * 0.3),
+      color-mix(in oklab, var(--color-bg) 68.3%, transparent) calc(var(--pad-top) + var(--below-nav) * 0.4),
+      color-mix(in oklab, var(--color-bg) 50%, transparent) calc(var(--pad-top) + var(--below-nav) * 0.5),
+      color-mix(in oklab, var(--color-bg) 31.7%, transparent) calc(var(--pad-top) + var(--below-nav) * 0.6),
+      color-mix(in oklab, var(--color-bg) 16.3%, transparent) calc(var(--pad-top) + var(--below-nav) * 0.7),
+      color-mix(in oklab, var(--color-bg) 5.8%, transparent) calc(var(--pad-top) + var(--below-nav) * 0.8),
+      color-mix(in oklab, var(--color-bg) 0.9%, transparent) calc(var(--pad-top) + var(--below-nav) * 0.9),
       transparent 100%
     );
   }
@@ -152,11 +158,15 @@ const showLogotype = false;
     background: linear-gradient(
       to top in oklab,
       var(--color-bg) 0%,
-      color-mix(in oklab, var(--color-bg) 74%, transparent) 19%,
-      color-mix(in oklab, var(--color-bg) 54%, transparent) 34%,
-      color-mix(in oklab, var(--color-bg) 38%, transparent) 47%,
-      color-mix(in oklab, var(--color-bg) 19%, transparent) 65%,
-      color-mix(in oklab, var(--color-bg) 8%, transparent) 80%,
+      color-mix(in oklab, var(--color-bg) 99.1%, transparent) 10%,
+      color-mix(in oklab, var(--color-bg) 94.2%, transparent) 20%,
+      color-mix(in oklab, var(--color-bg) 83.7%, transparent) 30%,
+      color-mix(in oklab, var(--color-bg) 68.3%, transparent) 40%,
+      color-mix(in oklab, var(--color-bg) 50%, transparent) 50%,
+      color-mix(in oklab, var(--color-bg) 31.7%, transparent) 60%,
+      color-mix(in oklab, var(--color-bg) 16.3%, transparent) 70%,
+      color-mix(in oklab, var(--color-bg) 5.8%, transparent) 80%,
+      color-mix(in oklab, var(--color-bg) 0.9%, transparent) 90%,
       transparent 100%
     );
   }
