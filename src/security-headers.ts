@@ -1,5 +1,8 @@
-/** Hash of src/scripts/nav-entry-state.js, inlined in Layout.astro. Build fails on drift. */
-export const INTERNAL_NAV_HASH = "sha256-4u3DOvxsLKRghfBIOeifQfk2uF+qUAxqM5PLPvpdSs0=";
+import { createHash } from "node:crypto";
+import navEntryState from "./scripts/nav-entry-state.js?raw";
+
+/** CSP hash of the script Layout.astro inlines, derived from its source so edits can't drift */
+const INTERNAL_NAV_HASH = `sha256-${createHash("sha256").update(navEntryState).digest("base64")}`;
 
 /** Used by middleware.ts (Worker) and astro-headers.ts (_headers). */
 export const SECURITY_HEADERS: Record<string, string> = {
