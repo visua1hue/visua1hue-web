@@ -1,11 +1,10 @@
-/** Used by copyright-glitch.ts. The tear is #page-glitch in PageFrame.astro */
+/** Tear filter is #page-glitch in PageFrame.astro */
 
 export const GLITCH = {
-  /** Re-jumble and tear pattern interval, ms; strength still eases every frame. */
+  /** Re-jumble and tear pattern interval, ms. */
   rate: 50,
   /** Peak band slip, px. */
   tear: 12,
-  /** Opacity while glitching. */
   dim: 0.55,
 } as const;
 
@@ -17,7 +16,7 @@ export const ease = {
   out: (t: number) => 1 - (1 - t) * (1 - t),
 };
 
-/** Shuffles letters and digits; punctuation and case pattern stay ("You've" can become "Ouy'ev"). */
+/** Shuffles letters and digits; punctuation and case pattern stay. */
 export function jumble(word: string): string {
   const chars = [...word];
   const slots = chars.flatMap((c, i) => (/[\p{L}\p{N}]/u.test(c) ? [i] : []));
@@ -34,7 +33,7 @@ export function jumble(word: string): string {
   return chars.join("");
 }
 
-/** `each(t, now)` per frame for `ms`, t from 0 to 1. Stops without a last call once `alive()` is false. */
+/** No final `each` call once `alive()` is false. */
 export function frames(ms: number, each: (t: number, now: number) => void, alive: () => boolean = () => true) {
   return new Promise<void>((resolve) => {
     const start = performance.now();
@@ -50,7 +49,7 @@ export function frames(ms: number, each: (t: number, now: number) => void, alive
 }
 
 export interface Tear {
-  /** Strength 0..1; the band pattern changes every GLITCH.rate ms. */
+  /** k: strength, 0 to 1. */
   set(k: number, now: number): void;
   on(els: HTMLElement[]): void;
   off(els: HTMLElement[]): void;

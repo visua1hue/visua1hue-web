@@ -11,7 +11,7 @@ import { POSITION } from "@content/position";
   description={`${POSITION.title} at ${POSITION.org}. Curious by default: what I build, what I learn and what I'm curious about.`}
 >
   <PageFrame current="about">
-    {/* TODO: the lorem paragraphs in about.md test scrolling; remove before launch */}
+    {/* TODO before launch: remove the lorem in about.md (scroll test) */}
     <section class="about" aria-labelledby="about-title">
       <h1 class="page-title" id="about-title">About</h1>
       <Content />
@@ -31,7 +31,6 @@ import { POSITION } from "@content/position";
     color: var(--color-subtle);
   }
 
-  /* The text comes from about.md, so it doesn't carry this page's scope */
   .about :global(p) {
     margin: 0;
   }

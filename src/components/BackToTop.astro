@@ -1,14 +1,12 @@
 ---
-// Phones only: back-to-top button, shown once half a screen has scrolled away. Render inside
-// .frame: the marker is positioned against it
+// Render inside .frame: the markers are positioned against it
 ---
 
 <div class="back-to-top-mark" data-back-to-top-mark aria-hidden="true"></div>
 <div class="back-to-top-end" data-back-to-top-end aria-hidden="true"></div>
 <button type="button" class="back-to-top" data-back-to-top aria-label="Back to top">
   <span class="face">
-    {/* "To top": a bar, and an arrow pointing at it. Drawn at 16 and shown at 21, so a 1.2 stroke
-        renders about 1.6px, the weight it had at 16. Color: .back-to-top's, currentColor */}
+    {/* viewBox 16 shown at 21: a 1.2 stroke renders about 1.6px */}
     <svg
       width="21"
       height="21"
@@ -26,7 +24,6 @@
 </button>
 
 <style>
-  /* The top half screen: while any of it is in view, the button stays hidden */
   .back-to-top-mark {
     position: absolute;
     top: 0;
@@ -36,7 +33,6 @@
     pointer-events: none;
   }
 
-  /* The page's last pixel: in view, the visitor reached the end */
   .back-to-top-end {
     position: absolute;
     bottom: 0;
@@ -51,11 +47,10 @@
   }
 
   @media (max-width: 767px) {
-    /* The full hit target, invisible; .face is the 44px button inside it */
     .back-to-top {
       position: fixed;
       z-index: 4;
-      /* Button edge 34px in, level with the right edge of Safari's iOS toolbar buttons */
+      /* 34px: level with iOS Safari's toolbar buttons */
       right: 32px;
       bottom: calc(28px + env(safe-area-inset-bottom, 0px));
       display: grid;
@@ -70,7 +65,6 @@
       touch-action: manipulation;
       opacity: 0;
       visibility: hidden;
-      /* Leaving is quicker than arriving; visibility flips at the end, so it can't be tapped hidden */
       transition:
         opacity var(--dur-fast) var(--ease-standard),
         transform var(--dur-fast) var(--ease-standard),
@@ -90,9 +84,7 @@
       width: 44px;
       height: 44px;
       border: 1px solid var(--color-faint);
-      /* A plain rounded square where corner-shape isn't supported */
       border-radius: 32%;
-      /* Frosted: page color, see-through, text behind it blurred */
       background-color: color-mix(in oklab, var(--color-bg) 70%, transparent);
       -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
@@ -102,7 +94,6 @@
         color var(--dur-base) var(--ease-standard);
     }
 
-    /* A true squircle (superellipse), border, blur and clip included */
     @supports (corner-shape: squircle) {
       .face {
         border-radius: 50%;
@@ -115,13 +106,12 @@
       overflow: visible;
     }
 
-    /* The bar stretches from its middle when the arrow docks (dock() below) */
     .bar {
       transform-box: fill-box;
       transform-origin: center;
     }
 
-    /* data-pressed, not :active: iOS skips :active on most taps. Press is quick, release settles */
+    /* iOS skips :active on most taps */
     .back-to-top[data-pressed] .face {
       background-color: color-mix(in oklab, var(--color-faint) 85%, transparent);
       color: var(--color-fg);
@@ -146,8 +136,6 @@
         transform: scale(0.88);
       }
 
-      /* End of the page: the arrow rises toward the bar and settles, as on a tap (dock() below) but
-         shorter, then rests, on a loop. Only the arrow moves. Paused while pressed */
       .back-to-top[data-at-end] .arrow {
         animation: arrow-rise 2.4s infinite;
       }
@@ -158,7 +146,6 @@
     }
   }
 
-  /* Up on ease-out, a short touch at the bar, back down on ease-in-out, then rest */
   @keyframes arrow-rise {
     0% {
       transform: none;
@@ -185,7 +172,7 @@
   import { scrollToTop } from "@scripts/lib/scroll-to-top";
 
   const DOCK_MS = 620;
-  /** How far the arrow rises to meet the bar, in icon pixels */
+  /** In viewBox units */
   const RISE = "-3.5px";
 
   const button = document.querySelector<HTMLButtonElement>("[data-back-to-top]");
@@ -194,7 +181,6 @@
   const arrow = button?.querySelector<SVGPathElement>(".arrow");
   const bar = button?.querySelector<SVGPathElement>(".bar");
 
-  /** The arrow rises to the bar, holds, and settles back; the bar gives a little on contact */
   function dock() {
     if (!arrow || !bar || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const css = getComputedStyle(document.documentElement);
@@ -232,7 +218,7 @@
     button.addEventListener("click", (e) => {
       dock();
       scrollToTop();
-      // Keyboard press (no pointer, detail 0): the button hides at the top, so focus moves to the nav
+      // Keyboard (detail 0): the button hides at the top, so focus the nav
       if (e.detail === 0) document.querySelector<HTMLElement>(".nav a")?.focus({ preventScroll: true });
     });
   }

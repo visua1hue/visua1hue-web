@@ -1,4 +1,4 @@
-# Security headers are appended at build time by astro-headers.ts
+# astro-headers.ts appends security headers at build
 
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
@@ -6,12 +6,11 @@
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Unhashed; a day of staleness is fine and skips a revalidation per visit
+# Unhashed; a day stale is fine, saves a revalidation per visit
 /favicon.svg
   Cache-Control: public, max-age=86400
 
-# A header, so the CSP needs no inline script. Per page: a second `/*` block would collide with
-# the one astro-headers.ts appends
+# Header, so the CSP needs no inline script. Per path: a second `/*` block collides with astro-headers.ts
 /
   Speculation-Rules: "/speculation-rules.json"
 
@@ -21,7 +20,7 @@
 /speculation-rules.json
   Content-Type: application/speculationrules+json
 
-# Production HTML only; previews keep the default so a fresh deploy shows on reload
+# Production only; previews keep the default so a new deploy shows on reload
 https://visua1hue.dev/
   Cache-Control: public, max-age=300, stale-while-revalidate=86400
 

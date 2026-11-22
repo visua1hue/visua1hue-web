@@ -18,21 +18,18 @@ body {
   color: var(--color-fg);
 }
 
-/* No rubber-band bounce with a mouse or trackpad; touch keeps pull-to-refresh */
+/* Touch keeps pull-to-refresh */
 @media (pointer: fine) {
   html {
     overscroll-behavior: none;
   }
 }
 
-/* Scrolling and non-scrolling pages keep the same width, so swaps don't nudge the layout */
 html {
   scrollbar-gutter: stable;
 }
 
-/* Touch screens: no scroll indicator until the visitor scrolls (data-scrolled, PageFrame.astro).
-   Chrome flashes it on every page load, and each page change is one. Touch scrollbars overlay the
-   page, so it can come back without moving anything */
+/* Chrome flashes the touch scrollbar on load; shown after first scroll (PageFrame.astro) */
 @media (pointer: coarse) {
   html:not([data-scrolled]) {
     scrollbar-width: none;
@@ -47,7 +44,7 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
-  /* clip, not hidden: hidden makes body a scroll container and breaks position: sticky */
+  /* clip, not hidden: hidden breaks sticky */
   overflow-x: clip;
 }
 
@@ -56,13 +53,12 @@ a {
   text-decoration: none;
 }
 
-/* No tap box over hit-target-sized links; the press color below is the feedback */
 a,
 button {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Hover only with a real pointer: on touch, :hover sticks after a tap */
+/* :hover sticks after a tap */
 @media (hover: hover) {
   a:hover {
     color: var(--color-fg);
@@ -125,7 +121,6 @@ a:active {
   }
 }
 
-/* Main nav (PageFrame, 404) */
 .nav {
   display: flex;
   gap: 28px;
@@ -149,7 +144,6 @@ a:active {
   }
 }
 
-/* Side-column facts (PageFrame, 404) */
 .meta {
   margin: 0;
   display: flex;
@@ -170,7 +164,6 @@ a:active {
   color: var(--color-fg);
 }
 
-/* Label size, level with the meta's first line */
 .page-title {
   margin: 0;
   font-size: var(--text-sm);
@@ -180,8 +173,7 @@ a:active {
   color: var(--color-fg);
 }
 
-/* The logotype's fade-in is first-visit only too. !important: Logotype.astro's scoped rules have the
-   same specificity and their order against this file isn't fixed */
+/* !important: ties with Logotype.astro's scoped rules */
 :root[data-internal-nav] .logotype svg {
   animation: none !important;
 }
@@ -192,7 +184,6 @@ a:active {
   }
 }
 
-/* Also the page-change fade-out and the end-of-text ramp */
 @keyframes cover-off {
   to {
     opacity: 0;

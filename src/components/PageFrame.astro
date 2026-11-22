@@ -18,12 +18,11 @@ const page = (p: Props["current"]) => (p === current ? "page" : undefined);
 const sha = __BUILD_SHA__;
 const commitHref = `https://github.com/visua1hue/visua1hue-web/commit/${sha}`;
 
-// Build year; copyright-glitch.ts sets the current one at runtime
+// copyright-glitch.ts sets the current year at runtime
 const year = new Date().getFullYear();
 const yearHex = `0x${year.toString(16).toUpperCase()}`;
 
-// Logotype off for now; true brings it back. Off, it isn't rendered and the room the layout keeps
-// for it at the foot (--logotype-vis) collapses to 0
+// Off also zeroes --logotype-vis (.no-logotype)
 const showLogotype = false;
 ---
 
@@ -31,9 +30,8 @@ const showLogotype = false;
 {/* Copyright tear; copyright-glitch.ts animates seed and scale */}
 <svg class="glitch-defs" width="0" height="0" aria-hidden="true">
   <filter id="page-glitch" x="-4%" y="-2%" width="108%" height="104%" color-interpolation-filters="sRGB">
-    {/* Low x frequency: noise stretched into horizontal bands */}
     <feTurbulence type="fractalNoise" baseFrequency="0.0008 0.1" numOctaves="1" seed="1" result="noise"></feTurbulence>
-    {/* G fixed at 0.5, so text only shifts sideways */}
+    {/* G fixed at 0.5: horizontal shift only */}
     <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0  0 0 0 0 0.5  0 0 0 0 0  0 0 0 0 1" result="bands"></feColorMatrix>
     <feDisplacementMap in="SourceGraphic" in2="bands" scale="0" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
   </filter>
@@ -72,7 +70,7 @@ const showLogotype = false;
       {import.meta.env.DEV && <Debugger />}
     </div>
     <div class="copy" data-enter>
-      {/* role=img: screen readers read the decimal label, not the scrambling glyphs */}
+      {/* role=img: screen readers get the decimal label, not the scramble */}
       <p><span class="label">Copyright</span><span class="year" data-year role="img" aria-label={String(year)}>{yearHex}</span></p>
       <p><span class="label">Build</span><a class="ext" href={commitHref} title="View this build's commit on GitHub"><span class="t">{sha}</span><Arrow class="arw" aria-hidden="true" /></a></p>
     </div>
@@ -82,10 +80,8 @@ const showLogotype = false;
 
 <style>
   .frame {
-    /* Last line rests this far above the logotype, level with the copyright */
     --end-gap: clamp(40px, 7vh, 80px);
     --pad-bottom: calc(var(--logotype-vis) + var(--end-gap));
-    /* Solid band at the bottom: .fade-bottom's height */
     --end-band: calc(var(--logotype-vis) + var(--end-gap));
     position: relative;
     z-index: 1;
@@ -101,12 +97,11 @@ const showLogotype = false;
     letter-spacing: -0.011em;
   }
 
-  /* A class, not a style attribute: the CSP can't cover inline style attributes by hash */
+  /* Class, not style attribute: CSP */
   .frame.no-logotype {
     --logotype-vis: 0px;
   }
 
-  /* Focus, anchors and find-in-page stop clear of the top fade and the bottom band and ramp */
   .frame :global(*) {
     scroll-margin-block: calc(var(--pad-top) + var(--below-nav)) calc(var(--end-band) + var(--fade-ramp));
   }
@@ -118,7 +113,6 @@ const showLogotype = false;
     overflow: hidden;
   }
 
-  /* Over the text, under nav, meta and logotype */
   .fade {
     position: fixed;
     z-index: 1;
@@ -126,11 +120,9 @@ const showLogotype = false;
     pointer-events: none;
   }
 
-  /* Eased stops, not a linear ramp, so text dissolves instead of being cut off */
   .fade-top {
     top: 0;
     height: calc(var(--pad-top) + var(--below-nav));
-    /* Fallback for browsers without gradient interpolation spaces */
     background: linear-gradient(var(--color-bg) 22%, transparent);
     background: linear-gradient(
       in oklab,
@@ -145,14 +137,12 @@ const showLogotype = false;
     );
   }
 
-  /* Solid from the logotype up to the copyright line */
   .fade-bottom {
     bottom: 0;
     height: calc(var(--logotype-vis) + var(--end-gap));
     background: var(--color-bg);
   }
 
-  /* Clears as the last lines scroll in, so they read in full (see [data-end]) */
   .fade-ramp {
     bottom: calc(var(--logotype-vis) + var(--end-gap));
     height: var(--fade-ramp);
@@ -169,8 +159,7 @@ const showLogotype = false;
     );
   }
 
-  /* Spans the last ramp's height of text without adding height. Its view timeline drives the ramp,
-     on the compositor: the ramp clears exactly as those lines move above the solid band */
+  /* Zero net height; its view timeline drives .fade-ramp */
   [data-end] {
     height: var(--fade-ramp);
     margin-top: calc(-1 * var(--fade-ramp));
@@ -191,7 +180,7 @@ const showLogotype = false;
     }
   }
 
-  /* No scroll timelines (Firefox): the script toggles .at-end instead */
+  /* Firefox: no scroll timelines */
   @supports not (animation-timeline: view()) {
     .fade-ramp {
       transition: opacity var(--dur-slow) var(--ease-standard);
@@ -207,12 +196,11 @@ const showLogotype = false;
     align-self: start;
     position: sticky;
     top: var(--pad-top);
-    /* Above .side, which shares the grid area and would take the clicks */
+    /* Above .side: same grid area */
     z-index: 3;
   }
 
-  /* Tapped to another page: the current-page color moves to that link at once (data-going, script
-     below), so the new page arrives matching and the color never steps back while it loads */
+  /* data-going: set on tap (script) */
   .nav a[data-going] {
     color: var(--color-fg);
   }
@@ -227,11 +215,7 @@ const showLogotype = false;
     padding-top: var(--below-nav);
   }
 
-  /* First visit only: html[data-internal-nav] (nav-entry-state.js) skips it on moves between pages,
-     where the page transition fades the text (page-transitions.css). The text paints at once so it
-     stays the LCP; a paper cover fades off it instead. The cover spans the screen, not the whole
-     text: text past it is off-screen while it fades. Full length it was a layer 9,233 device px tall
-     on a phone, and on iOS Privacy showed its text with no fade */
+  /* Cover, not text opacity: keeps the LCP. 100lvh cap: full height skipped the fade on iOS */
   @media (prefers-reduced-motion: no-preference) {
     :global(:root:not([data-internal-nav])) .main {
       position: relative;
@@ -253,13 +237,11 @@ const showLogotype = false;
     position: relative;
     z-index: 2;
     padding-top: var(--below-nav);
-    /* Reach the page foot: ending at the text's last line pushes the pinned meta up at the end */
     margin-bottom: calc(-1 * var(--pad-bottom));
   }
 
   .pin {
     position: sticky;
-    /* Equals its resting offset, so it pins without a jump */
     top: calc(var(--pad-top) + var(--below-nav));
     display: flex;
     flex-direction: column;
@@ -307,14 +289,12 @@ const showLogotype = false;
     font-variant-numeric: tabular-nums;
   }
 
-  /* First visit only, as the cover above */
   @media (prefers-reduced-motion: no-preference) {
     :global(:root:not([data-internal-nav])) [data-enter] {
       animation: fade-in var(--reveal-dur) var(--ease-soft) both;
     }
   }
 
-  /* Short windows: pinned meta and copyright would overlap, so both scroll */
   @media (min-width: 768px) and (max-height: 720px) {
     .pin,
     .copy {
@@ -328,10 +308,8 @@ const showLogotype = false;
 
   @media (max-width: 767px) {
     .frame {
-      /* Under the fixed nav bar (.head) and its fade (.head::after) */
       --head-fade: 57px;
-      /* No logotype here. The last row ends level with the back-to-top button's bottom (BackToTop.astro:
-         32px up); they don't collide, the text is left and the button right */
+      /* Matches BackToTop.astro's 32px */
       --pad-bottom: 32px;
       --end-band: 0px;
       grid-template-columns: minmax(0, 1fr);
@@ -341,7 +319,6 @@ const showLogotype = false;
       row-gap: 64px;
     }
 
-    /* The bar is the nav plus 6px padding above and below */
     .frame :global(*) {
       scroll-margin-top: calc(var(--hit-target) + 12px + var(--head-fade));
     }
@@ -362,13 +339,7 @@ const showLogotype = false;
       background: var(--color-bg);
     }
 
-    /* Press feedback: a soft rounded patch shows behind the link, and the link takes the current
-       page's color, so the press already looks like where it leads. Quick in, slower out.
-       data-pressed, not :active: iOS skips :active on most taps. The patch sits behind the text
-       (z-index -1, inside the bar's stacking context) and reaches past the link sideways without
-       moving it. Released, it fades on this page like a native button; the new page never shows it.
-       The text doesn't scale: the page change cross-fades the pressed link into the new page's,
-       and a scaled copy over an unscaled one doubled the text */
+    /* iOS skips :active on most taps. No scale: doubled text in the page fade */
     .nav a {
       position: relative;
       transition: color var(--dur-base) var(--ease-standard);
@@ -380,7 +351,6 @@ const showLogotype = false;
       z-index: -1;
       inset: 6px -12px;
       border-radius: 12px;
-      /* Half the faint tone: a hint behind the text, not a button */
       background: color-mix(in oklab, var(--color-faint) 50%, transparent);
       opacity: 0;
       transition: opacity var(--dur-base) var(--ease-standard);
@@ -396,12 +366,10 @@ const showLogotype = false;
       transition-duration: var(--dur-fast);
     }
 
-    /* Text fades out under the bar. Smoothstep: flat at both ends, so neither the bar's edge nor the
-       fade's end shows as a line */
     .head::after {
       content: "";
       position: absolute;
-      /* 1px into the bar: a fractional bar height leaves a hairline seam otherwise */
+      /* 1px overlap: hairline seam */
       inset: calc(100% - 1px) 0 auto;
       height: var(--head-fade);
       pointer-events: none;
@@ -435,13 +403,10 @@ const showLogotype = false;
       position: static;
     }
 
-    /* Phones: no logotype */
     :global(.logotype) {
       display: none;
     }
 
-    /* The nav bar already names the page. Hidden from view only: the h1 still heads the page and
-       labels its section for screen readers */
     .main :global(.page-title) {
       position: absolute;
       width: 1px;
@@ -459,7 +424,7 @@ const showLogotype = false;
 
   for (const el of document.querySelectorAll<HTMLElement>("[data-year]")) initCopyright(el);
 
-  // Scroll indicator back on touch screens (global.css)
+  // Restores the touch scroll indicator (global.css)
   addEventListener("scroll", () => document.documentElement.setAttribute("data-scrolled", ""), {
     once: true,
     passive: true,
@@ -467,8 +432,7 @@ const showLogotype = false;
 
   const solidBand = () => document.querySelector<HTMLElement>("[data-fade-solid]")?.offsetHeight ?? 0;
 
-  // Fallback for the ramp's scroll timeline. 8px slack: at the very end the text stops exactly on the
-  // band's edge. Rebuilt on resize because the band's height changes
+  // Scroll-timeline fallback. 8px slack: at the end, text stops exactly on the band's edge
   function watchEnd() {
     const frame = document.querySelector<HTMLElement>(".frame");
     const end = document.querySelector<HTMLElement>("[data-end]");
@@ -495,9 +459,7 @@ const showLogotype = false;
   }
   if (!CSS.supports("animation-timeline: view()")) watchEnd();
 
-  // Press state for the phone nav's press feedback (styles above). A quick tap still shows it: the
-  // release waits until the press has had PRESS_MIN_MS. A cancel (the touch became a scroll) drops it
-  // at once
+  // Release waits PRESS_MIN_MS so a quick tap still shows the press
   const PRESS_MIN_MS = 120;
   for (const link of document.querySelectorAll<HTMLAnchorElement>(".nav a")) {
     let at = 0;
@@ -512,7 +474,7 @@ const showLogotype = false;
       timer = window.setTimeout(drop, Math.max(0, PRESS_MIN_MS - (performance.now() - at)));
     });
     link.addEventListener("pointercancel", drop);
-    // Touch fires pointerleave right after pointerup; only a pointer that leaves while held drops it
+    // Touch fires pointerleave right after pointerup; drop only if still held
     link.addEventListener("pointerleave", (e) => {
       if (e.buttons) drop();
     });
@@ -522,14 +484,12 @@ const showLogotype = false;
     });
   }
 
-  // Back to this page from the history cache: the current-page color returns to its own link
+  // bfcache restore keeps data-going
   addEventListener("pageshow", (e) => {
     if (!e.persisted) return;
     for (const link of document.querySelectorAll(".nav a[data-going]")) link.removeAttribute("data-going");
   });
 
-  // Current page's link scrolls to the top instead of reloading the page; modified clicks (new tab)
-  // pass through
   document.querySelector(".nav")?.addEventListener("click", (e) => {
     if (!(e instanceof MouseEvent) || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     const link = e.target instanceof Element ? e.target.closest<HTMLAnchorElement>("a[href]") : null;

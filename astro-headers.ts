@@ -5,7 +5,7 @@ import { SECURITY_HEADERS } from "./src/security-headers";
 
 const INLINE_SCRIPT = /<script(?![^>]*\ssrc=)[^>]*>([\s\S]*?)<\/script>/g;
 
-/** Every inline script in the built pages must be allowed by a hash in the CSP, or the browser blocks it. */
+/** The CSP blocks any inline script without a hash. */
 async function assertInlineScriptsHashed(clientDir: URL): Promise<void> {
   const csp = SECURITY_HEADERS["Content-Security-Policy"] ?? "";
   const files = (await readdir(clientDir, { recursive: true })).filter((f) => f.endsWith(".html"));
@@ -20,7 +20,7 @@ async function assertInlineScriptsHashed(clientDir: URL): Promise<void> {
   }
 }
 
-/** Prerendered pages never reach the middleware, so their headers go into `_headers`. */
+/** Prerendered pages skip middleware; their headers go in `_headers`. */
 export default function securityHeaders(): AstroIntegration {
   let clientDir: URL;
   return {

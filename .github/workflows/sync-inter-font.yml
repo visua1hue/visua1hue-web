@@ -18,7 +18,7 @@ jobs:
           data=$(curl -sL https://api.github.com/repos/rsms/inter/releases/latest)
           tag=$(echo "$data" | jq -r '.tag_name')
           url=$(echo "$data" | jq -r '.assets[] | select(.name | test("^Inter-.*\\.zip$")) | .browser_download_url')
-          # Both come from another repo's release: accept only the expected shapes
+          # Untrusted (another repo's release); accept only expected shapes
           [[ "$tag" =~ ^v[0-9]+(\.[0-9]+)*$ ]] || { echo "Unexpected tag: $tag"; exit 1; }
           [[ "$url" =~ ^https://github\.com/rsms/inter/releases/download/[A-Za-z0-9._/-]+\.zip$ ]] || { echo "Unexpected URL: $url"; exit 1; }
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
@@ -26,7 +26,7 @@ jobs:
 
       - uses: astral-sh/setup-uv@v6
 
-      # Outputs reach the shell as env vars, never pasted into the script
+      # Pass outputs via env, not inlined into the script, to block injection
       - name: Download, extract and subset
         env:
           URL: ${{ steps.release.outputs.url }}

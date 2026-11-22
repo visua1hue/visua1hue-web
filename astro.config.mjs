@@ -45,7 +45,7 @@ export default defineConfig({
       },
     },
     {
-      // From the `geist` package (OFL), subset by .github/scripts/subset-geist-mono.sh; only 400 is used
+      // Subset by .github/scripts/subset-geist-mono.sh; only 400 used
       provider: fontProviders.local(),
       name: 'Geist Mono',
       cssVariable: '--font-geist-mono',
@@ -62,15 +62,15 @@ export default defineConfig({
     },
   ],
 
-  // Page text (src/content/*.md) renders as typed: no automatic curly quotes or dashes
+  // No auto curly quotes or dashes in src/content/*.md
   markdown: { processor: satteri({ features: { smartPunctuation: false } }) },
 
-  // No sessions used; on, the adapter adds a SESSION KV binding to every deploy
+  // On, the adapter adds a SESSION KV binding to every deploy
   session: false,
 
   integrations: [securityHeaders(), sitemap({ filter: (page) => !page.endsWith('/privacy/') })],
 
-  // CSS is small (~12KB); inlining saves a render-blocking request per page
+  // CSS ~12KB; inlining saves a render-blocking request
   build: {
     inlineStylesheets: 'always',
   },
@@ -83,7 +83,7 @@ export default defineConfig({
     },
     build: {
       minify: true,
-      // Ship every script as a file so the CSP can drop 'unsafe-inline' for scripts
+      // Scripts as files, so the CSP needs no 'unsafe-inline'
       assetsInlineLimit: 0,
     },
   },

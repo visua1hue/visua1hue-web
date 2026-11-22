@@ -1,15 +1,5 @@
-/* Loaded by PageFrame.astro only, so both sides of a transition are PageFrame pages: the 404 has its
-   own .head/.main/.side, and pairing those with a page's morphed and flickered.
-
-   Page moves: the browser's own cross-document view transition. Every part that has to stay above
-   the text gets a name; unnamed parts drop below every named one. Its class says how it moves:
-   - text: the old copy fades out, then the new one fades in. Its group holds the old position while
-     the old copy fades, so scrolled text stays where it was, then steps to the new position
-   - still: swaps in place. Layers that look the same on both pages (fades, side column, button)
-   - nav: cross-fades, so the current-page color moves from one link to the other
-   The rest (root: the page background) swaps in place. Named parts keep the page's stacking.
-   A new part: a unique view-transition-name and one of the classes. Back and forward skip the
-   transition (nav-entry-state.js). Timing in motion.css. Reduced motion: no transition */
+/* PageFrame only (paired with the 404 it flickered). Classes: text fades out then in, still swaps,
+   nav cross-fades. Unnamed parts drop below named ones */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;
@@ -55,8 +45,6 @@
     view-transition-class: still;
   }
 
-  /* Phones: .side is page content under the text, so it leaves and arrives with it. The button fades
-     out with the text instead of blinking off */
   @media (max-width: 767px) {
     .side,
     .back-to-top {
@@ -64,8 +52,7 @@
     }
   }
 
-  /* Root and still: swap in place. No morph, and the old copy hidden so see-through layers don't
-     double up */
+  /* Old copy hidden: see-through layers would double up */
   ::view-transition-group(*) {
     animation: none;
   }
@@ -79,8 +66,6 @@
     animation: none;
   }
 
-  /* revert brings back the browser's own position keyframes; steps(1, end) makes that move one jump,
-     as the new copy starts */
   ::view-transition-group(*.text) {
     animation: revert;
     animation-duration: var(--page-fade-out);
@@ -96,8 +81,7 @@
     animation: fade-in var(--page-fade-in) var(--ease-soft) var(--page-fade-out) both;
   }
 
-  /* Additive blend (the browser's default, lost with its animation) keeps the links that don't change
-     from dimming midway */
+  /* Without plus-lighter, unchanged links dim midway */
   ::view-transition-image-pair(*.nav) {
     isolation: isolate;
   }

@@ -10,12 +10,12 @@
   addEventListener("pageshow", (e) => {
     restored = e.persisted;
   });
-  // Back and forward: iOS animates its own swipe, and the page transition would play over it
+  // Back/forward: iOS animates its own swipe; skip ours
   addEventListener("pagereveal", (e) => {
     const traverse =
       restored || nav?.type === "back_forward" || window.navigation?.activation?.navigationType === "traverse";
     if (traverse && e.viewTransition) {
-      e.viewTransition.ready.catch(() => {}); // skipping rejects it: expected, not an error
+      e.viewTransition.ready.catch(() => {}); // skipping rejects it
       e.viewTransition.skipTransition();
     }
   });

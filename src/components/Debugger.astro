@@ -1,5 +1,5 @@
 ---
-// Dev only: render behind import.meta.env.DEV so it never reaches production
+// Render only behind import.meta.env.DEV
 import type { DevMetrics } from "@scripts/lib/dev-metrics";
 
 const cells: { label: string; key: keyof DevMetrics; initial: string; unit: string }[] = [
@@ -32,7 +32,6 @@ const cells: { label: string; key: keyof DevMetrics; initial: string; unit: stri
   .debugger {
     display: flex;
     flex-direction: column;
-    /* Hug the cells, so the copy flash doesn't span the column */
     width: fit-content;
     font-family: var(--font-mono);
     font-size: 9.5px;
@@ -41,7 +40,6 @@ const cells: { label: string; key: keyof DevMetrics; initial: string; unit: stri
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
     user-select: none;
-    /* Room for the copy flash without moving the text */
     margin: -4px -6px;
     padding: 4px 6px;
     border: 0;

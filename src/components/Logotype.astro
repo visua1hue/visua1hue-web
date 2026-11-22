@@ -5,7 +5,7 @@
 <div class="logotype" aria-hidden="true">
   <svg viewBox="346.5 747 1787.5 254" preserveAspectRatio="xMidYMax meet">
     <defs>
-      {/* Glyph space (y 362..611), so the fade spans the word, not each letter */}
+      {/* Glyph space: one fade across the word, not per letter */}
       <linearGradient id="logotype-fade" gradientUnits="userSpaceOnUse" x1="0" y1="362" x2="0" y2="611">
         <stop offset="0"></stop>
         <stop offset="1"></stop>
@@ -28,7 +28,6 @@
 <style>
   .logotype {
     position: fixed;
-    /* Over the text; the fade band in PageFrame.astro clears the text beneath it */
     z-index: 3;
     left: var(--page-edge);
     right: var(--page-edge);
@@ -55,7 +54,6 @@
     stop-opacity: 0;
   }
 
-  /* Paused until on screen (.play): on phones it sits at the page's end */
   @media (prefers-reduced-motion: no-preference) {
     .logotype:not(.entered) svg {
       animation: logotype-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) both paused;
@@ -66,7 +64,6 @@
     }
   }
 
-  /* Phones: too small to pin over the text, so it ends the page instead */
   @media (max-width: 767px) {
     .logotype {
       position: relative;
@@ -75,7 +72,6 @@
       margin: 24px var(--page-edge) 28px;
     }
 
-    /* Small, so the tint starts a shade deeper to stay visible */
     stop:first-child {
       stop-color: var(--color-faint);
     }
@@ -89,7 +85,6 @@
 </style>
 
 <script>
-  // Plays once, when the logotype first scrolls into view
   const logotype = document.querySelector<HTMLElement>(".logotype");
   if (logotype) {
     const io = new IntersectionObserver(([e]) => {

@@ -2,14 +2,10 @@ import { createTear, ease, frames, GLITCH, jumble } from "@scripts/lib/text-glit
 
 const OUT_MS = 110;
 const IN_MS = 300;
-/** Share of the in-phase spent jumbled before the value snaps right. */
+/** Share of IN_MS spent jumbled. */
 const SETTLE_AT = 0.7;
 
-/**
- * Hex year, decimal on hover, or while pressed on touch (pointerleave follows the finger's lift). A
- * newer swap cancels the running one, so quick hovers end on the right value. Screen readers get the
- * decimal year throughout.
- */
+/** Decimal on hover or touch press (pointerleave fires on lift). Screen readers always get decimal. */
 export function initCopyright(el: HTMLElement): () => void {
   const year = new Date().getFullYear();
   const hex = `0x${year.toString(16).toUpperCase()}`;
@@ -17,7 +13,7 @@ export function initCopyright(el: HTMLElement): () => void {
   el.textContent = hex;
   el.setAttribute("aria-label", dec);
 
-  // Read per swap: the setting can change while the page is open
+  // Read per swap; the setting can change while the page is open
   const reduce = matchMedia("(prefers-reduced-motion: reduce)");
   const tear = createTear();
   let run = 0;

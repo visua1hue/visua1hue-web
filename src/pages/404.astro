@@ -5,8 +5,7 @@ import Layout from "@layouts/Layout.astro";
 
 {/* Standalone: no PageFrame */}
 <Layout title="404 Not Found" description="Nothing lives at this address." noindex>
-  {/* Links from here send no referrer, so the next page counts as a first visit and plays its
-      entrance fade: the 404 has no page-change fade of its own */}
+  {/* No referrer: the next page counts as a first visit and plays its entrance fade */}
   <meta slot="head" name="referrer" content="no-referrer" />
   <div class="nf">
     <header class="head">
@@ -40,7 +39,7 @@ import Layout from "@layouts/Layout.astro";
 </Layout>
 
 <style>
-  /* One viewport tall, never more (body's 100vh outgrows the visible area on phones) */
+  /* 100vh is taller than the visible area on phones */
   :global(body) {
     min-height: 100dvh;
   }
@@ -137,7 +136,6 @@ import Layout from "@layouts/Layout.astro";
     color: var(--color-fg);
   }
 
-  /* As PageFrame. A cover fades off the text so it stays the LCP */
   @media (prefers-reduced-motion: no-preference) {
     .head,
     .side {
@@ -175,7 +173,7 @@ import Layout from "@layouts/Layout.astro";
 </style>
 
 <script>
-  // Static page: show the requested path. textContent, never HTML
+  // textContent, never HTML: the path is visitor input
   document.querySelectorAll<HTMLElement>("[data-path]").forEach((el) => {
     let path = location.pathname;
     try {

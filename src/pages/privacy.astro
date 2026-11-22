@@ -27,7 +27,6 @@ import { Content } from "@content/privacy.md";
     letter-spacing: -0.012em;
   }
 
-  /* Date right of the title; wraps under it when narrow */
   .policy-head {
     display: flex;
     flex-wrap: wrap;
@@ -37,7 +36,6 @@ import { Content } from "@content/privacy.md";
     margin-bottom: 24px;
   }
 
-  /* The text comes from privacy.md, so it doesn't carry this page's scope. Its first paragraph is the lead */
   .policy-head + :global(p) {
     font-size: var(--text-lg);
     line-height: 1.32;
@@ -64,7 +62,7 @@ import { Content } from "@content/privacy.md";
     color: var(--color-subtle);
   }
 
-  /* Dash sits on the paragraph edge, text hangs at a fixed indent; ::marker width varies by font */
+  /* Not ::marker: width varies by font */
   .policy :global(ul) {
     margin: 10px 0 0;
     padding: 0;

@@ -1,29 +1,22 @@
 :root {
-  /* Hover and color */
   --ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
-  /* Entrances and small moves: fast start, long soft landing */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
   --dur-fast: 120ms;
   --dur-base: 180ms;
   --dur-slow: 300ms;
 
-  /* Fades of text and frame. Sine in-out: starts softly, so the fade is seen rather than read as a
-     pop. On --ease-out and --ease-standard the text was readable within about 150ms */
+  /* Text fades: faster curves made text pop in */
   --ease-soft: cubic-bezier(0.37, 0, 0.63, 1);
 
-  /* First load: the frame fades in at once, the text this much later. Longer than UI motion: it
-     plays once per visit */
   --reveal-delay: 60ms;
   --reveal-dur: 600ms;
 
-  /* Page change (page-transitions.css): the old text fades out, then the new text fades in. The page
-     is a still picture, deaf to taps, until both finish */
+  /* Taps ignored until both finish */
   --page-fade-out: 120ms;
   --page-fade-in: 320ms;
 }
 
-/* Phones: the text is the whole screen, so its fade-in gets a little longer */
 @media (max-width: 767px) {
   :root {
     --page-fade-out: 100ms;

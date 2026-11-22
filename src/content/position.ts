@@ -1,4 +1,4 @@
-/** Current position: the side column (PageFrame) and the About page's description read it from here. */
+/** Read by PageFrame side column and About page description. */
 export const POSITION = {
   title: "Technical Consultant – Innovation",
   org: "Centric Software",

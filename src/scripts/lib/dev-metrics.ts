@@ -1,25 +1,19 @@
-/**
- * Debugger metrics, kept in memory only. Observers start with the first subscriber and never stop:
- * restarting them would replay buffered entries and count CLS twice. The rAF loop and the timer run
- * only while subscribed.
- */
+/** Observers never stop: restarting replays buffered entries and counts CLS twice. */
 
 export interface DevMetrics {
   fps: number | null;
-  /** ms. LCP stops at the first input, as browsers report it. */
+  /** ms. LCP stops at first input, as browsers report it. */
   fcp: number | null;
   lcp: number | null;
-  /** Ignores shifts right after input. */
   cls: number;
-  /** Slowest interaction so far, ms. */
+  /** Slowest interaction, ms. */
   inp: number | null;
   /** Used JS heap, MB; null outside Chromium. */
   mem: number | null;
-  /** Worst timer lateness in the last second, ms. */
+  /** Worst timer lateness in last second, ms. */
   delay: number;
-  /** Share of frames over JANK_MS in the last second, %. */
+  /** % of frames over JANK_MS in last second. */
   jank: number;
-  /** Requests finished in the last NET_WINDOW_MS. */
   net: number;
   css: number;
 }
@@ -27,9 +21,9 @@ export interface DevMetrics {
 type Listener = (m: Readonly<DevMetrics>) => void;
 
 const TICK_MS = 200;
-const SLOW_EVERY = 5; // delay, mem, net and css are published once a second
+const SLOW_EVERY = 5;
 const FPS_BUCKET_MS = 250;
-const JANK_MS = 50; // a frame longer than this is a visible stall
+const JANK_MS = 50;
 const NET_WINDOW_MS = 5000;
 
 const metrics: DevMetrics = {
@@ -108,7 +102,7 @@ function startObservers() {
 
   observe("resource", (entries) => {
     for (const e of entries as PerformanceResourceTiming[]) requests.push(e.responseEnd);
-    // Observes while the debugger is hidden too; keep the list bounded
+    // Runs while debugger is hidden too; keep list bounded
     dropOldRequests(performance.now());
   });
 }
@@ -134,7 +128,6 @@ let timer = 0;
 let raf = 0;
 let onVisibility: (() => void) | null = null;
 
-/** Frame rate (EMA over short buckets) and jank (per second) from one rAF loop */
 function startSampling() {
   let fps = 0;
   let bucketStart = 0;
@@ -184,7 +177,7 @@ function startSampling() {
   let worst = 0;
   timer = window.setInterval(() => {
     const now = performance.now();
-    // Hidden tabs throttle timers; that lateness isn't the page's
+    // Hidden tabs throttle timers; not the page's lateness
     if (document.hidden) {
       expected = now + TICK_MS;
       return;
@@ -202,7 +195,7 @@ function startSampling() {
     emit();
   }, TICK_MS);
 
-  // Restart the windows when the tab returns, or the paused gap reads as jank and delay
+  // Reset on tab return, else the paused gap reads as jank and delay
   onVisibility = () => {
     last = 0;
     frames = janky = bucketFrames = 0;
