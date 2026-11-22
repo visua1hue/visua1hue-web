@@ -22,7 +22,7 @@ export function initCopyright(el: HTMLElement): () => void {
   // Hex stays uppercase with a lowercase "x"
   const scrambled = (to: string) => {
     const j = jumble(to);
-    return to === hex ? j.toUpperCase().replace(/X/g, "x") : j;
+    return to === hex ? j.toUpperCase().replaceAll("X", "x") : j;
   };
 
   async function swap(to: string) {
