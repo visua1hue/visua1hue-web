@@ -217,11 +217,11 @@ const showLogotype = false;
 
   /* Cover, not text opacity: keeps the LCP. 100lvh cap: full height skipped the fade on iOS */
   @media (prefers-reduced-motion: no-preference) {
-    :global(:root:not([data-internal-nav])) .main {
+    :global(:root:not([data-no-entrance])) .main {
       position: relative;
     }
 
-    :global(:root:not([data-internal-nav])) .main::after {
+    :global(:root:not([data-no-entrance])) .main::after {
       content: "";
       position: absolute;
       inset: 0 0 auto;
@@ -290,7 +290,7 @@ const showLogotype = false;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    :global(:root:not([data-internal-nav])) [data-enter] {
+    :global(:root:not([data-no-entrance])) [data-enter] {
       animation: fade-in var(--reveal-dur) var(--ease-soft) both;
     }
   }

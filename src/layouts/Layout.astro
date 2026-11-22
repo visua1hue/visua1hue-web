@@ -20,7 +20,7 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
   <head>
     <meta charset="UTF-8" />
     {/* Inline and blocking: must run before first paint; a file would hold paint for a request.
-        CSP allows it by hash (INTERNAL_NAV_HASH, security-headers.ts); astro-headers.ts fails the build on drift */}
+        CSP allows it by a hash security-headers.ts derives from the file */}
     <script is:inline set:html={navEntryState}></script>
     <meta name="description" content={description} />
     <meta
