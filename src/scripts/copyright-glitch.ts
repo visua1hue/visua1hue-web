@@ -1,4 +1,4 @@
-import { createTear, ease, frames, GLITCH, jumble } from "@scripts/lib/text-glitch";
+import { createTear, ease, frames, GLITCH, jumble } from "@/scripts/lib/text-glitch";
 
 const OUT_MS = 80;
 const IN_MS = 200;

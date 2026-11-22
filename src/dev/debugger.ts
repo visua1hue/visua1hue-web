@@ -1,4 +1,4 @@
-import { subscribeDevMetrics, type DevMetrics } from "@scripts/lib/dev-metrics";
+import { subscribeDevMetrics, type DevMetrics } from "@/dev/dev-metrics";
 
 const KEY = "visua1hue-debugger";
 type Key = keyof DevMetrics;

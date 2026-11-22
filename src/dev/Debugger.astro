@@ -1,6 +1,6 @@
 ---
 // Render only behind import.meta.env.DEV
-import type { DevMetrics } from "@scripts/lib/dev-metrics";
+import type { DevMetrics } from "@/dev/dev-metrics";
 
 const cells: { label: string; key: keyof DevMetrics; initial: string; unit: string }[] = [
   { label: "FPS", key: "fps", initial: "—", unit: "" },
@@ -73,7 +73,7 @@ const cells: { label: string; key: keyof DevMetrics; initial: string; unit: stri
 </style>
 
 <script>
-  import { initDebugger } from "@scripts/debugger";
+  import { initDebugger } from "@/dev/debugger";
 
   if (import.meta.env.DEV) {
     for (const root of document.querySelectorAll<HTMLElement>("[data-debugger]")) initDebugger(root);

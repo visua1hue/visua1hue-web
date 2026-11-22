@@ -1,11 +1,11 @@
 ---
 // Round caps and join in arrow.svg: square caps notch the tip
-import Arrow from "@assets/arrow.svg";
-import Debugger from "@components/Debugger.astro";
-import Logotype from "@components/Logotype.astro";
-import BackToTop from "@components/BackToTop.astro";
-import { POSITION } from "@content/position";
-import "@styles/page-transitions.css";
+import Arrow from "@/assets/arrow.svg";
+import Debugger from "@/dev/Debugger.astro";
+import Logotype from "@/components/Logotype.astro";
+import BackToTop from "@/components/BackToTop.astro";
+import { POSITION } from "@/content/position";
+import "@/styles/page-transitions.css";
 
 interface Props {
   current: "about" | "privacy";
@@ -445,8 +445,8 @@ const showLogotype = false;
 </style>
 
 <script>
-  import { initCopyright } from "@scripts/copyright-glitch";
-  import { scrollToTop } from "@scripts/lib/scroll-to-top";
+  import { initCopyright } from "@/scripts/copyright-glitch";
+  import { scrollToTop } from "@/scripts/lib/scroll-to-top";
 
   for (const el of document.querySelectorAll<HTMLElement>("[data-year]")) initCopyright(el);
 
