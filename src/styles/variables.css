@@ -9,7 +9,10 @@
 
   /* rem: follows browser font size */
   --text-sm: 1rem;
-  --text-lg: clamp(1.25rem, 1.8vw, 1.625rem);
+  /* 20px at 320px viewport, +6px per 1120px of width, 26px at 1440px */
+  --text-lg: clamp(1.25rem, 1.25rem + (100vw - 20rem) * 6 / 1120, 1.625rem);
+  /* mono reads larger than Inter at equal px */
+  --text-code: calc(var(--text-sm) * 0.875);
   --weight-medium: 500;
   --weight-bold: 500;
   --font-primary: var(--font-inter);
