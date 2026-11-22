@@ -4,16 +4,18 @@
 ---
 
 <div class="back-to-top-mark" data-back-to-top-mark aria-hidden="true"></div>
+<div class="back-to-top-end" data-back-to-top-end aria-hidden="true"></div>
 <button type="button" class="back-to-top" data-back-to-top aria-label="Back to top">
   <span class="face">
-    {/* "To top": a bar, and an arrow pointing at it */}
+    {/* "To top": a bar, and an arrow pointing at it. Drawn at 16 and shown at 21, so a 1.2 stroke
+        renders about 1.6px, the weight it had at 16. Color: .back-to-top's, currentColor */}
     <svg
-      width="16"
-      height="16"
+      width="21"
+      height="21"
       viewBox="0 0 16 16"
       fill="none"
       stroke="currentColor"
-      stroke-width="1.5"
+      stroke-width="1.2"
       stroke-linecap="round"
       stroke-linejoin="round"
       aria-hidden="true">
@@ -34,21 +36,32 @@
     pointer-events: none;
   }
 
+  /* The page's last pixel: in view, the visitor reached the end */
+  .back-to-top-end {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+  }
+
   .back-to-top {
     display: none;
   }
 
   @media (max-width: 767px) {
-    /* The full hit target, invisible; .face is the 36px button inside it */
+    /* The full hit target, invisible; .face is the 44px button inside it */
     .back-to-top {
       position: fixed;
       z-index: 4;
-      right: 24px;
+      /* Button edge 34px in, level with the right edge of Safari's iOS toolbar buttons */
+      right: 32px;
       bottom: calc(28px + env(safe-area-inset-bottom, 0px));
       display: grid;
       place-items: center;
-      width: var(--hit-target);
-      height: var(--hit-target);
+      width: 48px;
+      height: 48px;
       padding: 0;
       border: 0;
       background: none;
@@ -74,8 +87,8 @@
     .face {
       display: grid;
       place-items: center;
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
       border: 1px solid var(--color-faint);
       /* A plain rounded square where corner-shape isn't supported */
       border-radius: 32%;
@@ -132,6 +145,38 @@
       .back-to-top[data-pressed] .face {
         transform: scale(0.88);
       }
+
+      /* End of the page: the arrow rises toward the bar and settles, as on a tap (dock() below) but
+         shorter, then rests, on a loop. Only the arrow moves. Paused while pressed */
+      .back-to-top[data-at-end] .arrow {
+        animation: arrow-rise 2.4s infinite;
+      }
+
+      .back-to-top[data-pressed] .arrow {
+        animation-play-state: paused;
+      }
+    }
+  }
+
+  /* Up on ease-out, a short touch at the bar, back down on ease-in-out, then rest */
+  @keyframes arrow-rise {
+    0% {
+      transform: none;
+      animation-timing-function: var(--ease-out-expo);
+    }
+
+    22% {
+      transform: translateY(-2.5px);
+    }
+
+    30% {
+      transform: translateY(-2.5px);
+      animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+    }
+
+    55%,
+    100% {
+      transform: none;
     }
   }
 </style>
@@ -145,6 +190,7 @@
 
   const button = document.querySelector<HTMLButtonElement>("[data-back-to-top]");
   const mark = document.querySelector("[data-back-to-top-mark]");
+  const end = document.querySelector("[data-back-to-top-end]");
   const arrow = button?.querySelector<SVGPathElement>(".arrow");
   const bar = button?.querySelector<SVGPathElement>(".bar");
 
@@ -175,6 +221,9 @@
 
   if (button && mark) {
     new IntersectionObserver(([e]) => button.toggleAttribute("data-shown", !(e?.isIntersecting ?? true))).observe(mark);
+    if (end) {
+      new IntersectionObserver(([e]) => button.toggleAttribute("data-at-end", e?.isIntersecting ?? false)).observe(end);
+    }
 
     const release = () => button.removeAttribute("data-pressed");
     button.addEventListener("pointerdown", () => button.setAttribute("data-pressed", ""));
