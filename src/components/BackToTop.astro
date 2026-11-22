@@ -186,7 +186,7 @@
     const css = getComputedStyle(document.documentElement);
     // The CSS minifier writes 620ms as .62s
     const dur = css.getPropertyValue("--dock-dur").trim();
-    const duration = parseFloat(dur) * (dur.endsWith("ms") ? 1 : 1000);
+    const duration = Number.parseFloat(dur) * (dur.endsWith("ms") ? 1 : 1000);
     for (const a of [...arrow.getAnimations(), ...bar.getAnimations()]) a.cancel();
     arrow.animate(
       [
