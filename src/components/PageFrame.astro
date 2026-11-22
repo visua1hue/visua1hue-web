@@ -211,6 +211,16 @@ const showLogotype = false;
     z-index: 3;
   }
 
+  /* Tapped to another page: the current-page color moves to that link at once (data-going, script
+     below), so the new page arrives matching and the color never steps back while it loads */
+  .nav a[data-going] {
+    color: var(--color-fg);
+  }
+
+  .nav:has(a[data-going]) a[aria-current="page"] {
+    color: var(--color-subtle);
+  }
+
   .main {
     grid-area: main;
     min-width: 0;
@@ -354,12 +364,28 @@ const showLogotype = false;
       background: var(--color-bg);
     }
 
-    /* Press feedback as on the back-to-top button, without its face: the link darkens and shrinks
-       on touch, settles on release. data-pressed, not :active: iOS skips :active on most taps */
+    /* Press feedback: a soft rounded patch shows behind the link, and the link takes the current
+       page's color, so the press already looks like where it leads. Quick in, slower out.
+       data-pressed, not :active: iOS skips :active on most taps. The patch sits behind the text
+       (z-index -1, inside the bar's stacking context) and reaches past the link sideways without
+       moving it. Released, it fades on this page like a native button; the new page never shows it.
+       The text doesn't scale: the page change cross-fades the pressed link into the new page's,
+       and a scaled copy over an unscaled one doubled the text */
     .nav a {
-      transition:
-        color var(--dur-base) var(--ease),
-        transform var(--dur-base) var(--ease-out-expo);
+      position: relative;
+      transition: color var(--dur-base) var(--ease);
+    }
+
+    .nav a::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 6px -12px;
+      border-radius: 12px;
+      /* Half the faint tone: a hint behind the text, not a button */
+      background: color-mix(in oklab, var(--color-faint) 50%, transparent);
+      opacity: 0;
+      transition: opacity var(--dur-base) var(--ease);
     }
 
     .nav a[data-pressed] {
@@ -367,10 +393,9 @@ const showLogotype = false;
       transition-duration: var(--dur-fast);
     }
 
-    @media (prefers-reduced-motion: no-preference) {
-      .nav a[data-pressed] {
-        transform: scale(0.97);
-      }
+    .nav a[data-pressed]::before {
+      opacity: 1;
+      transition-duration: var(--dur-fast);
     }
 
     /* Text fades out under the bar. Smoothstep: flat at both ends, so neither the bar's edge nor the
@@ -472,12 +497,38 @@ const showLogotype = false;
   }
   if (!CSS.supports("animation-timeline: view()")) watchEnd();
 
-  // Press state for the phone nav's press feedback (styles above)
+  // Press state for the phone nav's press feedback (styles above). A quick tap still shows it: the
+  // release waits until the press has had PRESS_MIN_MS. A cancel (the touch became a scroll) drops it
+  // at once
+  const PRESS_MIN_MS = 120;
   for (const link of document.querySelectorAll<HTMLAnchorElement>(".nav a")) {
-    const release = () => link.removeAttribute("data-pressed");
-    link.addEventListener("pointerdown", () => link.setAttribute("data-pressed", ""));
-    for (const type of ["pointerup", "pointercancel", "pointerleave"]) link.addEventListener(type, release);
+    let at = 0;
+    let timer = 0;
+    const drop = () => link.removeAttribute("data-pressed");
+    link.addEventListener("pointerdown", () => {
+      clearTimeout(timer);
+      at = performance.now();
+      link.setAttribute("data-pressed", "");
+    });
+    link.addEventListener("pointerup", () => {
+      timer = window.setTimeout(drop, Math.max(0, PRESS_MIN_MS - (performance.now() - at)));
+    });
+    link.addEventListener("pointercancel", drop);
+    // Touch fires pointerleave right after pointerup; only a pointer that leaves while held drops it
+    link.addEventListener("pointerleave", (e) => {
+      if (e.buttons) drop();
+    });
+    link.addEventListener("click", (e) => {
+      const plain = e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+      if (plain && link.pathname !== location.pathname) link.setAttribute("data-going", "");
+    });
   }
+
+  // Back to this page from the history cache: the current-page color returns to its own link
+  addEventListener("pageshow", (e) => {
+    if (!e.persisted) return;
+    for (const link of document.querySelectorAll(".nav a[data-going]")) link.removeAttribute("data-going");
+  });
 
   // Current page's link scrolls to the top instead of reloading the page; modified clicks (new tab)
   // pass through
