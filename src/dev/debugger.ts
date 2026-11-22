@@ -91,7 +91,7 @@ export function initDebugger(root: HTMLElement): () => void {
       navigator.clipboard
         .writeText(snapshot(root))
         .then(() => flash(root))
-        .catch((err) => console.error("Debugger: copy failed", err)),
+        .catch((error) => console.error("Debugger: copy failed", error)),
     { signal: ac.signal },
   );
 
