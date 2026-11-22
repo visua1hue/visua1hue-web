@@ -109,7 +109,7 @@ function startObservers() {
 
 const heapMB = () => {
   const mem = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory;
-  return mem ? Math.round(mem.usedJSHeapSize / 1048576) : null;
+  return mem ? Math.round(mem.usedJSHeapSize / (1024 * 1024)) : null;
 };
 
 const countRules = () => {
