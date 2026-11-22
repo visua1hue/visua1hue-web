@@ -72,8 +72,8 @@
       visibility: hidden;
       /* Leaving is quicker than arriving; visibility flips at the end, so it can't be tapped hidden */
       transition:
-        opacity var(--dur-fast) var(--ease),
-        transform var(--dur-fast) var(--ease),
+        opacity var(--dur-fast) var(--ease-standard),
+        transform var(--dur-fast) var(--ease-standard),
         visibility var(--dur-fast);
     }
 
@@ -81,7 +81,7 @@
       opacity: 1;
       visibility: visible;
       transition-duration: var(--dur-base);
-      transition-timing-function: var(--ease-out-expo);
+      transition-timing-function: var(--ease-out);
     }
 
     .face {
@@ -97,9 +97,9 @@
       -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
       transition:
-        transform var(--dur-base) var(--ease-out-expo),
-        background-color var(--dur-base) var(--ease),
-        color var(--dur-base) var(--ease);
+        transform var(--dur-base) var(--ease-out),
+        background-color var(--dur-base) var(--ease-standard),
+        color var(--dur-base) var(--ease-standard);
     }
 
     /* A true squircle (superellipse), border, blur and clip included */
@@ -162,7 +162,7 @@
   @keyframes arrow-rise {
     0% {
       transform: none;
-      animation-timing-function: var(--ease-out-expo);
+      animation-timing-function: var(--ease-out);
     }
 
     22% {
@@ -206,7 +206,7 @@
         { transform: `translateY(${RISE})`, offset: 0.55 },
         { transform: "none" },
       ],
-      { duration: DOCK_MS, easing: css.getPropertyValue("--ease-out-expo").trim() },
+      { duration: DOCK_MS, easing: css.getPropertyValue("--ease-out").trim() },
     );
     bar.animate(
       [
@@ -215,7 +215,7 @@
         { transform: "scaleX(1.25)", offset: 0.4 },
         { transform: "none" },
       ],
-      { duration: DOCK_MS, easing: css.getPropertyValue("--ease").trim() },
+      { duration: DOCK_MS, easing: css.getPropertyValue("--ease-standard").trim() },
     );
   }
 

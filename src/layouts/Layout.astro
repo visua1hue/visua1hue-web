@@ -22,8 +22,7 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
     <meta charset="UTF-8" />
     {/* Sets html[data-internal-nav] when opened from another page of the site (not a reload), so
         first-visit entrance animations don't replay. Also skips the page transition on back and
-        forward, and restarts the fade-in of a page Chrome loaded ahead of time (both at pagereveal,
-        which fires before the first paint). Inline and blocking: it must run before the first
+        forward (at pagereveal, which fires before the first paint). Inline and blocking: it must run before the first
         paint, and a file would hold that paint for a request. The CSP allows it by hash
         (INTERNAL_NAV_HASH, security-headers.ts); astro-headers.ts fails the build if they drift */}
     <script is:inline set:html={navEntryState}></script>

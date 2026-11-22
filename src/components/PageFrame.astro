@@ -194,7 +194,7 @@ const showLogotype = false;
   /* No scroll timelines (Firefox): the script toggles .at-end instead */
   @supports not (animation-timeline: view()) {
     .fade-ramp {
-      transition: opacity var(--dur-slow) var(--ease);
+      transition: opacity var(--dur-slow) var(--ease-standard);
     }
 
     .frame.at-end .fade-ramp {
@@ -227,26 +227,24 @@ const showLogotype = false;
     padding-top: var(--below-nav);
   }
 
-  /* The text paints at once so it stays the LCP; a paper cover fades off it instead. First visit: the
-     entrance, after the frame. From another page (html[data-internal-nav], nav-entry-state.js): the page
-     change's fade-in, once the old page has faded out (page-transitions.css). A browser without
-     page transitions gets the fade-in alone */
+  /* First visit only: html[data-internal-nav] (nav-entry-state.js) skips it on moves between pages,
+     where the page transition fades the text (page-transitions.css). The text paints at once so it
+     stays the LCP; a paper cover fades off it instead. The cover spans the screen, not the whole
+     text: text past it is off-screen while it fades. Full length it was a layer 9,233 device px tall
+     on a phone, and on iOS Privacy showed its text with no fade */
   @media (prefers-reduced-motion: no-preference) {
-    .main {
+    :global(:root:not([data-internal-nav])) .main {
       position: relative;
     }
 
-    .main::after {
+    :global(:root:not([data-internal-nav])) .main::after {
       content: "";
       position: absolute;
-      inset: 0;
+      inset: 0 0 auto;
+      height: min(100%, 100lvh);
       background: var(--color-bg);
       pointer-events: none;
-      animation: cover-off var(--enter-dur) var(--enter-ease) both var(--cascade-delay);
-    }
-
-    :global(:root[data-internal-nav]) .main::after {
-      animation: cover-off var(--vt-in) var(--vt-in-ease) both var(--vt-out);
+      animation: cover-off var(--reveal-dur) var(--ease-soft) both var(--reveal-delay);
     }
   }
 
@@ -312,7 +310,7 @@ const showLogotype = false;
   /* First visit only, as the cover above */
   @media (prefers-reduced-motion: no-preference) {
     :global(:root:not([data-internal-nav])) [data-enter] {
-      animation: fade-in var(--enter-dur) var(--enter-ease) both;
+      animation: fade-in var(--reveal-dur) var(--ease-soft) both;
     }
   }
 
@@ -373,7 +371,7 @@ const showLogotype = false;
        and a scaled copy over an unscaled one doubled the text */
     .nav a {
       position: relative;
-      transition: color var(--dur-base) var(--ease);
+      transition: color var(--dur-base) var(--ease-standard);
     }
 
     .nav a::before {
@@ -385,7 +383,7 @@ const showLogotype = false;
       /* Half the faint tone: a hint behind the text, not a button */
       background: color-mix(in oklab, var(--color-faint) 50%, transparent);
       opacity: 0;
-      transition: opacity var(--dur-base) var(--ease);
+      transition: opacity var(--dur-base) var(--ease-standard);
     }
 
     .nav a[data-pressed] {

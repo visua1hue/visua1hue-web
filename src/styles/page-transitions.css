@@ -1,25 +1,115 @@
-/* Loaded by PageFrame.astro only, so both sides of a transition are PageFrame pages (the 404 isn't).
+/* Loaded by PageFrame.astro only, so both sides of a transition are PageFrame pages: the 404 has its
+   own .head/.main/.side, and pairing those with a page's morphed and flickered.
 
-   Page moves: the browser's own cross-document view transition, at its leanest. No element is
-   named, so the browser takes one picture: the screen (root). Named elements cost a picture each,
-   and Safari before 26.2 clipped fixed and sticky ones (the fades, the nav bar, the side column).
-   The picture holds the old scroll position by itself.
-
-   The old page fades into the new one over --vt-out with the browser's own cross-fade. Its additive
-   blend keeps what both pages share (background, nav, meta) perfectly still. The new page's text is
-   still under its cover then (PageFrame.astro), so the text fades out rather than across, and fades
-   in on the live page once the picture is gone: scrolling and taps work again after --vt-out.
-   Back and forward skip it (nav-entry-state.js): iOS animates its own swipe. Reduced motion: none */
+   Page moves: the browser's own cross-document view transition. Every part that has to stay above
+   the text gets a name; unnamed parts drop below every named one. Its class says how it moves:
+   - text: the old copy fades out, then the new one fades in. Its group holds the old position while
+     the old copy fades, so scrolled text stays where it was, then steps to the new position
+   - still: swaps in place. Layers that look the same on both pages (fades, side column, button)
+   - nav: cross-fades, so the current-page color moves from one link to the other
+   The rest (root: the page background) swaps in place. Named parts keep the page's stacking.
+   A new part: a unique view-transition-name and one of the classes. Back and forward skip the
+   transition (nav-entry-state.js). Timing in motion.css. Reduced motion: no transition */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;
   }
 
-  /* The group too: its own move (none here) would otherwise hold the picture for the default 250ms */
-  ::view-transition-group(root),
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: var(--vt-out);
-    animation-timing-function: var(--ease);
+  .main {
+    view-transition-name: main;
+    view-transition-class: text;
+  }
+
+  .head {
+    view-transition-name: head;
+    view-transition-class: nav;
+  }
+
+  .fade-top {
+    view-transition-name: fade-top;
+    view-transition-class: still;
+  }
+
+  .fade-bottom {
+    view-transition-name: fade-bottom;
+    view-transition-class: still;
+  }
+
+  .fade-ramp {
+    view-transition-name: fade-ramp;
+    view-transition-class: still;
+  }
+
+  .side {
+    view-transition-name: side;
+    view-transition-class: still;
+  }
+
+  .logotype {
+    view-transition-name: logotype;
+    view-transition-class: still;
+  }
+
+  .back-to-top {
+    view-transition-name: back-to-top;
+    view-transition-class: still;
+  }
+
+  /* Phones: .side is page content under the text, so it leaves and arrives with it. The button fades
+     out with the text instead of blinking off */
+  @media (max-width: 767px) {
+    .side,
+    .back-to-top {
+      view-transition-class: text;
+    }
+  }
+
+  /* Root and still: swap in place. No morph, and the old copy hidden so see-through layers don't
+     double up */
+  ::view-transition-group(*) {
+    animation: none;
+  }
+
+  ::view-transition-old(*) {
+    animation: none;
+    opacity: 0;
+  }
+
+  ::view-transition-new(*) {
+    animation: none;
+  }
+
+  /* revert brings back the browser's own position keyframes; steps(1, end) makes that move one jump,
+     as the new copy starts */
+  ::view-transition-group(*.text) {
+    animation: revert;
+    animation-duration: var(--page-fade-out);
+    animation-timing-function: steps(1, end);
+  }
+
+  ::view-transition-old(*.text) {
+    opacity: 1;
+    animation: cover-off var(--page-fade-out) var(--ease-standard) both;
+  }
+
+  ::view-transition-new(*.text) {
+    animation: fade-in var(--page-fade-in) var(--ease-soft) var(--page-fade-out) both;
+  }
+
+  /* Additive blend (the browser's default, lost with its animation) keeps the links that don't change
+     from dimming midway */
+  ::view-transition-image-pair(*.nav) {
+    isolation: isolate;
+  }
+
+  ::view-transition-old(*.nav) {
+    opacity: 1;
+    mix-blend-mode: plus-lighter;
+    animation: cover-off var(--page-fade-out) var(--ease-standard) both;
+  }
+
+  ::view-transition-new(*.nav) {
+    mix-blend-mode: plus-lighter;
+    animation: fade-in var(--page-fade-out) var(--ease-standard) both;
   }
 }

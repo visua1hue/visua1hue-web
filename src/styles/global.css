@@ -84,7 +84,7 @@ a:active {
   text-decoration-color: transparent;
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
-  transition: text-decoration-color var(--dur-base) var(--ease);
+  transition: text-decoration-color var(--dur-base) var(--ease-standard);
 }
 
 .ext:focus-visible .t {
@@ -96,8 +96,8 @@ a:active {
   opacity: 0;
   transform: translate(-2px, 0);
   transition:
-    transform var(--dur-base) var(--ease-out-expo),
-    opacity var(--dur-fast) var(--ease);
+    transform var(--dur-base) var(--ease-out),
+    opacity var(--dur-fast) var(--ease-standard);
 }
 
 .ext:focus-visible .arw {
@@ -121,7 +121,7 @@ a:active {
   .ext:hover .arw,
   .ext:focus-visible .arw {
     transform: translate(0, -2px);
-    transition: opacity var(--dur-fast) var(--ease);
+    transition: opacity var(--dur-fast) var(--ease-standard);
   }
 }
 
@@ -136,7 +136,7 @@ a:active {
   display: inline-flex;
   align-items: center;
   color: var(--color-subtle);
-  transition: color var(--dur-base) var(--ease);
+  transition: color var(--dur-base) var(--ease-standard);
 }
 
 .nav a[aria-current="page"] {

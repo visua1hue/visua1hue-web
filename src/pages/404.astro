@@ -105,7 +105,7 @@ import Layout from "@layouts/Layout.astro";
     text-decoration-thickness: 1px;
     text-underline-offset: 4px;
     text-decoration-color: var(--color-faint);
-    transition: text-decoration-color var(--dur-base) var(--ease);
+    transition: text-decoration-color var(--dur-base) var(--ease-standard);
   }
 
   .back a:focus-visible {
@@ -141,7 +141,7 @@ import Layout from "@layouts/Layout.astro";
   @media (prefers-reduced-motion: no-preference) {
     .head,
     .side {
-      animation: fade-in var(--enter-dur) var(--enter-ease) both;
+      animation: fade-in var(--reveal-dur) var(--ease-soft) both;
     }
 
     .main {
@@ -154,7 +154,7 @@ import Layout from "@layouts/Layout.astro";
       inset: 0;
       background: var(--color-bg);
       pointer-events: none;
-      animation: cover-off var(--enter-dur) var(--enter-ease) both var(--cascade-delay);
+      animation: cover-off var(--reveal-dur) var(--ease-soft) both var(--reveal-delay);
     }
   }
 
