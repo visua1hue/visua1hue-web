@@ -45,4 +45,4 @@ You can object at any time, on grounds relating to your situation, to processing
 
 ## Right to complain
 
-You can complain to a data protection supervisory authority (Art. 77 GDPR), in particular in the EU country where you live or work or where you think the violation happened. German authorities are listed by the [Datenschutzkonferenz](https://www.datenschutzkonferenz-online.de/datenschutzaufsichtsbehoerden.html).
+You can complain to a data protection supervisory authority (Art. 77 GDPR), in particular in the EU country where you live or work or where you think the violation happened. An [overview of German supervisory authorities](https://www.datenschutzkonferenz-online.de/datenschutzaufsichtsbehoerden.html) is publicly available.
