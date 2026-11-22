@@ -6,15 +6,15 @@
   "routes": [
     {
       "pattern": "visua1hue.dev",
-      "custom_domain": true
-    }
+      "custom_domain": true,
+    },
   ],
   "assets": {
     "binding": "ASSETS",
     "directory": "./dist/client",
-    "not_found_handling": "404-page"
+    "not_found_handling": "404-page",
   },
   "observability": {
-    "enabled": true
-  }
+    "enabled": true,
+  },
 }

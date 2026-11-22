@@ -38,4 +38,3 @@ export const SECURITY_HEADERS: Record<string, string> = {
     "upgrade-insecure-requests",
   ].join("; "),
 };
-

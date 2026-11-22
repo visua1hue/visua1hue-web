@@ -29,7 +29,10 @@ const snapshot = (root: HTMLElement) =>
   [
     `Dev metrics ${location.pathname} ${innerWidth}x${innerHeight}`,
     ...[...root.querySelectorAll<HTMLElement>(".cell")].map((cell) =>
-      [...cell.children].map((el) => el.textContent?.trim()).filter(Boolean).join(" "),
+      [...cell.children]
+        .map((el) => el.textContent?.trim())
+        .filter(Boolean)
+        .join(" "),
     ),
   ].join("\n");
 

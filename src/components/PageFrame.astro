@@ -32,8 +32,19 @@ const showLogotype = false;
   <filter id="page-glitch" x="-4%" y="-2%" width="108%" height="104%" color-interpolation-filters="sRGB">
     <feTurbulence type="fractalNoise" baseFrequency="0.0008 0.1" numOctaves="1" seed="1" result="noise"></feTurbulence>
     {/* G fixed at 0.5: horizontal shift only */}
-    <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0  0 0 0 0 0.5  0 0 0 0 0  0 0 0 0 1" result="bands"></feColorMatrix>
-    <feDisplacementMap in="SourceGraphic" in2="bands" scale="0" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+    <feColorMatrix
+      in="noise"
+      type="matrix"
+      values="1 0 0 0 0  0 0 0 0 0.5  0 0 0 0 0  0 0 0 0 1"
+      result="bands"
+    ></feColorMatrix>
+    <feDisplacementMap
+      in="SourceGraphic"
+      in2="bands"
+      scale="0"
+      xChannelSelector="R"
+      yChannelSelector="G"
+    ></feDisplacementMap>
   </filter>
 </svg>
 <div class:list={["frame", { "no-logotype": !showLogotype }]}>
@@ -43,8 +54,12 @@ const showLogotype = false;
 
   <header class="head" data-enter>
     <nav class="nav" aria-label="Main">
-      <a href="/" aria-current={page("about")}>About</a>
-      <a href="/privacy/" aria-current={page("privacy")}>Privacy</a>
+      <a href="/" aria-current={page("about")}>
+        About
+      </a>
+      <a href="/privacy/" aria-current={page("privacy")}>
+        Privacy
+      </a>
     </nav>
   </header>
 
@@ -59,20 +74,46 @@ const showLogotype = false;
         <div>
           <dt>Currently</dt>
           <dd class="value">{POSITION.title}</dd>
-          <dd class="org"><a class="ext" href={POSITION.orgUrl}><span class="t">{POSITION.org}</span><Arrow class="arw" aria-hidden="true" /></a></dd>
+          <dd class="org">
+            <a class="ext" href={POSITION.orgUrl}>
+              <span class="t">{POSITION.org}</span>
+              <Arrow class="arw" aria-hidden="true" />
+            </a>
+          </dd>
         </div>
         <div>
           <dt>Socials</dt>
-          <dd><a class="ext" href="https://www.linkedin.com/in/michaelhuebel/"><span class="t">LinkedIn</span><Arrow class="arw" aria-hidden="true" /></a></dd>
-          <dd><a class="ext" href="https://github.com/visua1hue"><span class="t">GitHub</span><Arrow class="arw" aria-hidden="true" /></a></dd>
+          <dd>
+            <a class="ext" href="https://www.linkedin.com/in/michaelhuebel/">
+              <span class="t">LinkedIn</span>
+              <Arrow class="arw" aria-hidden="true" />
+            </a>
+          </dd>
+          <dd>
+            <a class="ext" href="https://github.com/visua1hue">
+              <span class="t">GitHub</span>
+              <Arrow class="arw" aria-hidden="true" />
+            </a>
+          </dd>
         </div>
       </dl>
       {import.meta.env.DEV && <Debugger />}
     </div>
     <div class="copy" data-enter>
       {/* role=img: screen readers get the decimal label, not the scramble */}
-      <p><span class="label">Copyright</span><span class="year" data-year role="img" aria-label={String(year)}>{yearHex}</span></p>
-      <p><span class="label">Build</span><a class="ext" href={commitHref} title="View this build's commit on GitHub"><span class="t">{sha}</span><Arrow class="arw" aria-hidden="true" /></a></p>
+      <p>
+        <span class="label">Copyright</span>
+        <span class="year" data-year role="img" aria-label={String(year)}>
+          {yearHex}
+        </span>
+      </p>
+      <p>
+        <span class="label">Build</span>
+        <a class="ext" href={commitHref} title="View this build's commit on GitHub">
+          <span class="t">{sha}</span>
+          <Arrow class="arw" aria-hidden="true" />
+        </a>
+      </p>
     </div>
   </aside>
   <BackToTop />

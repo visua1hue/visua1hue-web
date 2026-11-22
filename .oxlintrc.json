@@ -2,14 +2,7 @@
 // and @nkzw/oxlint-config 3.0.0 (MIT, Nakazawa Tech). Dropped: curly, array-type, React, JS plugins.
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": [
-    "eslint",
-    "typescript",
-    "unicorn",
-    "oxc",
-    "import",
-    "promise"
-  ],
+  "plugins": ["eslint", "typescript", "unicorn", "oxc", "import", "promise"],
   "categories": {
     "correctness": "off"
   },
@@ -19,21 +12,14 @@
     "node": true,
     "es2024": true
   },
-  "ignorePatterns": [
-    "dist/**",
-    ".astro/**",
-    ".wrangler/**"
-  ],
+  "ignorePatterns": ["dist/**", ".astro/**", ".wrangler/**"],
   "rules": {
     "array-callback-return": "error",
     "constructor-super": "error",
     "eqeqeq": "error",
     "for-direction": "error",
     "getter-return": "error",
-    "import/consistent-type-specifier-style": [
-      "error",
-      "prefer-top-level"
-    ],
+    "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
     "import/export": "error",
     "import/no-namespace": "error",
     "import/no-self-import": "error",
@@ -197,18 +183,14 @@
   },
   "overrides": [
     {
-      "files": [
-        "**/*.astro"
-      ],
+      "files": ["**/*.astro"],
       "globals": {
         "Astro": "readonly",
         "__BUILD_SHA__": "readonly"
       }
     },
     {
-      "files": [
-        "src/dev/**"
-      ],
+      "files": ["src/dev/**"],
       "rules": {
         "no-console": "off"
       }

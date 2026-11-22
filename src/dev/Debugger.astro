@@ -17,15 +17,15 @@ const cells: { label: string; key: keyof DevMetrics; initial: string; unit: stri
 ---
 
 <button type="button" class="debugger" data-debugger hidden>
-  {
-    cells.map((c) => (
-      <span class="cell">
-        <span class="l">{c.label}</span>
-        <span class="n" data-m={c.key}>{c.initial}</span>
-        <span class="u">{c.unit}</span>
+  {cells.map((c) => (
+    <span class="cell">
+      <span class="l">{c.label}</span>
+      <span class="n" data-m={c.key}>
+        {c.initial}
       </span>
-    ))
-  }
+      <span class="u">{c.unit}</span>
+    </span>
+  ))}
 </button>
 
 <style>

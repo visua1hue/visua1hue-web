@@ -68,7 +68,8 @@ export function initCopyright(el: HTMLElement): () => void {
 
   const ac = new AbortController();
   el.addEventListener("pointerenter", () => void swap(dec), { signal: ac.signal });
-  for (const e of ["pointerleave", "pointercancel"]) el.addEventListener(e, () => void swap(hex), { signal: ac.signal });
+  for (const e of ["pointerleave", "pointercancel"])
+    el.addEventListener(e, () => void swap(hex), { signal: ac.signal });
   return () => {
     ac.abort();
     run++;
