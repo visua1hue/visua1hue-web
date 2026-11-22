@@ -174,11 +174,19 @@ const showLogotype = false;
     timeline-scope: --text-end;
   }
 
+  /* Height, not opacity: shrinks to the text left below the band, so no text meets its hard edge */
   @supports (animation-timeline: view()) {
     .fade-ramp {
-      animation: cover-off linear both;
+      transform-origin: bottom;
+      animation: ramp-shrink linear both;
       animation-timeline: --text-end;
       animation-range: entry 0% entry 100%;
+    }
+  }
+
+  @keyframes ramp-shrink {
+    to {
+      transform: scaleY(0);
     }
   }
 
