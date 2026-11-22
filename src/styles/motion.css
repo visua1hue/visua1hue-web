@@ -14,4 +14,7 @@
 
   /* Page change cross-fade. Taps ignored until done; keep under 400ms */
   --page-fade: 260ms;
+
+  /* Read by BackToTop.astro's script */
+  --dock-dur: 620ms;
 }

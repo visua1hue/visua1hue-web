@@ -158,7 +158,7 @@
 
     30% {
       transform: translateY(-2.5px);
-      animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+      animation-timing-function: var(--ease-soft);
     }
 
     55%,
@@ -171,7 +171,6 @@
 <script>
   import { scrollToTop } from "@scripts/lib/scroll-to-top";
 
-  const DOCK_MS = 620;
   /** In viewBox units */
   const RISE = "-3.5px";
 
@@ -184,6 +183,9 @@
   function dock() {
     if (!arrow || !bar || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const css = getComputedStyle(document.documentElement);
+    // The CSS minifier writes 620ms as .62s
+    const dur = css.getPropertyValue("--dock-dur").trim();
+    const duration = parseFloat(dur) * (dur.endsWith("ms") ? 1 : 1000);
     for (const a of [...arrow.getAnimations(), ...bar.getAnimations()]) a.cancel();
     arrow.animate(
       [
@@ -192,7 +194,7 @@
         { transform: `translateY(${RISE})`, offset: 0.55 },
         { transform: "none" },
       ],
-      { duration: DOCK_MS, easing: css.getPropertyValue("--ease-out").trim() },
+      { duration, easing: css.getPropertyValue("--ease-out").trim() },
     );
     bar.animate(
       [
@@ -201,7 +203,7 @@
         { transform: "scaleX(1.25)", offset: 0.4 },
         { transform: "none" },
       ],
-      { duration: DOCK_MS, easing: css.getPropertyValue("--ease-standard").trim() },
+      { duration, easing: css.getPropertyValue("--ease-standard").trim() },
     );
   }
 
