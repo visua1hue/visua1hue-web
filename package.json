@@ -7,7 +7,8 @@
     "dev": "astro dev --force",
     "build": "astro build",
     "check": "astro check",
-    "preview": "wrangler dev",
+    "lint": "oxlint --deny-warnings",
+    "preview": "wrangler dev --port 8799",
     "deploy": "astro build && wrangler deploy"
   },
   "dependencies": {
@@ -19,6 +20,9 @@
     "@astrojs/cloudflare": "14.4.2",
     "@astrojs/markdown-satteri": "0.4.5",
     "@cloudflare/vite-plugin": "^1.64.0",
+    "oxlint": "1.94.0",
+    "prettier": "3.10.1",
+    "prettier-plugin-astro": "1.1.2",
     "typescript": "^5.9.3",
     "wrangler": "4.152.0"
   }
