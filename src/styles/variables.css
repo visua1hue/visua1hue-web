@@ -1,17 +1,28 @@
 :root {
-  --color-bg: #fafaf9;
-  --color-fg: #111111;
-  --color-soft: #3a3a38;
-  --color-muted: #62625f;
-  --color-subtle: #72726f;
-  --color-faint: #e4e4e1;
-  --color-logotype: #ededea;
+  /* Base */
+  --neutral-h: 106.5;
+  --neutral-98: oklch(98.483% 0.00132 var(--neutral-h));
+  --neutral-95: oklch(94.527% 0.00399 var(--neutral-h));
+  --neutral-92: oklch(91.802% 0.00402 var(--neutral-h));
+  --neutral-55: oklch(55.113% 0.00457 var(--neutral-h));
+  --neutral-50: oklch(49.518% 0.00469 var(--neutral-h));
+  --neutral-35: oklch(34.775% 0.00341 var(--neutral-h));
+  --neutral-18: oklch(17.764% 0 0);
 
-  /* rem: follows browser font size */
-  --text-sm: 1rem;
+  /* Semantic */
+  --color-bg: var(--neutral-98);
+  --color-text: var(--neutral-18);
+  --color-text-muted: var(--neutral-50);
+  --color-text-subtle: var(--neutral-55);
+  --color-border: var(--neutral-92);
+  --color-fill: var(--neutral-92);
+
+  /* Component */
+  --logotype-fg: var(--neutral-95);
+
   /* 20px at 320px viewport, +6px per 1120px of width, 26px at 1440px */
   --text-lg: clamp(1.25rem, 1.25rem + (100vw - 20rem) * 6 / 1120, 1.625rem);
-  /* mono reads larger than Inter at equal px */
+  --text-sm: 1rem;
   --text-code: calc(var(--text-sm) * 0.875);
   --weight-medium: 500;
   --weight-bold: 500;

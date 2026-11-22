@@ -264,11 +264,11 @@ const showLogotype = false;
 
   /* data-going: set on tap (script) */
   .nav a[data-going] {
-    color: var(--color-fg);
+    color: var(--color-text);
   }
 
   .nav:has(a[data-going]) a[aria-current="page"] {
-    color: var(--color-subtle);
+    color: var(--color-text-subtle);
   }
 
   .main {
@@ -313,11 +313,11 @@ const showLogotype = false;
 
   .label {
     display: block;
-    color: var(--color-subtle);
+    color: var(--color-text-subtle);
   }
 
   .meta .ext {
-    color: var(--color-fg);
+    color: var(--color-text);
   }
 
   .copy {
@@ -327,7 +327,7 @@ const showLogotype = false;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    color: var(--color-subtle);
+    color: var(--color-text-subtle);
   }
 
   .copy p {
@@ -340,7 +340,7 @@ const showLogotype = false;
 
   @media (hover: hover) {
     .copy a:hover {
-      color: var(--color-fg);
+      color: var(--color-text);
     }
   }
 
@@ -414,13 +414,13 @@ const showLogotype = false;
       z-index: -1;
       inset: 6px -12px;
       border-radius: 12px;
-      background: color-mix(in oklab, var(--color-faint) 50%, transparent);
+      background: color-mix(in oklab, var(--color-fill) 50%, transparent);
       opacity: 0;
       transition: opacity var(--dur-base) var(--ease-standard);
     }
 
     .nav a[data-pressed] {
-      color: var(--color-fg);
+      color: var(--color-text);
       transition-duration: var(--dur-fast);
     }
 

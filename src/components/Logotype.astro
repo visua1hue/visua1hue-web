@@ -47,7 +47,7 @@
   }
 
   stop {
-    stop-color: var(--color-logotype);
+    stop-color: var(--logotype-fg);
   }
 
   stop:last-child {
@@ -72,8 +72,9 @@
       margin: 24px var(--page-edge) 28px;
     }
 
+    /* darker start; the fade-out stop keeps the desktop gray */
     stop:first-child {
-      stop-color: var(--color-faint);
+      --logotype-fg: var(--neutral-92);
     }
   }
 

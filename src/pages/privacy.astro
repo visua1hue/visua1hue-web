@@ -25,7 +25,7 @@ import { Content } from "@/content/privacy.md";
 <style>
   .policy {
     max-width: 680px;
-    color: var(--color-muted);
+    color: var(--color-text-muted);
     font-size: var(--text-sm);
     line-height: 1.6;
     letter-spacing: -0.012em;
@@ -44,14 +44,14 @@ import { Content } from "@/content/privacy.md";
     font-size: var(--text-lg);
     line-height: 1.32;
     letter-spacing: -0.028em;
-    color: var(--color-subtle);
+    color: var(--color-text-subtle);
   }
 
   .policy :global(h2) {
     margin: 48px 0 10px;
     font-size: var(--text-sm);
     font-weight: var(--weight-bold);
-    color: var(--color-fg);
+    color: var(--color-text);
   }
 
   .policy :global(p) {
@@ -63,7 +63,7 @@ import { Content } from "@/content/privacy.md";
   }
 
   .updated {
-    color: var(--color-subtle);
+    color: var(--color-text-subtle);
   }
 
   /* Not ::marker: width varies by font */
@@ -82,7 +82,7 @@ import { Content } from "@/content/privacy.md";
     content: "–" / "";
     position: absolute;
     left: 0;
-    color: var(--color-subtle);
+    color: var(--color-text-subtle);
   }
 
   .policy :global(li + li) {
@@ -91,12 +91,12 @@ import { Content } from "@/content/privacy.md";
 
   .policy :global(strong) {
     font-weight: var(--weight-medium);
-    color: var(--color-fg);
+    color: var(--color-text);
   }
 
   .policy :global(p a),
   .policy :global(li a) {
-    color: var(--color-fg);
+    color: var(--color-text);
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 4px;

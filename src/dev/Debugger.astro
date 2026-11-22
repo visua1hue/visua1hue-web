@@ -30,6 +30,8 @@ const cells: { label: string; key: keyof DevMetrics; initial: string; unit: stri
 
 <style>
   .debugger {
+    /* debugger.ts reads it for the flash */
+    --debug-num: var(--neutral-35);
     display: flex;
     flex-direction: column;
     width: fit-content;
@@ -63,12 +65,12 @@ const cells: { label: string; key: keyof DevMetrics; initial: string; unit: stri
 
   .n {
     text-align: right;
-    color: var(--color-soft);
+    color: var(--debug-num);
   }
 
   .l,
   .u {
-    color: var(--color-subtle);
+    color: var(--color-text-subtle);
   }
 </style>
 

@@ -15,7 +15,7 @@ html,
 body {
   margin: 0;
   background: var(--color-bg);
-  color: var(--color-fg);
+  color: var(--color-text);
 }
 
 html {
@@ -41,7 +41,7 @@ body {
 }
 
 a {
-  color: var(--color-muted);
+  color: var(--color-text-muted);
   text-decoration: none;
 }
 
@@ -53,12 +53,12 @@ button {
 /* :hover sticks after a tap */
 @media (hover: hover) {
   a:hover {
-    color: var(--color-fg);
+    color: var(--color-text);
   }
 }
 
 a:active {
-  color: var(--color-fg);
+  color: var(--color-text);
 }
 
 .ext {
@@ -122,17 +122,17 @@ a:active {
   min-height: var(--hit-target);
   display: inline-flex;
   align-items: center;
-  color: var(--color-subtle);
+  color: var(--color-text-subtle);
   transition: color var(--dur-base) var(--ease-standard);
 }
 
 .nav a[aria-current="page"] {
-  color: var(--color-fg);
+  color: var(--color-text);
 }
 
 @media (hover: hover) {
   .nav a:hover {
-    color: var(--color-fg);
+    color: var(--color-text);
   }
 }
 
@@ -144,7 +144,7 @@ a:active {
 }
 
 .meta dt {
-  color: var(--color-subtle);
+  color: var(--color-text-subtle);
 }
 
 .meta dd {
@@ -153,7 +153,7 @@ a:active {
 
 .meta .value {
   font-weight: var(--weight-bold);
-  color: var(--color-fg);
+  color: var(--color-text);
 }
 
 .page-title {
@@ -162,7 +162,7 @@ a:active {
   font-weight: var(--weight-medium);
   line-height: 1.5;
   letter-spacing: -0.011em;
-  color: var(--color-fg);
+  color: var(--color-text);
 }
 
 /* !important: ties with Logotype.astro's scoped rules */

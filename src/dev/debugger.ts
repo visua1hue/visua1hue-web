@@ -39,9 +39,9 @@ const snapshot = (root: HTMLElement) =>
 
 const flash = (el: HTMLElement) => {
   // var() inside WAAPI keyframes is unreliable across engines
-  const soft = getComputedStyle(el).getPropertyValue("--color-soft").trim() || "currentColor";
+  const num = getComputedStyle(el).getPropertyValue("--debug-num").trim() || "currentColor";
   el.animate(
-    [{ backgroundColor: `color-mix(in oklab, ${soft} 14%, transparent)` }, { backgroundColor: "transparent" }],
+    [{ backgroundColor: `color-mix(in oklab, ${num} 14%, transparent)` }, { backgroundColor: "transparent" }],
     { duration: 500, easing: "ease-out" },
   );
 };

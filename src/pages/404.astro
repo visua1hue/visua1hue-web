@@ -87,12 +87,12 @@ import Layout from "@/layouts/Layout.astro";
     font-size: var(--text-lg);
     line-height: 1.32;
     letter-spacing: -0.028em;
-    color: var(--color-subtle);
+    color: var(--color-text-subtle);
   }
 
   .lead strong {
     font-weight: var(--weight-medium);
-    color: var(--color-fg);
+    color: var(--color-text);
   }
 
   .back {
@@ -103,11 +103,11 @@ import Layout from "@/layouts/Layout.astro";
     display: inline-flex;
     align-items: center;
     min-height: var(--hit-target);
-    color: var(--color-fg);
+    color: var(--color-text);
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 4px;
-    text-decoration-color: var(--color-faint);
+    text-decoration-color: var(--color-border);
     transition: text-decoration-color var(--dur-base) var(--ease-standard);
   }
 
@@ -137,7 +137,7 @@ import Layout from "@/layouts/Layout.astro";
     white-space: nowrap;
     font-family: ui-monospace, monospace;
     font-size: var(--text-code);
-    color: var(--color-fg);
+    color: var(--color-text);
   }
 
   @media (prefers-reduced-motion: no-preference) {
