@@ -2,6 +2,7 @@
   "name": "visua1hue-web",
   "type": "module",
   "version": "0.0.5",
+  "packageManager": "bun@1.4.5",
   "scripts": {
     "dev": "astro dev --force",
     "build": "astro build",
