@@ -217,20 +217,26 @@ const showLogotype = false;
     padding-top: var(--below-nav);
   }
 
-  /* First visit only: html[data-internal-nav] (internal-nav.js) skips it on moves between pages.
-     The text paints at once so it stays the LCP; a paper cover fades off it instead */
+  /* The text paints at once so it stays the LCP; a paper cover fades off it instead. First visit: the
+     entrance, after the frame. From another page (html[data-internal-nav], nav-entry-state.js): the page
+     change's fade-in, once the old page has faded out (page-transitions.css). A browser without
+     page transitions gets the fade-in alone */
   @media (prefers-reduced-motion: no-preference) {
-    :global(:root:not([data-internal-nav])) .main {
+    .main {
       position: relative;
     }
 
-    :global(:root:not([data-internal-nav])) .main::after {
+    .main::after {
       content: "";
       position: absolute;
       inset: 0;
       background: var(--color-bg);
       pointer-events: none;
       animation: cover-off var(--enter-dur) var(--enter-ease) both var(--cascade-delay);
+    }
+
+    :global(:root[data-internal-nav]) .main::after {
+      animation: cover-off var(--vt-in) var(--vt-in-ease) both var(--vt-out);
     }
   }
 

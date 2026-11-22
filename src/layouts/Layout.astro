@@ -1,6 +1,6 @@
 ---
 import { Font } from "astro:assets";
-import internalNav from "@scripts/internal-nav.js?raw";
+import navEntryState from "@scripts/nav-entry-state.js?raw";
 import "@styles/global.css";
 
 interface Props {
@@ -21,10 +21,12 @@ const faviconHref = import.meta.env.DEV ? "/favicon-dev.svg" : "/favicon.svg";
   <head>
     <meta charset="UTF-8" />
     {/* Sets html[data-internal-nav] when opened from another page of the site (not a reload), so
-        first-visit entrance animations don't replay. Inline and blocking: it must run before the first
+        first-visit entrance animations don't replay. Also skips the page transition on back and
+        forward, and restarts the fade-in of a page Chrome loaded ahead of time (both at pagereveal,
+        which fires before the first paint). Inline and blocking: it must run before the first
         paint, and a file would hold that paint for a request. The CSP allows it by hash
         (INTERNAL_NAV_HASH, security-headers.ts); astro-headers.ts fails the build if they drift */}
-    <script is:inline set:html={internalNav}></script>
+    <script is:inline set:html={navEntryState}></script>
     <meta name="description" content={description} />
     <meta
       name="viewport"

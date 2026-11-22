@@ -1,5 +1,5 @@
-/** CSP hash of the inline script in Layout.astro (src/scripts/internal-nav.js). The build fails if it drifts. */
-export const INTERNAL_NAV_HASH = "sha256-hD/1w3NnSkJNk3ClgGcstfWRFk91ahjwYod8NdkQqTM=";
+/** CSP hash of the inline script in Layout.astro (src/scripts/nav-entry-state.js). The build fails if it drifts. */
+export const INTERNAL_NAV_HASH = "sha256-nfZx2u5cIVAr4YC0dWnnVyp0U+zAq/77qJ7/JRyXsfg=";
 
 /** Set by middleware.ts on Worker responses; written to _headers by astro-headers.ts. */
 export const SECURITY_HEADERS: Record<string, string> = {

@@ -14,8 +14,19 @@
   --enter-dur: 500ms;
   --enter-ease: var(--ease-out-expo);
 
-  /* Page change (page-transitions.css): out, then in. The whole page is a frozen snapshot until both
-     finish (no hover, no clicks), so the sum stays short */
+  /* Page change: the old page fades out (page-transitions.css), then the new text fades in on the
+     live page (PageFrame.astro). The page is a still picture, deaf to taps, only for --vt-out */
   --vt-out: 120ms;
   --vt-in: 220ms;
+  --vt-in-ease: var(--ease-out-expo);
+}
+
+/* Phones: the text is the whole screen. On expo it reached half opacity in two frames and popped
+   in; on ease it visibly fades */
+@media (max-width: 767px) {
+  :root {
+    --vt-out: 100ms;
+    --vt-in: 300ms;
+    --vt-in-ease: var(--ease);
+  }
 }
