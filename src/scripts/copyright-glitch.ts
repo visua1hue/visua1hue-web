@@ -1,7 +1,7 @@
 import { createTear, ease, frames, GLITCH, jumble } from "@scripts/lib/text-glitch";
 
-const OUT_MS = 110;
-const IN_MS = 300;
+const OUT_MS = 80;
+const IN_MS = 200;
 /** Share of IN_MS spent jumbled. */
 const SETTLE_AT = 0.7;
 
