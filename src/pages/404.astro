@@ -16,10 +16,10 @@ import Layout from "@/layouts/Layout.astro";
     </header>
 
     <main class="main">
-      <h1 class="page-title">Page not found</h1>
-      <p class="lead">
-        This page dissolved before anyone wrote it. <strong>Nothing lives here, maybe nothing ever did.</strong>
-      </p>
+      <h1 class="lead">
+        <strong>Page not found.</strong> This page dissolved before anyone wrote it. Nothing lives here, maybe nothing
+        ever did.
+      </h1>
       <p class="back">
         <a href="/">Back to About</a>
       </p>
@@ -84,6 +84,7 @@ import Layout from "@/layouts/Layout.astro";
 
   .lead {
     margin: 0;
+    font-weight: inherit;
     font-size: var(--text-lg);
     line-height: 1.32;
     letter-spacing: -0.028em;
