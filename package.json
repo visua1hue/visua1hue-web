@@ -9,6 +9,7 @@
     "check": "astro check",
     "lint": "oxlint --deny-warnings",
     "preview": "wrangler dev --port 8799",
+    "preview:phone": "wrangler dev --port 8799 --ip 0.0.0.0 --local-protocol https",
     "deploy": "astro build && wrangler deploy"
   },
   "dependencies": {
