@@ -72,6 +72,13 @@
         visibility var(--dur-fast);
     }
 
+    /* Hit area 64px: 48px missed edge taps */
+    .back-to-top::before {
+      content: "";
+      position: absolute;
+      inset: -8px;
+    }
+
     .back-to-top[data-shown] {
       opacity: 1;
       visibility: visible;
@@ -90,7 +97,6 @@
       -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
       transition:
-        transform var(--dur-base) var(--ease-out),
         background-color var(--dur-base) var(--ease-standard),
         color var(--dur-base) var(--ease-standard);
     }
@@ -112,9 +118,9 @@
       transform-origin: center;
     }
 
-    /* iOS skips :active on most taps */
+    /* Same press as the nav (PageFrame.astro): fill 50% over the page, no scale */
     .back-to-top[data-pressed] .face {
-      background-color: color-mix(in oklab, var(--color-fill) 85%, transparent);
+      background-color: color-mix(in oklab, var(--color-fill) 50%, var(--color-bg));
       color: var(--color-text);
       transition-duration: var(--dur-fast);
     }
@@ -131,10 +137,6 @@
     @media (prefers-reduced-motion: no-preference) {
       .back-to-top:not([data-shown]) {
         transform: translateY(8px);
-      }
-
-      .back-to-top[data-pressed] .face {
-        transform: scale(0.88);
       }
 
       .back-to-top[data-at-end] .arrow {
@@ -171,9 +173,14 @@
 
 <script>
   import { scrollToTop } from "@/scripts/lib/scroll-to-top";
+  import { tapFeedback } from "@/scripts/lib/tap-feedback";
 
   /** In viewBox units */
   const RISE = "-3.5px";
+  /** Touch moving further is a scroll, not a tap */
+  const SLOP_PX = 10;
+  /** Window for the click iOS sends after a touch tap already handled */
+  const CLICK_AFTER_TAP_MS = 600;
 
   const button = document.querySelector<HTMLButtonElement>("[data-back-to-top]");
   const mark = document.querySelector("[data-back-to-top-mark]");
@@ -214,15 +221,33 @@
       new IntersectionObserver(([e]) => button.toggleAttribute("data-at-end", e?.isIntersecting ?? false)).observe(end);
     }
 
-    const release = () => button.removeAttribute("data-pressed");
-    button.addEventListener("pointerdown", () => button.setAttribute("data-pressed", ""));
-    for (const type of ["pointerup", "pointercancel", "pointerleave"]) button.addEventListener(type, release);
+    tapFeedback(button);
 
-    button.addEventListener("click", (e) => {
+    const activate = (keyboard: boolean) => {
       dock();
       scrollToTop();
-      // Keyboard (detail 0): the button hides at the top, so focus the nav
-      if (e.detail === 0) document.querySelector<HTMLElement>(".nav a")?.focus({ preventScroll: true });
+      // The button hides at the top, so focus the nav
+      if (keyboard) document.querySelector<HTMLElement>(".nav a")?.focus({ preventScroll: true });
+    };
+
+    // iOS drops the click when a tap stops momentum scroll: act on touch release
+    let touchStart: { x: number; y: number } | null = null;
+    let tappedAt = Number.NEGATIVE_INFINITY;
+    button.addEventListener("pointerdown", (e) => {
+      touchStart = e.pointerType === "touch" ? { x: e.clientX, y: e.clientY } : null;
+    });
+    button.addEventListener("pointercancel", () => (touchStart = null));
+    button.addEventListener("pointerup", (e) => {
+      if (!touchStart) return;
+      const moved = Math.hypot(e.clientX - touchStart.x, e.clientY - touchStart.y);
+      touchStart = null;
+      if (moved > SLOP_PX) return;
+      tappedAt = e.timeStamp;
+      activate(false);
+    });
+    button.addEventListener("click", (e) => {
+      if (e.timeStamp - tappedAt < CLICK_AFTER_TAP_MS) return;
+      activate(e.detail === 0);
     });
   }
 </script>
