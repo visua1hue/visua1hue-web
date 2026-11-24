@@ -4,8 +4,10 @@ const OUT_MS = 80;
 const IN_MS = 200;
 /** Share of IN_MS spent jumbled. */
 const SETTLE_AT = 0.7;
+/** Touch: decimal stays this long after lift. */
+const TOUCH_HOLD_MS = 2500;
 
-/** Decimal on hover or touch press (pointerleave fires on lift). Screen readers always get decimal. */
+/** Decimal on hover, or for TOUCH_HOLD_MS after a tap. Screen readers always get decimal. */
 export function initCopyright(el: HTMLElement): () => void {
   const year = new Date().getFullYear();
   const hex = `0x${year.toString(16).toUpperCase()}`;
@@ -18,6 +20,8 @@ export function initCopyright(el: HTMLElement): () => void {
   const tear = createTear();
   let run = 0;
   let fade: Animation | null = null;
+  let target = hex;
+  let hold = 0;
 
   // Hex stays uppercase with a lowercase "x"
   const scrambled = (to: string) => {
@@ -26,6 +30,8 @@ export function initCopyright(el: HTMLElement): () => void {
   };
 
   async function swap(to: string) {
+    if (to === target) return;
+    target = to;
     const id = ++run;
     const alive = () => id === run;
     if (reduce.matches) {
@@ -67,10 +73,24 @@ export function initCopyright(el: HTMLElement): () => void {
   }
 
   const ac = new AbortController();
-  el.addEventListener("pointerenter", () => void swap(dec), { signal: ac.signal });
-  for (const e of ["pointerleave", "pointercancel"])
-    el.addEventListener(e, () => void swap(hex), { signal: ac.signal });
+  el.addEventListener(
+    "pointerenter",
+    () => {
+      clearTimeout(hold);
+      void swap(dec);
+    },
+    { signal: ac.signal },
+  );
+  // pointerleave fires on touch lift, so touch reverts after a delay
+  const leave = (e: PointerEvent) => {
+    clearTimeout(hold);
+    if (e.pointerType === "mouse") void swap(hex);
+    else hold = window.setTimeout(() => void swap(hex), TOUCH_HOLD_MS);
+  };
+  el.addEventListener("pointerleave", leave, { signal: ac.signal });
+  el.addEventListener("pointercancel", leave, { signal: ac.signal });
   return () => {
+    clearTimeout(hold);
     ac.abort();
     run++;
     fade?.cancel();
