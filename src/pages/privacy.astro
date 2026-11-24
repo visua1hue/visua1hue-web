@@ -8,11 +8,11 @@ import { Content } from "@/content/privacy.md";
 <Layout title="Privacy – VISUA1HUE" description="What this site does and doesn't do with your data." noindex>
   <PageFrame current="privacy">
     <article class="policy" aria-labelledby="privacy-title">
-      <header class="policy-head">
+      <header class="page-head">
         <h1 class="page-title" id="privacy-title">
           Privacy Policy
         </h1>
-        <p class="updated">
+        <p>
           Last updated: <time datetime="2026-11-15">15 November 2026</time>
         </p>
       </header>
@@ -31,16 +31,7 @@ import { Content } from "@/content/privacy.md";
     letter-spacing: -0.012em;
   }
 
-  .policy-head {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 4px 24px;
-    margin-bottom: 24px;
-  }
-
-  .policy-head + :global(p) {
+  .page-head + :global(p) {
     font-size: var(--text-lg);
     line-height: 1.32;
     letter-spacing: -0.028em;
@@ -60,10 +51,6 @@ import { Content } from "@/content/privacy.md";
 
   .policy :global(address) {
     font-style: normal;
-  }
-
-  .updated {
-    color: var(--color-text-subtle);
   }
 
   /* Not ::marker: width varies by font */

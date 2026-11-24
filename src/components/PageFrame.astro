@@ -287,6 +287,16 @@ const showLogotype = false;
     padding-top: var(--below-nav);
   }
 
+  /* Screen readers only: the .page-head meta line takes the title's slot */
+  .main :global(.page-title) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
   /* Cover, not text opacity: keeps the LCP. 100lvh cap: full height skipped the fade on iOS */
   @media (prefers-reduced-motion: no-preference) {
     :global(:root:not([data-no-entrance])) .main {
@@ -346,6 +356,7 @@ const showLogotype = false;
 
   .copy a {
     color: inherit;
+    text-transform: uppercase;
   }
 
   @media (hover: hover) {
@@ -496,15 +507,6 @@ const showLogotype = false;
 
     :global(.logotype) {
       display: none;
-    }
-
-    .main :global(.page-title) {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-      white-space: nowrap;
     }
   }
 </style>

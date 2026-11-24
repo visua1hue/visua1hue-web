@@ -165,6 +165,25 @@ a:active {
   color: var(--color-text);
 }
 
+/* Title slot inside PageFrame (its h1 is screen-reader only): Last updated, Short / Extended */
+.page-head {
+  margin: 0 0 24px;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  letter-spacing: -0.011em;
+  color: var(--color-text-subtle);
+}
+
+.page-head p {
+  margin: 0;
+}
+
+@media (max-width: 767px) and (max-height: 700px) {
+  .page-head {
+    margin-bottom: 16px;
+  }
+}
+
 /* !important: ties with Logotype.astro's scoped rules */
 :root[data-no-entrance] .logotype svg {
   animation: none !important;
