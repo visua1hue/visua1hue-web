@@ -47,5 +47,14 @@
   :root {
     --page-x: 20px;
     --below-nav: calc(var(--hit-target) + 32px);
+    /* Height-aware: the short About fits one screen on short phones */
+    --text-lg: clamp(1.0625rem, 2.85svh, 1.25rem + (100vw - 20rem) * 6 / 1120);
+  }
+}
+
+/* Short phones: tighter vertical rhythm, same reason */
+@media (max-width: 767px) and (max-height: 700px) {
+  :root {
+    --below-nav: calc(var(--hit-target) + 16px);
   }
 }
