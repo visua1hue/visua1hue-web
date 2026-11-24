@@ -36,6 +36,11 @@
     view-transition-class: still;
   }
 
+  /* Short / Extended swap (index.astro): the fades go with their text, else they switch before it fades */
+  :root[data-text-swap] :is(.fade-top, .fade-bottom, .fade-ramp) {
+    view-transition-name: none;
+  }
+
   /* Phones: the side column scrolls under the text, so it cross-fades with it */
   @media (max-width: 767px) {
     .side {
