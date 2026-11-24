@@ -3,11 +3,8 @@ export const prerender = true;
 import Layout from "@/layouts/Layout.astro";
 import PageFrame from "@/components/PageFrame.astro";
 import { Content as Short } from "@/content/about.md";
-import { compiledContent as extendedContent } from "@/content/about-extended.md";
+import { Content as Extended } from "@/content/about-extended.md";
 import { POSITION } from "@/content/position";
-
-// Unfilled [hints] in about-extended.md show as ghost text until written
-const extended = (await extendedContent()).replaceAll(/\[([^\]]+)\]/g, '<span class="hint">$1</span>');
 ---
 
 <Layout
@@ -33,7 +30,9 @@ const extended = (await extendedContent()).replaceAll(/\[([^\]]+)\]/g, '<span cl
       <div class="text" data-text="short">
         <Short />
       </div>
-      <div class="text" data-text="extended" set:html={extended} hidden />
+      <div class="text" data-text="extended" hidden>
+        <Extended />
+      </div>
     </section>
   </PageFrame>
 </Layout>
@@ -66,11 +65,6 @@ const extended = (await extendedContent()).replaceAll(/\[([^\]]+)\]/g, '<span cl
   .about :global(strong) {
     font-weight: var(--weight-medium);
     color: var(--color-text);
-  }
-
-  /* Unfilled hints: between body gray and the border tone */
-  .about :global(.hint) {
-    color: color-mix(in oklab, var(--color-text-subtle) 50%, var(--color-bg));
   }
 
   /* 44px rows pulled back to the line: the baseline stays where privacy's "Last updated" sits */
