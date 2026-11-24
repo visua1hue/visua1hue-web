@@ -488,6 +488,7 @@ const showLogotype = false;
 <script>
   import { initCopyright } from "@/scripts/copyright-glitch";
   import { scrollToTop } from "@/scripts/lib/scroll-to-top";
+  import { tapFeedback } from "@/scripts/lib/tap-feedback";
 
   for (const el of document.querySelectorAll<HTMLElement>("[data-year]")) initCopyright(el);
 
@@ -526,25 +527,8 @@ const showLogotype = false;
   }
   if (!CSS.supports("animation-timeline: view()")) watchEnd();
 
-  // Release waits PRESS_MIN_MS so a quick tap still shows the press
-  const PRESS_MIN_MS = 120;
   for (const link of document.querySelectorAll<HTMLAnchorElement>(".nav a")) {
-    let at = 0;
-    let timer = 0;
-    const drop = () => link.removeAttribute("data-pressed");
-    link.addEventListener("pointerdown", () => {
-      clearTimeout(timer);
-      at = performance.now();
-      link.setAttribute("data-pressed", "");
-    });
-    link.addEventListener("pointerup", () => {
-      timer = window.setTimeout(drop, Math.max(0, PRESS_MIN_MS - (performance.now() - at)));
-    });
-    link.addEventListener("pointercancel", drop);
-    // Touch fires pointerleave right after pointerup; drop only if still held
-    link.addEventListener("pointerleave", (e) => {
-      if (e.buttons) drop();
-    });
+    tapFeedback(link);
     link.addEventListener("click", (e) => {
       const plain = e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
       if (plain && link.pathname !== location.pathname) link.setAttribute("data-going", "");
