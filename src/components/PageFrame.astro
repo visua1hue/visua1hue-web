@@ -117,6 +117,7 @@ const showLogotype = false;
     </div>
   </aside>
   <BackToTop />
+  <div data-doc-end aria-hidden="true"></div>
 </div>
 
 <style>
@@ -221,8 +222,17 @@ const showLogotype = false;
     view-timeline-inset: 0 var(--end-band);
   }
 
+  /* The page's end; drives .fade-ramp on phones */
+  [data-doc-end] {
+    height: 1px;
+    margin-top: -1px;
+    pointer-events: none;
+    view-timeline: --doc-end block;
+    view-timeline-inset: 0 var(--end-band);
+  }
+
   .frame {
-    timeline-scope: --text-end;
+    timeline-scope: --text-end, --doc-end;
   }
 
   /* Height, not opacity: shrinks to the text left below the band, so no text meets its hard edge */
@@ -374,7 +384,9 @@ const showLogotype = false;
       --head-fade: 57px;
       /* Matches BackToTop.astro's 32px */
       --pad-bottom: 32px;
-      --end-band: 0px;
+      /* Solid band under the ramp, as on desktop */
+      --end-band: 32px;
+      --band-bottom: calc(var(--end-band) + env(safe-area-inset-bottom, 0px));
       grid-template-columns: minmax(0, 1fr);
       grid-template-areas:
         "main"
@@ -386,13 +398,23 @@ const showLogotype = false;
       scroll-margin-top: calc(var(--hit-target) + 12px + var(--head-fade));
     }
 
-    .fade-top,
-    .fade-bottom {
+    .fade-top {
       display: none;
     }
 
+    .fade-bottom {
+      height: var(--band-bottom);
+    }
+
     .fade-ramp {
-      bottom: 0;
+      bottom: var(--band-bottom);
+    }
+
+    /* Phones: the side column scrolls under the text, so the fade tracks the page's end, not the text's */
+    @supports (animation-timeline: view()) {
+      .fade-ramp {
+        animation-timeline: --doc-end;
+      }
     }
 
     .head {
@@ -454,6 +476,8 @@ const showLogotype = false;
     }
 
     .side {
+      /* Under the fades: it scrolls beneath the band */
+      z-index: auto;
       padding-top: 0;
       margin-bottom: 0;
       display: flex;
@@ -503,8 +527,10 @@ const showLogotype = false;
   // Scroll-timeline fallback. 8px slack: at the end, text stops exactly on the band's edge
   function watchEnd() {
     const frame = document.querySelector<HTMLElement>(".frame");
-    const end = document.querySelector<HTMLElement>("[data-end]");
-    if (!frame || !end) return;
+    const textEnd = document.querySelector<HTMLElement>("[data-end]");
+    const docEnd = document.querySelector<HTMLElement>("[data-doc-end]");
+    if (!frame || !textEnd || !docEnd) return;
+    const phone = matchMedia("(max-width: 767px)");
     let io: IntersectionObserver | null = null;
     const observe = () => {
       io?.disconnect();
@@ -512,7 +538,8 @@ const showLogotype = false;
       io = new IntersectionObserver(([e]) => frame.classList.toggle("at-end", e?.isIntersecting ?? false), {
         rootMargin: `0px 0px -${inset}px 0px`,
       });
-      io.observe(end);
+      // Phones: the side column scrolls under the text, so the page's end counts
+      io.observe(phone.matches ? docEnd : textEnd);
     };
     let timer = 0;
     observe();
